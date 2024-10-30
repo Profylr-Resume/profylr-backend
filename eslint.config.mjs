@@ -3,7 +3,7 @@ const { node, commonjs, es2020, browser } = pkg;
 
 export default [
  { 
-    files: ["**/*.js"], languageOptions: {sourceType: "commonjs"},
+    files: ["**/*.js"],
     languageOptions: {
         ecmaVersion: 2020,
         globals: {

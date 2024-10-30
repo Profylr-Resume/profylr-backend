@@ -7,10 +7,13 @@ import swaggerDocs from "./config/swaggerConfig.js";
 import cors from "cors";
 import logger from "./config/logger.js";
 import routes from "./routes/routes.js";
+import { connectDb } from "./config/db.js";
 
 dotenv.config();
 
 const app= express();
+
+connectDb();
 
 app.use(express.json());
 app.use(helmet());
@@ -21,5 +24,4 @@ app.use(cors());
 app.use("/api", routes);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT,
-	()=>console.log(`Server running on port ${PORT}`));
+app.listen(PORT,()=>console.log(`Server running on port ${PORT}`));
