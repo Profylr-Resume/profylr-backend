@@ -15,6 +15,6 @@ const resumeFormSchema = new Schema({
 });
 
 
-const ResumeForm = mongoose.model("RESUME",resumeFormSchema);
+const RESUME = mongoose.model("Resume",resumeFormSchema);
 
-export default ResumeForm;
+export default RESUME;
