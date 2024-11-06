@@ -4,18 +4,18 @@ export const educationSchema = new Schema({
 	underGraduate:{
 		instituteName:String,
 		field:String,
-		passingYear:String,
+		yearOfPassing:String,
 		result:String
 	},
-	twelethClass:{
+	twelfthGrade:{
 		instituteName:String,
 		field:String,
-		passingYear:String,
+		yearOfPassing:String,
 		result:String
 	},
-	tenthClass:{
+	tenthGrade:{
 		instituteName:String,
-		passingYear:String,
+		yearOfPassing:String,
 		result:String 
 	}
 },
