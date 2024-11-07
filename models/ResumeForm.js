@@ -1,9 +1,9 @@
 import mongoose, { Schema } from "mongoose";
-import {basicInfoSchema} from "./BasicInfo";
-import { educationSchema } from "./Education";
-import { experiencesSchema } from "./Experience";
-import { skillsSchema } from "./Skills";
-import { projectsSchema } from "./Projects";
+import {basicInfoSchema} from "./resumeForm/BasicInfo";
+import { educationSchema } from "./resumeForm/Education";
+import { experiencesSchema } from "./resumeForm/Experience";
+import { skillsSchema } from "./resumeForm/Skills";
+import { projectsSchema } from "./resumeForm/Projects";
 
 
 const resumeFormSchema = new Schema({

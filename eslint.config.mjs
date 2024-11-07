@@ -104,7 +104,8 @@ export default [
     "no-undef": "error", // disallow use of undeclared variables unless mentioned in a /*global */ block
     "no-undef-init": "error", // disallow use of undefined when initializing variables
     "no-undefined": "off", // disallow use of undefined variable (off by default)
-    "no-prototype-builtins": "off"
+    "no-prototype-builtins": "off",
+    "no-unused-vars": ["warn", { "vars": "all", "args": "after-used", "ignoreRestSiblings": true }]
 },
 
 

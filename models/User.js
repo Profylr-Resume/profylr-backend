@@ -15,10 +15,30 @@ const userSchema = new Schema({
 		type:String,
 		required:true
 	},
-	resume:[
+	resumes:[
 		{
-			type:Schema.Types.ObjectId, 
-			ref:"RESUME"
+			resume:{
+				type:Schema.Types.ObjectId, 
+				ref:"RESUME"
+			},
+			template:{
+				type:Schema.Types.ObjectId, 
+				ref:"TEMPLATE"
+			},
+			meta: [
+				{
+				  field: {
+						type: String
+				  },
+				  oldValue: {
+						type: String
+				  },
+				  newValue: {
+						type: String
+				  }
+				}
+			  ]
+			
 		}
 	]
 }); 
@@ -31,8 +51,8 @@ const userSchema = new Schema({
  and it’s useful for logging, cleaning up, or triggering events after certain actions.
  */
 
-userSchema.pre("save",async (next)=>{
-
+userSchema.pre("save",async function(next){
+	console.log(this);
 	// isModified => it’s available automatically when you create a schema in Mongoose. 
 	if(!this.isModified("password")) {return next();}
 
@@ -46,7 +66,7 @@ userSchema.pre("save",async (next)=>{
 	}
 });
 
-userSchema.methods.comparePassword = async (enteredPassword)=>{
+userSchema.methods.comparePassword = async function(enteredPassword){
 	return await bcrypt.compare(enteredPassword,this.password);
 };
 
