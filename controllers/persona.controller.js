@@ -1,44 +1,29 @@
 import expressAsyncHandler from "express-async-handler";
-import PERSONA from "../models/Persona.js";
-import personaValidation from "../validations/persona.validate.js";
-import sanitizer from "sanitizer";
 import { missingFieldsError, notFoundError } from "../utils/errors.utils.js";
 import { eventExecutedSuccessfully } from "../utils/success.utils.js";
+import { createPersonaHandler, deletePersonaHandler } from "../handlers/persona.handler.js";
 
-const { sanitize } = sanitizer;
 
 export const createPersona = expressAsyncHandler(async (req, res) => {
+	const { success, error, newPersona } = await createPersonaHandler(req.body);
 
-	// Sanitize the input data
-	const sanitizedData = sanitize(req.body);
-  
-	// Validate the sanitized data
-	const { error, value } = personaValidation.validate(sanitizedData);
-
-	if (error) {
-		return missingFieldsError(res,error);
+	if (!success) {
+		return missingFieldsError(res, error);
 	}
-  
-	// Create and save the new Persona document
-	const newPersona = await PERSONA.create(value);
-  
-	return eventExecutedSuccessfully(res,newPersona,"New persona created successfully");
+
+	return eventExecutedSuccessfully(res, newPersona, "New persona created successfully");
 });
 
-
-export const deletePersona = expressAsyncHandler(async(req,res)=>{
-    
+export const deletePersona = expressAsyncHandler(async (req, res) => {
 	const personaId = req.params.id;
+	const { success, error, deletedPersona } = await deletePersonaHandler(personaId);
 
-	if(!personaId){
-		return missingFieldsError(res);
-	}
-    
-	const deletedPersona = await PERSONA.findOneAndDelete(personaId) ;
-
-	if(!deletedPersona){
-		return notFoundError(res,"Persona",["Id"]);
+	if (!success) {
+		if (error === "Missing persona ID") {
+			return missingFieldsError(res);
+		}
+		return notFoundError(res, "Persona", ["Id"]);
 	}
 
-	return eventExecutedSuccessfully(res,deletedPersona,"Persona deleted successfully");
+	return eventExecutedSuccessfully(res, deletedPersona, "Persona deleted successfully");
 });
