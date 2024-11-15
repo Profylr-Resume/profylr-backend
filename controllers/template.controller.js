@@ -69,6 +69,7 @@ export const getTemplateById = expressAsyncHandler(async(req,res)=>{
 	return eventExecutedSuccessfully(res,template,"Template found");
 });
 
+// need to limit hte info , as it doesnt need everything here
 export const getAllTemplates = expressAsyncHandler(async(req,res)=>{
 
 	const allTemplates = await TEMPLATE.find();

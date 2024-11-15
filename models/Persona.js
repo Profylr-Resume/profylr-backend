@@ -1,5 +1,8 @@
 import mongoose, { Schema } from "mongoose";
 
+// need to store the ideal resume struture with each persona.
+// coz every unique persona will have that same ideal structure everytime.
+// we will just dont show it to the user
 
 const personaSchema = new Schema({
 	experienceLevel:{

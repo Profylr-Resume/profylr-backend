@@ -11,16 +11,15 @@ const { sanitize } = sanitizer;
 export const createSection = expressAsyncHandler(async(req,res)=>{
 
 	const sanitizedData = sanitize(req.body);
-
-	const {error,values} = resumeSectionValidation.validate(sanitizedData);
-
+	const {error,value} = resumeSectionValidation.validate(req.body);
+	
 	if(error){
 		return missingFieldsError(res,error);
 	}
 
-	const newSection = await RESUME_SECTION.create(values);
+	const newSection = await RESUME_SECTION.create(value);
 
-	return eventExecutedSuccessfully(res,newSection,"New section created successfully.");
+	return eventExecutedSuccessfully(res,{name:newSection,description:newSection.description},"New section created successfully.");
 
 });
 
