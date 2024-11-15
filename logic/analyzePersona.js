@@ -15,9 +15,8 @@ const analyzePersona = (persona) => {
 
 	// Generate recommendations based on persona
 	const recommendations = {
-		sectionFields:[],
+		sections:[],
 		sectionOrder: [],
-		visibilitySuggestions: [],
 		contentAdvice: [],
 		reasoning: []
 	};
