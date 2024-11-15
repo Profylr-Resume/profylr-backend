@@ -74,3 +74,7 @@ userSchema.methods.comparePassword = async function(enteredPassword){
 const USER = mongoose.model("User",userSchema);
 
 export default USER;
+
+/*
+    header , summary , experience, projects , education , skills, certifications, achievements , publications , research , volunteer
+*/

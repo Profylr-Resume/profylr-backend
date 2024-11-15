@@ -12,7 +12,9 @@ const PersonaBuilder = () => {
       strengths: [],
       goals: []
     });
-  
+  /*
+    header , summary , experience, projects , education , skills, certifications, achievements , publications , research , volunteer
+*/
     const [recommendations, setRecommendations] = useState(null);
   
     // Predefined options
@@ -105,3 +107,303 @@ const PersonaBuilder = () => {
   
       setRecommendations(recommendations);
     }, [persona, roleCategories]);
+
+
+
+
+
+    RESPONSE 1 :
+    const generateResumeRecommendations = (persona) => {
+        const recommendations = {
+            sections: [],
+            sectionOrder: [],
+            contentAdvice: [],
+            reasoning: []
+        };
+    
+        // Destructure persona
+        const { experienceLevel, targetRole, background, strengths, goals } = persona;
+    
+        // Determine essential sections
+        recommendations.sections.push('Header', 'Summary');
+    
+        // Add sections based on experience level
+        if (background.yearsOfExperience > 0 || experienceLevel === 'Intermediate' || experienceLevel === 'Advanced') {
+            recommendations.sections.push('Experience');
+            recommendations.reasoning.push('Experience is important to demonstrate real-world applications of skills.');
+        }
+    
+        if (background.hasProjects) {
+            recommendations.sections.push('Projects');
+            recommendations.reasoning.push('Projects showcase applied skills, which are valuable for roles requiring technical or hands-on expertise.');
+        }
+    
+        if (background.educationLevel) {
+            recommendations.sections.push('Education');
+            recommendations.reasoning.push('Education is foundational, especially for early-career candidates or roles requiring specific degrees.');
+        }
+    
+        if (background.hasCertifications) {
+            recommendations.sections.push('Certifications');
+            recommendations.reasoning.push('Certifications validate specific technical skills or knowledge areas.');
+        }
+    
+        if (strengths.includes('Research Publications') || targetRole && roleCategories.RESEARCH_ROLES.includes(targetRole)) {
+            recommendations.sections.push('Publications', 'Research');
+            recommendations.reasoning.push('Publications and research highlight academic and scientific achievements.');
+        }
+    
+        if (strengths.includes('Leadership') || goals.includes('Leadership Role')) {
+            recommendations.sections.push('Achievements');
+            recommendations.reasoning.push('Achievements highlight leadership and initiative.');
+        }
+    
+        if (background.industries.includes('Non-Profit') || strengths.includes('Volunteer Experience')) {
+            recommendations.sections.push('Volunteer');
+            recommendations.reasoning.push('Volunteer experience demonstrates well-roundedness and social impact.');
+        }
+    
+        // Add skills section if there are strengths or technical roles
+        if (strengthOptions.some((strength) => strengths.includes(strength))) {
+            recommendations.sections.push('Skills');
+            recommendations.reasoning.push('Skills highlight specific expertise relevant to target roles.');
+        }
+    
+        // Determine section order based on target role and goals
+        if (targetRole) {
+            if (roleCategories.TECHNICAL_ROLES.includes(targetRole)) {
+                recommendations.sectionOrder = ['Header', 'Summary', 'Skills', 'Projects', 'Experience', 'Education', 'Certifications'];
+            } else if (roleCategories.RESEARCH_ROLES.includes(targetRole)) {
+                recommendations.sectionOrder = ['Header', 'Summary', 'Research', 'Education', 'Publications', 'Skills', 'Achievements'];
+            } else if (roleCategories.BUSINESS_ROLES.includes(targetRole)) {
+                recommendations.sectionOrder = ['Header', 'Summary', 'Experience', 'Education', 'Skills', 'Achievements'];
+            } else {
+                recommendations.sectionOrder = ['Header', 'Summary', 'Education', 'Skills', 'Experience'];
+            }
+        }
+    
+        // Provide content-specific advice
+        if (background.yearsOfExperience > 0) {
+            recommendations.contentAdvice.push('Highlight specific accomplishments in past roles that align with the target role.');
+        }
+    
+        if (background.hasProjects) {
+            recommendations.contentAdvice.push('Focus on projects that demonstrate technical skills or leadership.');
+        }
+    
+        if (background.hasCertifications) {
+            recommendations.contentAdvice.push('List certifications that align with the target role or industry.');
+        }
+    
+        if (goals.includes('Career Transition')) {
+            recommendations.contentAdvice.push('Include a summary section that explains the transition and links past experience to the new role.');
+        }
+    
+        if (strengths.includes('Technical Skills')) {
+            recommendations.contentAdvice.push('Provide a detailed skills section categorized by tool, language, or domain.');
+        }
+    
+        if (goals.includes('Research Opportunity')) {
+            recommendations.contentAdvice.push('Highlight research experience, publications, and academic achievements.');
+        }
+    
+        return recommendations;
+    };
+    
+    // Example usage
+    const persona = {
+        experienceLevel: 'Intermediate',
+        targetRole: 'Data Scientist',
+        background: {
+            yearsOfExperience: 2,
+            educationLevel: 'Bachelor\'s Degree',
+            hasProjects: true,
+            hasCertifications: true,
+            industries: ['Tech', 'Non-Profit'],
+        },
+        strengths: ['Technical Skills', 'Project Experience', 'Research Publications'],
+        goals: ['Career Transition']
+    };
+    
+    const resumeRecommendations = generateResumeRecommendations(persona);
+    console.log(resumeRecommendations);
+    {
+        sections: [
+            "Header",
+            "Summary",
+            "Experience",
+            "Projects",
+            "Education",
+            "Certifications",
+            "Research",
+            "Skills"
+        ],
+        sectionOrder: [
+            "Header",
+            "Summary",
+            "Skills",
+            "Projects",
+            "Experience",
+            "Education",
+            "Certifications"
+        ],
+        contentAdvice: [
+            "Highlight specific accomplishments in past roles that align with the target role.",
+            "Focus on projects that demonstrate technical skills or leadership.",
+            "List certifications that align with the target role or industry.",
+            "Include a summary section that explains the transition and links past experience to the new role.",
+            "Provide a detailed skills section categorized by tool, language, or domain."
+        ],
+        reasoning: [
+            "Experience is important to demonstrate real-world applications of skills.",
+            "Projects showcase applied skills, which are valuable for roles requiring technical or hands-on expertise.",
+            "Education is foundational, especially for early-career candidates or roles requiring specific degrees.",
+            "Certifications validate specific technical skills or knowledge areas.",
+            "Publications and research highlight academic and scientific achievements."
+        ]
+    }
+
+    
+    RESPONSE 2 :
+
+    const generateCondensedResumeRecommendations = (persona) => {
+        const recommendations = {
+            sections: [],
+            sectionOrder: [],
+            contentAdvice: [],
+            reasoning: []
+        };
+    
+        const MAX_SECTIONS = 6; // Limit the number of sections to fit on one page
+        const { experienceLevel, targetRole, background, strengths, goals } = persona;
+    
+        const sectionPriorities = [];
+    
+        // Define priority scores for sections based on relevance
+        sectionPriorities.push(
+            { section: "Header", priority: 10, reason: "Essential for identification." },
+            { section: "Summary", priority: 9, reason: "Summarizes the candidate's fit for the target role." },
+            { section: "Experience", priority: background.yearsOfExperience > 0 ? 8 : 4, reason: "Demonstrates practical skills." },
+            { section: "Projects", priority: background.hasProjects ? 8 : 5, reason: "Showcases technical expertise and hands-on work." },
+            { section: "Education", priority: background.educationLevel ? 7 : 3, reason: "Educational foundation for the target role." },
+            { section: "Skills", priority: strengths.includes("Technical Skills") ? 9 : 6, reason: "Highlights expertise relevant to the role." },
+            { section: "Certifications", priority: background.hasCertifications ? 7 : 3, reason: "Validates specialized knowledge." },
+            { section: "Achievements", priority: strengths.includes("Leadership") ? 6 : 4, reason: "Showcases notable accomplishments." },
+            { section: "Research", priority: roleCategories.RESEARCH_ROLES.includes(targetRole) ? 8 : 3, reason: "Highlights academic research contributions." },
+            { section: "Volunteer", priority: background.industries.includes("Non-Profit") ? 5 : 2, reason: "Demonstrates social impact." }
+        );
+    
+        // Sort sections by priority and take the top ones within MAX_SECTIONS
+        const topSections = sectionPriorities
+            .sort((a, b) => b.priority - a.priority)
+            .slice(0, MAX_SECTIONS);
+    
+        // Populate recommendations with the most relevant sections
+        recommendations.sections = topSections.map((section) => section.section);
+        recommendations.reasoning = topSections.map((section) => section.reason);
+    
+        // Determine section order (e.g., prioritize certain sections for specific roles)
+        if (targetRole) {
+            if (roleCategories.TECHNICAL_ROLES.includes(targetRole)) {
+                recommendations.sectionOrder = recommendations.sections.sort((a, b) => 
+                    ["Header", "Summary", "Skills", "Projects", "Experience", "Education"].indexOf(a) -
+                    ["Header", "Summary", "Skills", "Projects", "Experience", "Education"].indexOf(b)
+                );
+            } else if (roleCategories.RESEARCH_ROLES.includes(targetRole)) {
+                recommendations.sectionOrder = recommendations.sections.sort((a, b) =>
+                    ["Header", "Summary", "Research", "Education", "Publications", "Skills"].indexOf(a) -
+                    ["Header", "Summary", "Research", "Education", "Publications", "Skills"].indexOf(b)
+                );
+            } else if (roleCategories.BUSINESS_ROLES.includes(targetRole)) {
+                recommendations.sectionOrder = recommendations.sections.sort((a, b) =>
+                    ["Header", "Summary", "Experience", "Education", "Achievements", "Skills"].indexOf(a) -
+                    ["Header", "Summary", "Experience", "Education", "Achievements", "Skills"].indexOf(b)
+                );
+            } else {
+                recommendations.sectionOrder = recommendations.sections;
+            }
+        } else {
+            recommendations.sectionOrder = recommendations.sections;
+        }
+    
+        // Provide concise content-specific advice
+        if (background.yearsOfExperience > 0) {
+            recommendations.contentAdvice.push("Include 2-3 key experiences that align with the target role.");
+        }
+    
+        if (background.hasProjects) {
+            recommendations.contentAdvice.push("List 2-3 impactful projects, highlighting your role and outcomes.");
+        }
+    
+        if (background.educationLevel) {
+            recommendations.contentAdvice.push("Include your highest degree and relevant coursework.");
+        }
+    
+        if (background.hasCertifications) {
+            recommendations.contentAdvice.push("Mention certifications that directly relate to the target role.");
+        }
+    
+        if (goals.includes("Career Transition")) {
+            recommendations.contentAdvice.push("Craft a summary that connects past experiences to your new goals.");
+        }
+    
+        if (strengths.includes("Technical Skills")) {
+            recommendations.contentAdvice.push("Include a skills section tailored to tools and technologies for the target role.");
+        }
+    
+        return recommendations;
+    };
+    
+    // Example Usage
+    const persona = {
+        experienceLevel: 'Intermediate',
+        targetRole: 'Data Scientist',
+        background: {
+            yearsOfExperience: 2,
+            educationLevel: 'Bachelor\'s Degree',
+            hasProjects: true,
+            hasCertifications: true,
+            industries: ['Tech'],
+        },
+        strengths: ['Technical Skills', 'Project Experience'],
+        goals: ['Career Transition']
+    };
+    
+    const recommendations = generateCondensedResumeRecommendations(persona);
+    console.log(recommendations);
+    
+    {
+        sections: [
+            "Header",
+            "Summary",
+            "Skills",
+            "Projects",
+            "Experience",
+            "Education"
+        ],
+        sectionOrder: [
+            "Header",
+            "Summary",
+            "Skills",
+            "Projects",
+            "Experience",
+            "Education"
+        ],
+        contentAdvice: [
+            "Include 2-3 key experiences that align with the target role.",
+            "List 2-3 impactful projects, highlighting your role and outcomes.",
+            "Include your highest degree and relevant coursework.",
+            "Mention certifications that directly relate to the target role.",
+            "Craft a summary that connects past experiences to your new goals.",
+            "Include a skills section tailored to tools and technologies for the target role."
+        ],
+        reasoning: [
+            "Essential for identification.",
+            "Summarizes the candidate's fit for the target role.",
+            "Highlights expertise relevant to the role.",
+            "Showcases technical expertise and hands-on work.",
+            "Demonstrates practical skills.",
+            "Educational foundation for the target role."
+        ]
+    }
+    
