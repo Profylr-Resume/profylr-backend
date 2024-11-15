@@ -14,7 +14,8 @@ const templateSchema = new Schema({
 			type:String,
 			required:true
 		}
-	}]
+	}],
+	thumbnail:String
 });
 
 const TEMPLATE = mongoose.model("Template",templateSchema);
