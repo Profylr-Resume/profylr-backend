@@ -1,7 +1,7 @@
 import expressAsyncHandler from "express-async-handler";
 import sanitizer from "sanitizer";
 import templateValidation from "../validations/template.validate.js";
-import { missingFieldsError, notFoundError } from "../utils/errors.utils.js";
+import { conflictError, missingFieldsError, notFoundError } from "../utils/errors.utils.js";
 import TEMPLATE from "../models/Template.js";
 import {eventExecutedSuccessfully } from "../utils/success.utils.js";
 
@@ -9,21 +9,25 @@ const { sanitize } = sanitizer;
 
 
 export const createTemplate = expressAsyncHandler(async(req,res)=>{
-	// sanitize the data ,
-	// validate the data ,
-	// create template 
 
-	const sanitizedData = sanitize(req.body);
-
-	const {value,error} = templateValidation.validate(sanitizedData);
-
-	if(error){
-		return missingFieldsError(res,error);
-	}
-
-	const newTemplate = await TEMPLATE.create(value);
-
-	return eventExecutedSuccessfully(res,newTemplate,"Template created successfully");
+	  // Validate the data
+	  const { value, error } = templateValidation.validate(req.body);
+	console.log(error);
+	  if (error) {
+		return missingFieldsError(res, error);
+	  }
+	
+	  // Check if a template with the same name already exists
+	  const existingTemplate = await TEMPLATE.findOne({ name: value.name });
+	
+	  if (existingTemplate) {
+		return conflictError(res, "Template",["name"]);
+	  }
+	
+	  // Create the new template
+	  const newTemplate = await TEMPLATE.create(value);
+	
+	  return eventExecutedSuccessfully(res, newTemplate, "Template created successfully");
 });
 
 export const updateTemplate = expressAsyncHandler(async(req,res)=>{

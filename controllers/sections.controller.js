@@ -1,7 +1,7 @@
 import expressAsyncHandler from "express-async-handler";
 import sanitizer from "sanitizer";
 import resumeSectionValidation from "../validations/resumeSections.validate.js";
-import { missingFieldsError, notFoundError } from "../utils/errors.utils.js";
+import { conflictError, missingFieldsError, notFoundError } from "../utils/errors.utils.js";
 import RESUME_SECTION from "../models/ResumeSection.js";
 import { eventExecutedSuccessfully } from "../utils/success.utils.js";
 
@@ -10,14 +10,23 @@ const { sanitize } = sanitizer;
 
 export const createSection = expressAsyncHandler(async(req,res)=>{
 
-	const sanitizedData = sanitize(req.body);
 	const {error,value} = resumeSectionValidation.validate(req.body);
 	
 	if(error){
 		return missingFieldsError(res,error);
 	}
 
-	const newSection = await RESUME_SECTION.create(value);
+	const {name,description} = value;
+
+	const trimmedName = name.trim();
+	const trimmedDescription= description.trim();
+
+	const alreadyExist = await RESUME_SECTION.find({name:trimmedName});
+
+	if(alreadyExist && alreadyExist.length>0){
+		return conflictError(res,"Section",["name"]);
+	}
+	const newSection = await RESUME_SECTION.create({name:trimmedName,description:trimmedDescription});
 
 	return eventExecutedSuccessfully(res,{name:newSection,description:newSection.description},"New section created successfully.");
 

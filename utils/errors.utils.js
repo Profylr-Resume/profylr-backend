@@ -30,3 +30,12 @@ export const notFoundError = (res,subject,missingItems)=>{
 		error: `The ${subject} with the specified ${missingItems.join(", ")} does not exist.`
 	  });
 };
+
+export const conflictError = (res, subject, existingItems) => {
+	return res.status(409).json({
+	  data: null,
+	  message: `${subject} already exists`,
+	  error: `The ${subject} with the specified ${existingItems.join(", ")} already exists in the database.`
+	});
+};
+  
