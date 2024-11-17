@@ -1,13 +1,9 @@
 import expressAsyncHandler from "express-async-handler";
-import sanitizer from "sanitizer";
-import resumeSectionValidation from "../validations/resumeSections.validate.js";
 import { conflictError, missingFieldsError, notFoundError } from "../utils/errors.utils.js";
 import RESUME_SECTION from "../models/ResumeSection.js";
 import { eventExecutedSuccessfully } from "../utils/success.utils.js";
 import { createSectionHandler, deleteSectionHandler, getAllSectionsHandler, getSectionByIdHandler, updateSectionHandler } from "../handlers/sections.handler.js";
-
-export const createSection = expressAsyncHandler(async (req, res) => {
-	const { success, error, newSection } = await createSectionHandler(req.body);
+import resumeSectionValidation from "../validations/resumeSections.validate.js";
 
 
 export const createSection = expressAsyncHandler(async(req,res)=>{

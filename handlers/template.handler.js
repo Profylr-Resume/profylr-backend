@@ -1,15 +1,12 @@
-import sanitizer from "sanitizer";
-import templateValidation from "../validations/template.validate";
 import TEMPLATE from "../models/Template";
+import { templateValidation } from "../validations/template.validate";
 
-const { sanitize } = sanitizer;
 
 export const createTemplateHandler = async (data) => {
 	// Sanitize the input data
-	const sanitizedData = sanitize(data);
 
 	// Validate the sanitized data
-	const { value, error } = templateValidation.validate(sanitizedData);
+	const { value, error } = templateValidation.validate(data);
 
 	if (error) {
 		return { success: false, error };
@@ -27,10 +24,10 @@ export const updateTemplateHandler = async (templateId, data) => {
 	}
 
 	// Sanitize the input data
-	const sanitizedData = sanitize(data);
+
 
 	// Validate the sanitized data
-	const { error, value } = templateValidation.validate(sanitizedData);
+	const { error, value } = templateValidation.validate(data);
 
 	if (error) {
 		return { success: false, error };

@@ -1,15 +1,12 @@
-import sanitizer from "sanitizer";
-import resumeSectionValidation from "../validations/resumeSections.validate";
 import RESUME_SECTION from "../models/ResumeSection";
+import resumeSectionValidation from "../validations/resumeSections.validate";
 
-const { sanitize } = sanitizer;
 
 export const createSectionHandler = async (data) => {
 	// Sanitize the input data
-	const sanitizedData = sanitize(data);
 
 	// Validate the sanitized data
-	const { error, value } = resumeSectionValidation.validate(sanitizedData);
+	const { error, value } = resumeSectionValidation.validate(data);
 
 	if (error) {
 		return { success: false, error };
@@ -53,10 +50,9 @@ export const updateSectionHandler = async (sectionId, data) => {
 	}
 
 	// Sanitize the input data
-	const sanitizedData = sanitize(data);
 
 	// Validate the sanitized data
-	const { error, value } = resumeSectionValidation.validate(sanitizedData);
+	const { error, value } = resumeSectionValidation.validate(data);
 
 	if (error) {
 		return { success: false, error };
