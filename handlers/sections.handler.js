@@ -1,5 +1,5 @@
-import RESUME_SECTION from "../models/ResumeSection";
-import resumeSectionValidation from "../validations/resumeSections.validate";
+import RESUME_SECTION from "../models/ResumeSection.js";
+import resumeSectionValidation from "../validations/resumeSections.validate.js";
 
 
 export const createSectionHandler = async (data) => {

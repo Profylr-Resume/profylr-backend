@@ -1,15 +1,13 @@
 import sanitizer from "sanitizer";
-import personaValidation from "../validations/persona.validate";
-import PERSONA from "../models/Persona";
+import personaValidation from "../validations/persona.validate.js";
+import PERSONA from "../models/Persona.js";
 
 const { sanitize } = sanitizer;
 
 export const createPersonaHandler = async (data) => {
-	// Sanitize the input data
-	const sanitizedData = sanitize(data);
 
 	// Validate the sanitized data
-	const { error, value } = personaValidation.validate(sanitizedData);
+	const { error, value } = personaValidation.validate(data);
 
 	if (error) {
 		return { success: false, error };

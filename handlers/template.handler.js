@@ -1,5 +1,5 @@
-import TEMPLATE from "../models/Template";
-import { templateValidation } from "../validations/template.validate";
+import TEMPLATE from "../models/Template.js";
+import templateValidation from "../validations/template.validate.js";
 
 
 export const createTemplateHandler = async (data) => {

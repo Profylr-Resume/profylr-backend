@@ -11,7 +11,6 @@ export const createTemplate = expressAsyncHandler(async(req,res)=>{
 
 	  // Validate the data
 	  const { value, error } = templateValidation.validate(req.body);
-	console.log(error);
 	  if (error) {
 		return missingFieldsError(res, error);
 	  }
