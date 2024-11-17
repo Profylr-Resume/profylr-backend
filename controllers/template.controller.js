@@ -4,8 +4,7 @@ import templateValidation from "../validations/template.validate.js";
 import { conflictError, missingFieldsError, notFoundError } from "../utils/errors.utils.js";
 import TEMPLATE from "../models/Template.js";
 import {eventExecutedSuccessfully } from "../utils/success.utils.js";
-
-const { sanitize } = sanitizer;
+import { createTemplateHandler, deleteTemplateHandler, getAllTemplatesHandler, getTemplateByIdHandler, updateTemplateHandler } from "../handlers/template.handler.js";
 
 
 export const createTemplate = expressAsyncHandler(async(req,res)=>{
@@ -30,74 +29,54 @@ export const createTemplate = expressAsyncHandler(async(req,res)=>{
 	  return eventExecutedSuccessfully(res, newTemplate, "Template created successfully");
 });
 
-export const updateTemplate = expressAsyncHandler(async(req,res)=>{
-
+export const updateTemplate = expressAsyncHandler(async (req, res) => {
 	const templateId = req.params.id;
-    
-	if(!templateId){
-		return missingFieldsError(res);
-	}
-	const sanitizedData = sanitize(req.body);
+	const { success, error, updatedTemplate } = await updateTemplateHandler(templateId, req.body);
 
-	const {error,value} = templateValidation.validate(sanitizedData);
-
-	if(error){
-		return missingFieldsError(res,error);
+	if (!success) {
+		if (error === "Missing template ID") {
+			return missingFieldsError(res);
+		}
+		return notFoundError(res, "Template", ["Id"]);
 	}
-    
-	const updatedTemplate = await TEMPLATE.findByIdAndUpdate(templateId, value, {
-		new: true, // Return the updated document instead of the original
-		runValidators: true // Enforce schema validation on the update
-	});
 
-	if(!updatedTemplate){
-		return notFoundError(res,"Template",["Id"]);
-	}
-	return eventExecutedSuccessfully(res,updatedTemplate,"Template updated successfully.");
+	return eventExecutedSuccessfully(res, updatedTemplate, "Template updated successfully.");
 });
 
-export const getTemplateById = expressAsyncHandler(async(req,res)=>{
-
+export const getTemplateById = expressAsyncHandler(async (req, res) => {
 	const templateId = req.params.id;
+	const { success, error, template } = await getTemplateByIdHandler(templateId);
 
-	if(!templateId){
-		return missingFieldsError(res);
+	if (!success) {
+		if (error === "Missing template ID") {
+			return missingFieldsError(res);
+		}
+		return notFoundError(res, "Template", ["Id"]);
 	}
 
-	const template = await TEMPLATE.findById(templateId);
-
-	if(!template){
-		return notFoundError(res,"Template",["id"]);
-	}
-
-	return eventExecutedSuccessfully(res,template,"Template found");
+	return eventExecutedSuccessfully(res, template, "Template found");
 });
 
-// need to limit hte info , as it doesnt need everything here
-export const getAllTemplates = expressAsyncHandler(async(req,res)=>{
+export const getAllTemplates = expressAsyncHandler(async (req, res) => {
+	const { success, error, allTemplates } = await getAllTemplatesHandler();
 
-	const allTemplates = await TEMPLATE.find();
-
-	if(!allTemplates || !(allTemplates.length>0)){
-		return notFoundError(res,"Template",["all templates"]);
+	if (!success) {
+		return notFoundError(res, "Template", ["all templates"]);
 	}
 
-	return eventExecutedSuccessfully(res,allTemplates,"All templates fetched successfully");
+	return eventExecutedSuccessfully(res, allTemplates, "All templates fetched successfully");
 });
 
-export const deleteTemplate = expressAsyncHandler(async(req,res)=>{
-
+export const deleteTemplate = expressAsyncHandler(async (req, res) => {
 	const templateId = req.params.id;
+	const { success, error, deletedTemplate } = await deleteTemplateHandler(templateId);
 
-	if(!templateId){
-		return missingFieldsError(res);
+	if (!success) {
+		if (error === "Missing template ID") {
+			return missingFieldsError(res);
+		}
+		return notFoundError(res, "Template", ["Id"]);
 	}
 
-	const deletedTemplate = await TEMPLATE.findByIdAndDelete(templateId);
-
-	if(!deleteTemplate){
-		return notFoundError(res,"Template",["id"]);
-	}
-
-	return eventExecutedSuccessfully(res,deletedTemplate,"Template deleted successfully");
+	return eventExecutedSuccessfully(res, deletedTemplate, "Template deleted successfully");
 });
