@@ -1,6 +1,6 @@
-import { personalizedTemplatesHandler } from "../handlers/misc.handler";
-import { missingFieldsError } from "../utils/errors.utils";
-import { eventExecutedSuccessfully } from "../utils/success.utils";
+import { personalizedTemplatesHandler } from "../handlers/misc.handler.js";
+import { missingFieldsError } from "../utils/errors.utils.js";
+import { eventExecutedSuccessfully } from "../utils/success.utils.js";
 
 
 export const getPersonalizedTemplateStructure = async (req,res)=>{

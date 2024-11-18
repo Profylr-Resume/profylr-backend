@@ -1,7 +1,7 @@
-import ResumeRecommendationEngine from "../logic/engine";
-import { createPersonaHandler } from "./persona.handler";
-import { getAllSectionsHandler } from "./sections.handler";
-import { getAllTemplatesHandler } from "./template.handler";
+import ResumeRecommendationEngine from "../logic/engine.js";
+import { createPersonaHandler } from "./persona.handler.js";
+import { getAllSectionsHandler } from "./sections.handler.js";
+import { getAllTemplatesHandler } from "./template.handler.js";
 
 /**
  * Generates personalized template recommendations based on user's input data.
@@ -9,10 +9,10 @@ import { getAllTemplatesHandler } from "./template.handler";
  * @returns {Object} - An object containing the recommended template sections, content advice, and reasoning.
  */
 
-const personalizedTemplateRecommendationsHandler = (data) => {
+const personalizedTemplateRecommendationsHandler = async(data) => {
 
 	// Create a new persona based on the input data
-	const {success:personaSuccess,error:createPersonaError,newPersona} = createPersonaHandler(data);
+	const {success:personaSuccess,error:createPersonaError,newPersona} = await createPersonaHandler(data);
   
 	// If there's an error creating the persona, return the error
 	if (!personaSuccess) {
@@ -26,7 +26,7 @@ const personalizedTemplateRecommendationsHandler = (data) => {
 	const { sections, sectionOrder, contentAdvice, reasoning } = engine.generateRecommendations(newPersona);
   
 	// Get all available sections from the system
-	const { success:allSectionsSuccess, sections: allSections, error:allSectionsError } = getAllSectionsHandler();
+	const { success:allSectionsSuccess, sections: allSections, error:allSectionsError } = await getAllSectionsHandler();
   
 	// If there's an error getting the sections, return null
 	if (!allSectionsSuccess) {
@@ -65,9 +65,10 @@ const personalizedTemplateRecommendationsHandler = (data) => {
  * @returns {Object} - An object containing the personalized templates.
  */
 
-export const personalizedTemplatesHandler = (data) => {
+export const personalizedTemplatesHandler = async(data) => {
+	console.log(data);
 	// Generate the personalized template recommendations
-	const {success:recommendationsSuccess, recommendations, error:recommendationsError} = personalizedTemplateRecommendationsHandler(data);
+	const {success:recommendationsSuccess, recommendations, error:recommendationsError} = await personalizedTemplateRecommendationsHandler(data);
   
 	// If there's an error generating the recommendations, return the error
 	if (!recommendationsSuccess) {
@@ -75,7 +76,7 @@ export const personalizedTemplatesHandler = (data) => {
 	}
   
 	// Get all available templates
-	const { success: allTemplatesSuccess, allTemplates, error:allTemplatesError } = getAllTemplatesHandler();
+	const { success: allTemplatesSuccess, allTemplates, error:allTemplatesError } = await getAllTemplatesHandler();
   
 	// If there's an error getting the templates, return the error
 	if (!allTemplatesSuccess) {
