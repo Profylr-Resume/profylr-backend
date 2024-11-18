@@ -1,63 +1,4 @@
-import ResumeRecommendationEngine from "../logic/engine.js";
-import { createPersonaHandler } from "./persona.handler.js";
-import { getAllSectionsHandler } from "./sections.handler.js";
-import { getAllTemplatesHandler } from "./template.handler.js";
-
-/**
- * Generates personalized template recommendations based on user's input data.
- * @param {Object} data - The input data representing the user's persona.
- * @returns {Object} - An object containing the recommended template sections, content advice, and reasoning.
- */
-
-const personalizedTemplateRecommendationsHandler = async(data) => {
-
-	// Create a new persona based on the input data
-	const {success:personaSuccess,error:createPersonaError,newPersona} = await createPersonaHandler(data);
-  
-	// If there's an error creating the persona, return the error
-	if (!personaSuccess) {
-		return { success: false, error: createPersonaError };
-	}
-  
-	// Initialize the recommendation engine
-	const engine = new ResumeRecommendationEngine();
-  
-	// Generate the recommendations based on the new persona
-	const { sections, sectionOrder, contentAdvice, reasoning } = engine.generateRecommendations(newPersona);
-  
-	// Get all available sections from the system
-	const { success:allSectionsSuccess, sections: allSections, error:allSectionsError } = await getAllSectionsHandler();
-  
-	// If there's an error getting the sections, return null
-	if (!allSectionsSuccess) {
-		return {success:false,allSectionsError};
-	}
-  
-	// Create a map for fast lookup of sections by name
-	const sectionMap = new Map(allSections.map((section) => [section.name, section._id]));
-  
-	// Generate the final array with serial_number, name, and id
-	const toDisplaySections = sectionOrder.map((sectionName, index) => {
-		const sectionId = sectionMap.get(sectionName);
-		if (sectionId) {
-			return {
-				serial_number: index + 1,
-				name: sectionName,
-				_id: sectionId
-			};
-		}
-		return null; // Filter out invalid sections later
-	}).filter(Boolean); // Remove any nulls caused by invalid section names
-  
-	// Construct the final result object
-	const recommendations = {
-		sections: toDisplaySections,
-		contentAdvice,
-		reasoning
-	};
-  
-	return { success: true, recommendations };
-};
+import { filterTemplatesWithRecommendations, handleRetrieveAllTemplates, handleTemplateRecommendations } from "../helpers/persona.helper.js";
 
 /**
  * Retrieves personalized templates based on the user's input data.
@@ -65,34 +6,27 @@ const personalizedTemplateRecommendationsHandler = async(data) => {
  * @returns {Object} - An object containing the personalized templates.
  */
 
-export const personalizedTemplatesHandler = async(data) => {
+export const personalizedTemplatesHandler = async (data) => {
 	console.log(data);
-	// Generate the personalized template recommendations
-	const {success:recommendationsSuccess, recommendations, error:recommendationsError} = await personalizedTemplateRecommendationsHandler(data);
-  
-	// If there's an error generating the recommendations, return the error
+
+	// Step 1: Generate personalized template recommendations
+	const { success: recommendationsSuccess, recommendations, error: recommendationsError } = await handleTemplateRecommendations(data);
 	if (!recommendationsSuccess) {
 		return { success: false, error: recommendationsError };
 	}
-  
-	// Get all available templates
-	const { success: allTemplatesSuccess, allTemplates, error:allTemplatesError } = await getAllTemplatesHandler();
-  
-	// If there's an error getting the templates, return the error
+
+	// Step 2: Retrieve all available templates
+	const { success: allTemplatesSuccess, allTemplates, error: allTemplatesError } = await handleRetrieveAllTemplates();
 	if (!allTemplatesSuccess) {
-		return { success: false, error:allTemplatesError };
+		return { success: false, error: allTemplatesError };
 	}
-  
-	// Filter the templates based on the recommended sections
-	const personalizedTemplates = allTemplates.map((template) => ({
-		...template.toObject(),
-		sections: template.sections.filter((section) =>
-			recommendations.sections.some((rec) => rec._id.toString() === section.section.toString())
-		)
-	}));
-  
+
+	// Step 3: Filter templates based on recommendations
+	const personalizedTemplates = filterTemplatesWithRecommendations(allTemplates, recommendations);
+
 	return { success: true, personalizedTemplates };
 };
+
 
 // const recommendations = engine.generateRecommendations({
 // 	experienceLevel: "Entry",

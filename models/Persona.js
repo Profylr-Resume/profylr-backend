@@ -4,6 +4,7 @@ import mongoose, { Schema } from "mongoose";
 // coz every unique persona will have that same ideal structure everytime.
 // we will just dont show it to the user
 
+
 const personaSchema = new Schema({
 	experienceLevel:{
 		type:String,
@@ -43,7 +44,16 @@ const personaSchema = new Schema({
 		industries: [String]
 	},
 	strengths: [String],
-	goals: [String]
+	goals: [String],
+	templateStructure:{
+		sections:[{
+			serial_number: Number,
+			name: String,
+			_id: String
+		}],
+		contentAdvice:[String],
+		reasoning:[String]
+	}
 });
 
 const PERSONA = mongoose.model("Persona",personaSchema);
