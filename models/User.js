@@ -37,10 +37,14 @@ const userSchema = new Schema({
 						type: String
 				  }
 				}
-			  ]
+			]
 			
 		}
-	]
+	],
+	personas:[{
+		type: Schema.Types.ObjectId,
+		ref: "PERSONA"
+	}]
 }); 
 
 /* The pre hook runs before the save event on the schema. 

@@ -1,4 +1,4 @@
-import { filterTemplatesWithRecommendations, handleRetrieveAllTemplates, handleTemplateRecommendations } from "../helpers/persona.helper.js";
+import { filterTemplatesWithRecommendations, handleRetrieveAllTemplates, handleTemplateRecommendations } from "../helpers/misc.helper.js";
 
 /**
  * Retrieves personalized templates based on the user's input data.

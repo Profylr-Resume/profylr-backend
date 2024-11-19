@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { getPersonalizedTemplateStructure } from "../../controllers/misc.controller.js";
+import { getPersonalizedTemplates } from "../../controllers/misc.controller";
 
 const router = Router();
 
-router.post("/",getPersonalizedTemplateStructure);
+router.post("/personalized-templates" , getPersonalizedTemplates );
 
 export default router;

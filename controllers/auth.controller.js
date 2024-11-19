@@ -1,112 +1,78 @@
+import expressAsyncHandler from "express-async-handler";
 import USER from "../models/User.js";
+import { conflictError, missingFieldsError, notFoundError } from "../utils/errors.utils.js";
+import { eventExecutedSuccessfully } from "../utils/success.utils.js";
 import { generateToken } from "../utils/token.utils.js";
 import { registerValidation } from "../validations/auth.validate.js";
+import bcrypt from "bcrypt";
 
-
-export const registerUser = async (req, res) => {
-
-	const {value,error} = registerValidation.validate(req.body);
+// Register User
+export const registerUser = expressAsyncHandler( async (req, res) => {
+	const { value, error } = registerValidation.validate(req.body);
 
 	if (error) {
-		// If there are validation errors, send a 400 Bad Request response
-		return res.status(400).json({
-			data:null,
-			message:"Missing fields",
-			error: error.details.map(detail => detail.message)
-		});
+		return missingFieldsError(res,error);
 	}
-	const {email,name,password} = value;
-  
-	try {
-		// Check if user with this email already exists
-		const existingUser = await USER.findOne({ email });
-		if (existingUser) {
-			return res.status(409).json({
-				message: "Email already in use.",
-				data: null
-			});
-		}
-  
-		// Create and save new user (password hashing handled by pre-save hook in schema)
-		const newUser = new USER({ name, email, password });
-		const savedUser = await newUser.save();
-  
-		// Generate JWT token for the user
-		const authToken = generateToken({ email: savedUser.email, id: savedUser._id });
 
-		return res.status(201).json({
-			message: "New user registered successfully.",
-			data: {
-				user: { id: savedUser._id, name: savedUser.name, email: savedUser.email },
-				authToken
-			}
-		});
-	} catch (err) {
-		console.error("Error saving user:", err);
-		return res.status(500).json({
-			message: "Error saving user to database.",
-			data: null
-		});
+	const { email, name, password } = value;
+
+	// Check if user with this email already exists
+	const existingUser = await USER.findOne({ email });
+	if (existingUser) {
+		return conflictError(res,"User",["credentials"]);
 	}
-};
 
-export const loginUser = async(req,res)=>{
-	const {email,password} = req.body;
-    
+	// Hash the password
+	const hashedPassword = await bcrypt.hash(password, 10);
+
+	// Create and save new user
+	const newUser = new USER({ name, email, password: hashedPassword });
+	const savedUser = await newUser.save();
+
+	// Generate JWT token for the user
+	const authToken = generateToken({ email: savedUser.email, id: savedUser._id });
+
+	return eventExecutedSuccessfully(res,{user:savedUser,jwt:authToken},"Registered successfuly");
+	
+});
+
+// Login User
+export const loginUser =expressAsyncHandler( async (req, res) => {
+	const { email, password } = req.body;
+
 	// Check for missing fields
 	if (!email || !password) {
-		return res.status(400).json({
-			message: "Please fill all required fields.",
-			data: null
-		});
+		return missingFieldsError(res,"Email or passwrod is missing");
 	}
 
-	const user = await USER.findOne({email});
+	// Find the user by email
+	const user = await USER.findOne({ email });
 
 	if (!user) {
-		return res.status(404).json({
-			message: "User not found.",
-			data: null
-		});
-	}
-	const isMatch = await user.comparePassword(password);
-    
-	 if (!isMatch) {
-		return res.status(401).json({
-			message: "Invalid credentials.",
-			data: null
-		});
+		return notFoundError(res,"User",["credentials"]);
 	}
 
-	const authToken = generateToken({
-		id:user._id,
-		email:user.email
-	});
+	// Compare the provided password with the hashed password
+	const isMatch = await bcrypt.compare(password, user.password);
 
-	return res.status(200).json({
-		message: "Logged in successfully.",
-		data:{
-			user: { id: user._id, name: user.name, email: user.email },
-			authToken
-		}
-	});
-};
+	if (!isMatch) {
+		return notFoundError(res,"User",["credentials"]);
+	}
 
-export const verifyUserWithJWT = async (req, res) => {
+	// Generate JWT token
+	const authToken = generateToken({ id: user._id, email: user.email });
+
+	return eventExecutedSuccessfully(res,{user,jwt:authToken},"Login Successfull");
 	
-	const savedUser = req.user;
+});
 
-	if(!savedUser){
-		return res.status(500).json({
-			message: "Internal server error.",
-			data: null
-		});
+// Verify User With JWT
+export const verifyUserWithJWT = async (req, res) => {
+	const savedUser = req.user; // Assumes middleware adds `req.user`
+
+	if (!savedUser) {
+		return notFoundError(res,"User",["credentials"]);
 	}
 
-	return res.status(200).json({
-		message: "Token verified successfully.",
-		data: {
-			user: { id: savedUser._id, name: savedUser.name, email: savedUser.email }
-		}
-	});
+	return eventExecutedSuccessfully(res,{user: { id: savedUser._id, name: savedUser.name, email: savedUser.email }},"Logged in Successfully");
 };

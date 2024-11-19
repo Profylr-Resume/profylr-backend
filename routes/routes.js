@@ -5,8 +5,8 @@ import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = Router();
 
-// router.use("/user",authMiddleware , userRoutes );
-router.use("/user" , userRoutes );
+router.use("/user",authMiddleware , userRoutes );
+// router.use("/user" , userRoutes );
 router.use("/auth" , authRoutes);
 
 export default router;

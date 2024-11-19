@@ -5,7 +5,8 @@ import { createPersonaHandler, deletePersonaHandler } from "../handlers/persona.
 
 
 export const createPersona = expressAsyncHandler(async (req, res) => {
-	const { success, error, newPersona } = await createPersonaHandler(req.body);
+	const userId = req.user._id;
+	const { success, error, newPersona } = await createPersonaHandler(req.body,userId);
 
 	if (!success) {
 		return missingFieldsError(res, error);

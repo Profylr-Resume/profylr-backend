@@ -14,7 +14,7 @@ dotenv.config();
 
 const app= express();
 
-connectDb();
+// connectDb();
 
 // Apply middleware
 app.use(requestIdMiddleware);
