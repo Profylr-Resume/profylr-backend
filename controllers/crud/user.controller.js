@@ -1,7 +1,7 @@
 import expressAsyncHandler from "express-async-handler";
-import { changePasswordHandler, deleteUserHandler, getUserProfileHandler, updateUserHandler } from "../handlers/user.handler";
-import { missingFieldsError } from "../utils/errors.utils";
-import { eventExecutedSuccessfully } from "../utils/success.utils";
+import { changePasswordHandler, deleteUserHandler, getUserProfileHandler, updateUserHandler } from "../../handlers/user.handler";
+import { missingFieldsError } from "../../utils/errors.utils";
+import { eventExecutedSuccessfully } from "../../utils/success.utils";
 
 
 export const updateUser = expressAsyncHandler(async (req, res) => {

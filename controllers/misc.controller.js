@@ -1,11 +1,17 @@
-import { personalizedTemplatesHandler } from "../handlers/misc.handler.js";
-import { missingFieldsError } from "../utils/errors.utils.js";
+import { personalizedTemplatesHandler } from "../handlers/personalizedTemplates.handler.js";
+import { missingFieldsError, notFoundError } from "../utils/errors.utils.js";
 import { eventExecutedSuccessfully } from "../utils/success.utils.js";
 
 
 export const getPersonalizedTemplates = async (req,res)=>{
 
-	const { success, error, personalizedTemplates } = await personalizedTemplatesHandler(req.body);
+	const userId = req.user._id;
+
+	if(!userId){
+		return notFoundError(res,"User Id",["id in jwt"]);
+	}
+
+	const { success, error, personalizedTemplates } = await personalizedTemplatesHandler(req.body,userId);
     
 	if (!success) {
 		return missingFieldsError(res, error);

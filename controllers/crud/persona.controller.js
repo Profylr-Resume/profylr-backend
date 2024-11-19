@@ -1,7 +1,7 @@
 import expressAsyncHandler from "express-async-handler";
-import { missingFieldsError, notFoundError } from "../utils/errors.utils.js";
-import { eventExecutedSuccessfully } from "../utils/success.utils.js";
-import { createPersonaHandler, deletePersonaHandler } from "../handlers/persona.handler.js";
+import { missingFieldsError, notFoundError } from "../../utils/errors.utils.js";
+import { eventExecutedSuccessfully } from "../../utils/success.utils.js";
+import { createPersonaHandler, deletePersonaHandler } from "../../handlers/persona.handler.js";
 
 
 export const createPersona = expressAsyncHandler(async (req, res) => {
