@@ -4,7 +4,8 @@ import { conflictError, missingFieldsError, notFoundError } from "../utils/error
 import { eventExecutedSuccessfully } from "../utils/success.utils.js";
 import { generateToken } from "../utils/token.utils.js";
 import { registerValidation } from "../validations/auth.validate.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
+
 
 // Register User
 export const registerUser = expressAsyncHandler( async (req, res) => {
@@ -28,7 +29,7 @@ export const registerUser = expressAsyncHandler( async (req, res) => {
 	// Create and save new user
 	const newUser = new USER({ name, email, password: hashedPassword });
 	const savedUser = await newUser.save();
-
+	console.log(savedUser.password);
 	// Generate JWT token for the user
 	const authToken = generateToken({ email: savedUser.email, id: savedUser._id });
 
@@ -47,14 +48,15 @@ export const loginUser =expressAsyncHandler( async (req, res) => {
 
 	// Find the user by email
 	const user = await USER.findOne({ email });
-
 	if (!user) {
 		return notFoundError(res,"User",["credentials"]);
 	}
-
+	// Log the user and the password
+	console.log("User found:", user);
+	console.log("Password received:", password);
+	console.log("Hashed password in DB:", user.password);
 	// Compare the provided password with the hashed password
 	const isMatch = await bcrypt.compare(password, user.password);
-
 	if (!isMatch) {
 		return notFoundError(res,"User",["credentials"]);
 	}

@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import USER from "../models/User";
+import USER from "../models/User.js";
 
 export const updateUserHandler = async (userId, updateFields) => {
 	try {
