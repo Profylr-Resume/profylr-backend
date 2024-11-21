@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import USER from "../models/User";
+import USER from "../models/User.js";
 import expressAsyncHandler from "express-async-handler";
 
 export const updateUserHandler = expressAsyncHandler( async (userId, updateFields) => {
