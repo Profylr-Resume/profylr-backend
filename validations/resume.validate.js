@@ -104,7 +104,7 @@ export const skillsSchema = Joi.object({
 });
 
 // Main Resume Form Schema
-export const resumeFormSchema = Joi.object({
+export const resumeFormValidation = Joi.object({
 	basicInfo: basicInfoSchema.required(),
 	education: educationSchema.required(),
 	skills: skillsSchema.required(),

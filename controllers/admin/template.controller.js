@@ -1,10 +1,10 @@
 import expressAsyncHandler from "express-async-handler";
 import sanitizer from "sanitizer";
-import templateValidation from "../validations/template.validate.js";
-import { conflictError, missingFieldsError, notFoundError } from "../utils/errors.utils.js";
-import TEMPLATE from "../models/Template.js";
-import {eventExecutedSuccessfully } from "../utils/success.utils.js";
-import { createTemplateHandler, deleteTemplateHandler, getAllTemplatesHandler, getTemplateByIdHandler, updateTemplateHandler } from "../handlers/template.handler.js";
+import templateValidation from "../../validations/template.validate.js";
+import { conflictError, missingFieldsError, notFoundError } from "../../utils/errors.utils.js";
+import TEMPLATE from "../../models/Template.js";
+import {eventExecutedSuccessfully } from "../../utils/success.utils.js";
+import { createTemplateHandler, deleteTemplateHandler, getAllTemplatesHandler, getTemplateByIdHandler, updateTemplateHandler } from "../../handlers/template.handler.js";
 
 
 export const createTemplate = expressAsyncHandler(async(req,res)=>{

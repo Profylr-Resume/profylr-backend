@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
-import USER from "../models/User.js";
+import USER from "../models/User";
+import expressAsyncHandler from "express-async-handler";
 
-export const updateUserHandler = async (userId, updateFields) => {
+export const updateUserHandler = expressAsyncHandler( async (userId, updateFields) => {
 	try {
 		const user = await USER.findById(userId);
 
@@ -17,7 +18,7 @@ export const updateUserHandler = async (userId, updateFields) => {
 	} catch (err) {
 		return { success: false, error: err.message };
 	}
-};
+});
 
 export const changePasswordHandler = async (userId, oldPassword, newPassword) => {
 	try {

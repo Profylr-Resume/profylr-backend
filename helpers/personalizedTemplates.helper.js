@@ -1,15 +1,9 @@
-import { createPersonaHandler, updatePersonaHandler } from "../handlers/persona.handler.js";
 import { getAllSectionsHandler } from "../handlers/sections.handler.js";
 import { getAllTemplatesHandler } from "../handlers/template.handler.js";
 import ResumeRecommendationEngine from "../logic/engine.js";
 
 
-const handleCreateOrRetrievePersona = async (data) => {
-	const { success, error, newPersona, existingObject } = await createPersonaHandler(data);
-	return { success, error, newPersona, existingObject };
-};
-
-const handleGenerateRecommendations = async (persona) => {
+export const handleGenerateRecommendations = async (persona) => {
 	// Initialize the recommendation engine
 	const engine = new ResumeRecommendationEngine();
 
@@ -49,54 +43,6 @@ const createRecommendations = (sectionOrder, allSections, contentAdvice, reasoni
 		contentAdvice,
 		reasoning
 	};
-};
-
-/**
- * Generates personalized template recommendations based on user's input data.
- * @param {Object} data - The input data representing the user's persona.
- * @returns {Object} - An object containing the recommended template sections, content advice, and reasoning.
- */
-
-const getPersonaWithTemplateStructure = async (data) => {
-	// Step 1: Create or Retrieve Persona
-	const { success: personaSuccess, error: createPersonaError, newPersona, existingObject } = await handleCreateOrRetrievePersona(data);
-	if (!personaSuccess) {
-		return { success: false, error: createPersonaError };
-	}
-	if (existingObject) {
-		return { success: true, persona: existingObject };
-	}
-
-	// Step 2: Generate Recommendations
-	const { success: recommendationSuccess, recommendations, error: recommendationError } = await handleGenerateRecommendations(newPersona);
-	if (!recommendationSuccess) {
-		return { success: false, error: recommendationError };
-	}
-
-	// Step 3: Update Persona with Recommendations
-	const { success: updatedPersonaSuccess, updatedPersona, error: updatedPersonaError } = await updatePersonaHandler(newPersona._id, {
-		templateStructure: recommendations
-	});
-	if (!updatedPersonaSuccess) {
-		return { success: false, error: updatedPersonaError };
-	}
-
-	return { success: true, persona: updatedPersona };
-};
-
-
-export const handleTemplateRecommendations = async (data) => {
-	const {success,persona:{ templateStructure },error} = await getPersonaWithTemplateStructure(data);
-
-	if (!success) {
-		return { success: false, error };
-	}
-
-	if(!templateStructure){
-		return { success : false, error:"Template structure not found."};
-	}
-
-	return { success: true, recommendations : templateStructure };
 };
 
 export const handleRetrieveAllTemplates = async () => {
