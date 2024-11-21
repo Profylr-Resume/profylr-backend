@@ -23,11 +23,8 @@ export const registerUser = expressAsyncHandler( async (req, res) => {
 		return conflictError(res,"User",["credentials"]);
 	}
 
-	// Hash the password
-	const hashedPassword = await bcrypt.hash(password, 10);
-
 	// Create and save new user
-	const newUser = new USER({ name, email, password: hashedPassword });
+	const newUser = new USER({ name, email, password });
 	const savedUser = await newUser.save();
 	console.log(savedUser.password);
 	// Generate JWT token for the user
@@ -51,10 +48,7 @@ export const loginUser =expressAsyncHandler( async (req, res) => {
 	if (!user) {
 		return notFoundError(res,"User",["credentials"]);
 	}
-	// Log the user and the password
-	console.log("User found:", user);
-	console.log("Password received:", password);
-	console.log("Hashed password in DB:", user.password);
+	
 	// Compare the provided password with the hashed password
 	const isMatch = await bcrypt.compare(password, user.password);
 	if (!isMatch) {
