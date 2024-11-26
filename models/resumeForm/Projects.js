@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
 
-const projectSchema = new Schema({
+export const projectSchema = new Schema({
 	name: {
 		type: String,
 		required: true,
@@ -39,13 +39,17 @@ const projectSchema = new Schema({
 		type: [String],
 		required: true,
 		validate: [arr => arr.length > 0, "Description cannot be empty"]
+	},
+	projectComplexity: {
+		type: String,
+		enum: ["Academic", "Personal", "Professional", "Research-Based"]
 	}
-});
-
-
-export const projectsSchema = new Schema({
-	projects:[projectSchema]
 },{timestamps:true});
+
+
+// export const projectsSchema = new Schema({
+// 	projects:[projectSchema]
+// });
 
 projectSchema.virtual("duration").get(function() {
 	const fromDate = new Date(this.from);
@@ -54,11 +58,11 @@ projectSchema.virtual("duration").get(function() {
 	return `${durationInMonths} months`;
 });
  
-projectsSchema.methods.getLiveProjects = function(){
-	return this.projects.filter(p=>p.liveLink);
-};
+// projectsSchema.methods.getLiveProjects = function(){
+// 	return this.projects.filter(p=>p.liveLink);
+// };
 
-projectsSchema.methods.getProjectsInDescendingOrder = function(){
+// projectsSchema.methods.getProjectsInDescendingOrder = function(){
     
-};
+// };
 

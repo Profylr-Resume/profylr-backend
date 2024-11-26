@@ -46,32 +46,36 @@ export const analyzingPersonaInUser = expressAsyncHandler(async(data,userId)=>{
 
 	// CASE 1 : Persona already  exist.
 	const existingPersona = await PERSONA.findOne(query);
+	console.log(existingPersona);
 	const savedUser = await USER.findById(userId);
 
 	if(!savedUser){
-		return {success:false, error:"Saved USer not found"};
+		return {success:false, error:"Saved User not found"};
 	}
 
 	// case 1:
 	if(existingPersona){
 
 		// sub-case 1
-		const isPersonaAlreadyInUser = checkPersonaExistsInUser(existingPersona,savedUser);
+		const resumeIdIfPersonaAlreadyExists = await checkPersonaExistsInUser(existingPersona,savedUser);
 
 		// sub-case 2
-		if(!isPersonaAlreadyInUser){
+		if(!resumeIdIfPersonaAlreadyExists){
 			
-		  // Add existing persona to user's personas
-			const { success, error: updateError } = await updateUserHandler(savedUser._id, {
-				personas: [...new Set([...savedUser.personas, existingPersona._id])]
-			});
+		   // Create a new resume object with the existing persona
+			const newResume = { persona: existingPersona._id };
+
+			// Call the update handler to add the new resume
+			const { success, addedResume, error: updateError } = await updateUserHandler(savedUser._id, newResume);
 
 			if (!success) {
 				return { success: false, error: updateError || "Failed to update user with existing persona" };
 			}
+			return { success:true, existingPersona ,userResumeId: addedResume._id };
+
 		}
      
-		return { success:true, existingPersona };
+		return { success:true, existingPersona ,userResumeId: resumeIdIfPersonaAlreadyExists };
 	}
 
 	// case 2 : Creating new persona and adding in user
@@ -81,16 +85,18 @@ export const analyzingPersonaInUser = expressAsyncHandler(async(data,userId)=>{
 		return { success: false, error: newPersonaError || "Failed to create new persona" };
 	}
 
-	 // Add newly created persona to user's personas
-	const { success: userUpdateSuccess, error: userUpdateError,updatedUser } = await updateUserHandler(userId, {
-		personas: [...new Set([...savedUser.personas, newPersona._id])]
-	});
+	// Create a new resume object with the existing persona
+	const newResume = { persona: newPersona._id };
+	// Call the update handler to add the new resume
+	const { success:userUpdateSuccess, addedResume, error: userUpdateError } = await updateUserHandler(savedUser._id, newResume);
     
+	console.log(addedResume.toObject());
+
 	if (!userUpdateSuccess) {
 		return { success: false, error: userUpdateError || "Failed to update user with new persona" };
 	}
 
-	return {success:true,newPersona};
+	return {success:true,newPersona,userResumeId:addedResume._id};
 }); 
 
 /**
@@ -100,8 +106,9 @@ export const analyzingPersonaInUser = expressAsyncHandler(async(data,userId)=>{
  */
 
 const getPersonaWithTemplateStructure = async (data,userId) => {
+
 	// Step 1: Attaching persona with user if not already
-	const { success: personaSuccess, error: getPersonaError, newPersona , existingPersona } = await analyzingPersonaInUser(data,userId);
+	const { success: personaSuccess, error: getPersonaError, newPersona , existingPersona,userResumeId } = await analyzingPersonaInUser(data,userId);
 	
 	if (!personaSuccess) {
 		return { success: false, error: getPersonaError };
@@ -109,7 +116,7 @@ const getPersonaWithTemplateStructure = async (data,userId) => {
 
 	// if persona already exitis then it does not need template strucure because it would already be with that.
 	if (existingPersona) {
-		return { success: true, persona: existingPersona };
+		return { success: true, persona: existingPersona,userResumeId };
 	}
 
 	// (only to update teh persona structure , nothing to do with user. Persona is already attched with user)
@@ -129,7 +136,7 @@ const getPersonaWithTemplateStructure = async (data,userId) => {
 		return { success: false, error: updatedPersonaError };
 	}
 
-	return { success: true, persona: updatedPersona };
+	return { success: true, persona: updatedPersona ,userResumeId};
 };
 
 
@@ -142,7 +149,7 @@ const getPersonaWithTemplateStructure = async (data,userId) => {
 export const personalizedTemplatesHandler = async (data,userId) => {
 
 	// Step 1: Generate personalized  templateStructure
-	const {success:templateStructureSuccess,persona:{ templateStructure },error :templateStructureError } = await getPersonaWithTemplateStructure(data,userId);
+	const {success:templateStructureSuccess,persona:{ templateStructure },error :templateStructureError ,userResumeId } = await getPersonaWithTemplateStructure(data,userId);
 
 	if (!templateStructureSuccess) {
 		return { success: false, error: templateStructureError };
@@ -155,9 +162,9 @@ export const personalizedTemplatesHandler = async (data,userId) => {
 	}
 
 	// Step 3: Filter templates based on templateStructure
-	const personalizedTemplates = filterTemplatesWithRecommendations(allTemplates, templateStructure);
+	const personalizedTemplates = await filterTemplatesWithRecommendations(allTemplates, templateStructure);
 
-	return { success: true, personalizedTemplates };
+	return { success: true, personalizedTemplates ,userResumeId };
 };
 
 

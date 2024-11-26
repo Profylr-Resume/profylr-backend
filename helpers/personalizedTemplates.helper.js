@@ -1,6 +1,7 @@
 import { getAllSectionsHandler } from "../handlers/sections.handler.js";
 import { getAllTemplatesHandler } from "../handlers/template.handler.js";
 import ResumeRecommendationEngine from "../logic/engine.js";
+import TEMPLATE from "../models/Template.js";
 
 
 export const handleGenerateRecommendations = async (persona) => {
@@ -55,12 +56,25 @@ export const handleRetrieveAllTemplates = async () => {
 	return { success: true, allTemplates };
 };
 
-export const filterTemplatesWithRecommendations = (allTemplates, recommendations) => {
-	return allTemplates.map((template) => ({
-		...template.toObject(), // Convert template to a plain JavaScript object
-		sections: template.sections.filter((section) =>
-			recommendations.sections.some((rec) => rec._id.toString() === section.section.toString())
-		)
+export const filterTemplatesWithRecommendations = async (allTemplates, recommendations) => {
+	console.log(recommendations.toObject());
+	// Populate the sections in each template with the full ResumeSection data
+	const populatedTemplates = await TEMPLATE.find({}) // Assuming you are querying the Template collection
+	  .populate("sections.section"); // Populate 'section' field in the 'sections' array
+
+	// Convert each document to a plain object
+	const templatesAsObjects = populatedTemplates.map((template) =>
+		template.toObject()
+	);
+  
+	console.log(templatesAsObjects); // Logs only the actual data
+
+	return populatedTemplates.map((template) => ({
+	  ...template.toObject(), // Convert template to a plain JavaScript object
+	  sections: template.sections.filter((section) =>
+			recommendations.sections.some((rec) => rec._id.toString() === section.section._id.toString()) // Compare populated ResumeSection object
+	  )
 	}));
 };
+  
 

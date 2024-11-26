@@ -2,23 +2,31 @@ import bcrypt from "bcrypt";
 import USER from "../models/User.js";
 import expressAsyncHandler from "express-async-handler";
 
-export const updateUserHandler = expressAsyncHandler( async (userId, updateFields) => {
+export const updateUserHandler = expressAsyncHandler(async (userId, newResume) => {
 	try {
-		const user = await USER.findById(userId);
-
-		if (!user) {
+	  // Find the user by ID
+	  const user = await USER.findById(userId);
+  
+	  if (!user) {
 			return { success: false, error: "User not found" };
-		}
-
-		// Update the user object with provided fields
-		Object.assign(user, updateFields);
-		const updatedUser = await user.save();
-
-		return { success: true, updatedUser };
+	  }
+  
+	  // Add the new resume object to the user's resumes array
+	  user.resumes.push(newResume);
+  
+	  // Save the user document
+	  const updatedUser = await user.save();
+  
+	  // Retrieve the newly added resume
+	  const addedResume = updatedUser.resumes[updatedUser.resumes.length - 1];
+  
+	  // Return the success response with the new resume's ID
+	  return { success: true, addedResume };
 	} catch (err) {
-		return { success: false, error: err.message };
+	  return { success: false, error: err.message };
 	}
 });
+  
 
 export const changePasswordHandler = async (userId, oldPassword, newPassword) => {
 	try {
@@ -60,9 +68,9 @@ export const deleteUserHandler = async (userId) => {
 export const getUserProfileHandler = async (userId) => {
 	try {
 		const user = await USER.findById(userId)
-			.populate("resumes.resume")
 			.populate("resumes.template")
-			.populate("personas", "name");
+			// .populate("resumes.resume")
+			.populate("resumes.persona");
 
 		if (!user) {
 			return { success: false, error: "User not found" };

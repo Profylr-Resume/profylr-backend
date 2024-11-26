@@ -1,6 +1,6 @@
 import expressAsyncHandler from "express-async-handler";
-import RESUME from "../models/ResumeForm";
-import { resumeFormValidation } from "../validations/resume.validate";
+import RESUME from "../models/ResumeForm.js";
+import { resumeFormValidation } from "../validations/resume.validate.js";
 
 
 // Create Resume

@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 
 // Individual skill schema
-const skillSchema = new Schema({
+export const skillSchema = new Schema({
 	name: {
 		type: String,
 		required: true,
@@ -44,26 +44,22 @@ const skillSchema = new Schema({
 // Main skills section schema
 export const skillsSchema = new Schema({
 
-	skills: [skillSchema],
+	skills: [skillSchema]
 	// Optional: For grouping skills by categories with custom ordering
-	categoryOrder: {
-		type: [String],
-		default: [
-			"Programming Languages",
-			"Frameworks & Libraries",
-			"Databases",
-			"Tools & Platforms",
-			"Soft Skills",
-			"Languages",
-			"Certifications",
-			"Other"
-		]
-	}
-	// Optional: For storing different skill sets for different resume versions
-	// version: {
-	// 	type: String,
-	// 	default: "default"
+	// categoryOrder: {
+	// 	type: [String],
+	// 	default: [
+	// 		"Programming Languages",
+	// 		"Frameworks & Libraries",
+	// 		"Databases",
+	// 		"Tools & Platforms",
+	// 		"Soft Skills",
+	// 		"Languages",
+	// 		"Certifications",
+	// 		"Other"
+	// 	]
 	// }
+
 }, {
 	timestamps: true
 });

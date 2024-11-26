@@ -20,14 +20,14 @@ export const createPersonaHandler = async (data) => {
 export const updatePersonaHandler = async (id, data) => {
 	try {
 		// Validate the sanitized data
-		const { error, value } = personaValidation.validate(data);
+		// const { error, value } = personaValidation.validate(data);
 
-		if (error) {
-			return { success: false, error };
-		}
+		// if (error) {
+		// 	return { success: false, error };
+		// }
 
 		// Find the persona by ID and update it
-		const updatedPersona = await PERSONA.findByIdAndUpdate(id, value, { new: true });
+		const updatedPersona = await PERSONA.findByIdAndUpdate(id, data, { new: true });
 
 		if (!updatedPersona) {
 			return { success: false, error: "Persona not found" };

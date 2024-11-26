@@ -6,45 +6,72 @@ import mongoose, { Schema } from "mongoose";
 
 
 const personaSchema = new Schema({
-	experienceLevel:{
-		type:String,
-		required:true,
-		enum:[
-			"fresher", "intermediate", "experienced"
-		]
+	
+	experienceLevel: {
+		type: String,
+		required: true,
+		enum: ["fresher", "intermediate", "experienced"]
 	},
-	targetRole:{
-		type:String,
-		required:true
+	targetRole: {
+		type: String,
+		required: true,
+		enum: [
+			"Software Engineer", "Data Scientist", "DevOps Engineer",
+			"Research Scientist", "Research Assistant", "PhD Candidate",
+			"Product Manager", "Business Analyst", "Project Manager"
+		]
 	},
 	background: {
 		yearsOfExperience: {
-			type:Number,
-			required:true
+			type: Number,
+			required: true,
+			min: 0,
+			max: 10
 		},
 		education: {
-			level:{
-				type:String,
-				enum:[
-					"graduated",
-					"inCollege",
-					"postGraduate"
-				],
-				required:true
+			level: {
+				type: String,
+				enum: ["graduated", "inCollege", "postGraduate"],
+				required: true
 			}
 		},
 		hasProjects: {
-			type:Boolean,
-			required:true
+			type: Boolean,
+			required: true
 		},
 		hasCertifications: {
-			type:Boolean,
-			required:true
+			type: Boolean,
+			required: true
 		},
-		industries: [String]
+		industries: {
+			type: [String],
+			enum: ["Technology", "Finance", "Healthcare", "Education", "Retail", "Manufacturing", "Energy"]
+		}
 	},
-	strengths: [String],
-	goals: [String],
+	strengths: {
+		type: [String],
+		enum: [
+			"Technical Skills", "Project Experience", "Academic Excellence",
+			"Leadership", "Research Publications", "Industry Knowledge"
+		]
+	},
+	goals: {
+		type: [String],
+		enum: [
+			"Career Transition", "Industry Switch", "Senior Position",
+			"Research Opportunity", "First Job", "Leadership Role"
+		]
+	},
+	careerReadiness: {
+		type: String,
+		enum: ["Job-Ready", "Skill Enhancement", "Higher Education", "Entrepreneurial"]
+	},
+	technicalAmbition: {
+		hasInternshipExperience: Boolean,
+		openToRemoteWork: Boolean,
+		interestedInStartupEcosystem: Boolean,
+		willingToRelocate: Boolean
+	},
 	templateStructure:{
 		sections:[{
 			serial_number: Number,

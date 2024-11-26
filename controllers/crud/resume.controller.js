@@ -1,5 +1,6 @@
-import { createResumeHandler } from "../../handlers/resume.handler";
-import { missingFieldsError } from "../../utils/errors.utils";
+import { createResumeHandler } from "../../handlers/resume.handler.js";
+import { missingFieldsError } from "../../utils/errors.utils.js";
+import { eventExecutedSuccessfully } from "../../utils/success.utils.js";
 
 
 export const createResume = async(req,res)=>{
@@ -14,6 +15,8 @@ export const createResume = async(req,res)=>{
 	if(!success){
 		return missingFieldsError(res, error);
 	}
+
+	return eventExecutedSuccessfully(res, savedResume, "New Resume created successfully");
 
 };
 

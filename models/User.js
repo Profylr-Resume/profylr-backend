@@ -19,11 +19,11 @@ const userSchema = new Schema({
 		{
 			resume:{
 				type:Schema.Types.ObjectId, 
-				ref:"RESUME"
+				ref:"Resume"
 			},
 			template:{
 				type:Schema.Types.ObjectId, 
-				ref:"TEMPLATE"
+				ref:"Template"
 			},
 			meta: [
 				{
@@ -37,13 +37,13 @@ const userSchema = new Schema({
 						type: String
 				  }
 				}
-			]
+			],
+			persona:{
+				type: Schema.Types.ObjectId,
+				ref: "Persona"
+			}
 		}
-	],
-	personas:[{
-		type: Schema.Types.ObjectId,
-		ref: "PERSONA"
-	}]
+	]
 }); 
 
 /* The pre hook runs before the save event on the schema. 
@@ -55,7 +55,7 @@ const userSchema = new Schema({
  */
 
 userSchema.pre("save",async function(next){
-	console.log(this);
+	
 	// isModified => it’s available automatically when you create a schema in Mongoose. 
 	if(!this.isModified("password")) {return next();}
 

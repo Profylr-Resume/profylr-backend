@@ -1,16 +1,11 @@
 import { Schema } from "mongoose";
 
-const experienceSchema = new Schema({
+export const experienceSchema = new Schema({
 	organisationName:String,
 	position:String,
 	from:String,
 	to:String,
 	description:[String]
-});
+},{timestamps:true});
 
-export const experiencesSchema = new Schema({
-	experiences: [experienceSchema]
-},
-{timestamps:true}
-);
 

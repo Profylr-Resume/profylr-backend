@@ -39,10 +39,6 @@ export const experienceSchema = Joi.object({
 	description: Joi.array().items(Joi.string()).min(1).required()
 });
 
-export const experiencesSchema = Joi.object({
-	experiences: Joi.array().items(experienceSchema)
-});
-
 // Project Schema
 export const projectSchema = Joi.object({
 	name: Joi.string().required().min(3).trim(),
@@ -58,10 +54,6 @@ export const projectSchema = Joi.object({
 	sourceCodeRepository: Joi.string().uri(),
 	liveLink: Joi.string().uri(),
 	description: Joi.array().items(Joi.string()).min(1).required()
-});
-
-export const projectsSchema = Joi.object({
-	projects: Joi.array().items(projectSchema)
 });
 
 // Skill Schema
@@ -89,26 +81,22 @@ export const skillSchema = Joi.object({
 	})
 });
 
-export const skillsSchema = Joi.object({
-	skills: Joi.array().items(skillSchema),
-	categoryOrder: Joi.array().items(Joi.string()).default([
-		"Programming Languages",
-		"Frameworks & Libraries",
-		"Databases",
-		"Tools & Platforms",
-		"Soft Skills",
-		"Languages",
-		"Certifications",
-		"Other"
-	])
-});
-
 // Main Resume Form Schema
 export const resumeFormValidation = Joi.object({
 	basicInfo: basicInfoSchema.required(),
 	education: educationSchema.required(),
-	skills: skillsSchema.required(),
-	projects: projectsSchema.required(),
-	experience: experiencesSchema.required()
+	skills: Joi.array().items(skillSchema).required(),
+	projects: Joi.array().items(projectSchema).required(),
+	experiences: Joi.array().items(experienceSchema).required()
 });
 
+// export const skillsSchema = Joi.object({
+// 	skills: Joi.array().items(skillSchema),
+	
+// });
+// export const projectsSchema = Joi.object({
+// 	projects: Joi.array().items(projectSchema)
+// });
+// export const experiencesSchema = Joi.object({
+// 	experiences: Joi.array().items(experienceSchema)
+// });

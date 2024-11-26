@@ -38,4 +38,13 @@ export const conflictError = (res, subject, existingItems) => {
 	  error: `The ${subject} with the specified ${existingItems.join(", ")} already exists in the database.`
 	});
 };
+
+export const devError = (res,error)=>{
+
+	return res.status(400).json({
+		data:null,
+		message:"Coding error",
+		error
+	});
+};
   

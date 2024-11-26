@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createResume , allResume, deleteResume, oneResume, updateResume } from "../../controllers/resume.controller.js";
+import { allResume, createResume, deleteResume, oneResume, updateResume } from "../../controllers/crud/resume.controller.js";
 
 const router = Router();
 
