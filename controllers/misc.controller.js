@@ -1,4 +1,5 @@
 import { personalizedTemplatesHandler } from "../handlers/personalizedTemplates.handler.js";
+import { addTemplteToUserResumeHandler } from "../handlers/template.handler.js";
 import { getUserProfileHandler } from "../handlers/user.handler.js";
 import { devError, missingFieldsError, notFoundError } from "../utils/errors.utils.js";
 import { eventExecutedSuccessfully } from "../utils/success.utils.js";
@@ -28,6 +29,24 @@ export const getPersonalizedTemplates = async (req,res)=>{
 	return eventExecutedSuccessfully(res, {personalizedTemplates,resumeDataId:userResumeId}, "Created personalized templates successfully");
 
 };
+
+export const saveTemplateToUserResume = async(req,res)=>{
+
+	// userResumeId
+	// user token
+	// template id
+
+	const userId = req?.user?._id;
+
+	if(!userId){
+		return notFoundError(res,"User Id",["id in jwt"]);
+	}
+
+	const {templateId,userResumeId} = req.body;
+
+	const {success} = addTemplteToUserResumeHandler({templateId,userResumeId,userId});
+};
+
 
 // hi pooja . Yes you are talking to hemant . how are you today?
 

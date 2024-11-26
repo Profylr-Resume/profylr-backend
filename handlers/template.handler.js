@@ -86,3 +86,9 @@ export const deleteTemplateHandler = async (templateId) => {
 
 	return { success: true, deletedTemplate };
 };
+
+
+export const addTemplteToUserResumeHandler =async ({templateId,userResumeId,userId})=>{
+
+    const {success,user ,error} = await 
+};
