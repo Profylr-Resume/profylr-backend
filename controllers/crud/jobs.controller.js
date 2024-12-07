@@ -163,7 +163,7 @@ export const getAllJobsController = async (req, res) => {
 			return res.status(400).send({ success: false, message: "User ID is required" });
 		}
 
-		const jobs = await jobModel.find({ userId: id }).populate("resume").populate({path:"events",model:"calendarEvents"}).populate({path:"history",model:"jobHistory"});
+		const jobs = await jobModel.find({ userId: id }).populate("resume").populate({path:"events",model:"calendarEvents"}).populate({path:"history",model:"JobHistory"}).sort({ createdAt: -1 });
 		if (!jobs.length) {
 			return notFoundError(res, "No jobs found for this user");
 		}

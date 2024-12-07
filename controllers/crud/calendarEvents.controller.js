@@ -92,7 +92,7 @@ export const getCalendarEventsController = async (req, res) => {
 			return missingFieldsError(res, "User ID is required");
 		}
   
-		const events = await calendarEventModel.findOne({_id: id});
+		const events = await calendarEventModel.findOne({_id: id}).populate({path:"jobId",model:"jobs"});
   
 		if (!events ) {
 			return notFoundError(res, "No event found");

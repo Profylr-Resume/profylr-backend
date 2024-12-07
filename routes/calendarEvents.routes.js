@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createCalendarEventController, deleteCalendarEventController, getAllCalendarEventsController, getAllUpComingCalendarEventsController, getCalendarEventsController } from "../controllers/crud/calendarEvents.controller.js";
+import { createCalendarEventController, deleteCalendarEventController, getAllCalendarEventsController, getAllUpComingCalendarEventsController, getCalendarEventsController, updateCalendarEventController } from "../controllers/crud/calendarEvents.controller.js";
 
 const router=Router();
 
@@ -16,7 +16,7 @@ router.get("/:id",getCalendarEventsController);
 router.post("/",createCalendarEventController);
 
 // update event according to the event id
-router.put("/:id",getAllCalendarEventsController);
+router.put("/:id",updateCalendarEventController);
 
 // delete event accrording to event id
 router.delete("/:id",deleteCalendarEventController);
