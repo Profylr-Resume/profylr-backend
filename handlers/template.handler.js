@@ -88,7 +88,7 @@ export const deleteTemplateHandler = async (templateId) => {
 };
 
 
-export const addTemplteToUserResumeHandler =async ({templateId,userResumeId,userId})=>{
+// export const addTemplteToUserResumeHandler =async ({templateId,userResumeId,userId})=>{
 
-    const {success,user ,error} = await 
-};
+//     const {success,user ,error} = await 
+// };

@@ -1,5 +1,5 @@
 import { personalizedTemplatesHandler } from "../handlers/personalizedTemplates.handler.js";
-import { addTemplteToUserResumeHandler } from "../handlers/template.handler.js";
+// import { addTemplteToUserResumeHandler } from "../handlers/template.handler.js";
 import { getUserProfileHandler } from "../handlers/user.handler.js";
 import { devError, missingFieldsError, notFoundError } from "../utils/errors.utils.js";
 import { eventExecutedSuccessfully } from "../utils/success.utils.js";
@@ -44,7 +44,7 @@ export const saveTemplateToUserResume = async(req,res)=>{
 
 	const {templateId,userResumeId} = req.body;
 
-	const {success} = addTemplteToUserResumeHandler({templateId,userResumeId,userId});
+	// const {success} = addTemplteToUserResumeHandler({templateId,userResumeId,userId});
 };
 
 
