@@ -1,11 +1,11 @@
 import Joi from "joi";
 
 const jobValidationSchema = Joi.object({
-	userId: Joi.string().pattern(/^[0-9a-fA-F]{24}$/).required().messages({
+	userId: Joi.string().pattern(/^[0-9a-fA-F]{24}$/).messages({
 		"string.base": "User ID must be a string.",
 		"string.pattern.base": "Invalid User ID format.",
 		"any.required": "User ID is required."
-	}),
+	}).optional(),
 	companyName: Joi.string().required().messages({
 		"string.base": "Company Name must be a string.",
 		"any.required": "Company Name is required."
