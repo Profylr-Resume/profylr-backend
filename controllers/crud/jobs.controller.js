@@ -23,9 +23,6 @@ export const createJobController = async (req, res) => {
 	  
 	  const newJob = new jobModel(value);
 	  await newJob.save();
-	  
-	
-
   
 	  // Handle the events if provided
 	  if (events && Array.isArray(events)) {
@@ -150,9 +147,6 @@ export const updateJobController = async (req, res) => {
 		return internalServerError(res, error.message);
 	}
 };
-
-  
-  
   
 
 // Get All Jobs for a User
