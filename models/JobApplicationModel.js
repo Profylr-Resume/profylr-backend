@@ -53,6 +53,6 @@ const jobSchema=new mongoose.Schema({
 
 },{	timestamps:true});
 
-const jobModel=mongoose.model("jobs",jobSchema);
+const jobApplicationModel=mongoose.model("jobApplications",jobSchema);
 
-export default jobModel;
+export default jobApplicationModel;

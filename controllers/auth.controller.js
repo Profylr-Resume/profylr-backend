@@ -5,6 +5,7 @@ import { eventExecutedSuccessfully } from "../utils/success.utils.js";
 import { generateToken } from "../utils/token.utils.js";
 import { registerValidation } from "../validations/auth.validate.js";
 import bcrypt from "bcryptjs";
+import calendarEventModel from "../models/CalendarEventsModel.js";
 
 
 // Register User
@@ -35,32 +36,83 @@ export const registerUser = expressAsyncHandler( async (req, res) => {
 });
 
 // Login User
-export const loginUser =expressAsyncHandler( async (req, res) => {
+export const loginUser = expressAsyncHandler(async (req, res) => {
 	const { email, password } = req.body;
 
 	// Check for missing fields
 	if (!email || !password) {
-		return missingFieldsError(res,"Email or passwrod is missing");
+		return missingFieldsError(res, "Email or password is missing");
 	}
 
 	// Find the user by email
 	const user = await USER.findOne({ email });
 	if (!user) {
-		return notFoundError(res,"User",["credentials"]);
+		return notFoundError(res, "User", ["credentials"]);
 	}
-	
+
 	// Compare the provided password with the hashed password
 	const isMatch = await bcrypt.compare(password, user.password);
 	if (!isMatch) {
-		return notFoundError(res,"User",["credentials"]);
+		return notFoundError(res, "User", ["credentials"]);
 	}
 
 	// Generate JWT token
 	const authToken = generateToken({ id: user._id, email: user.email });
 
-	return eventExecutedSuccessfully(res,{user,jwt:authToken},"Login Successfull");
-	
+	// Aggregate and group events by date
+	const eventsGrouped = await calendarEventModel.aggregate([
+		{ $match: { userId: user._id } },
+		{
+			$project: {
+				_id: 1,
+				userId: 1,
+				jobId: 1,
+				date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+				note: 1,
+				isAllDay: 1,
+				eventType: 1,
+				priority: 1,
+				isRecurring: 1,
+				recurrenceFrequency: 1,
+				reminder: 1,
+				status: 1,
+				createdAt: 1,
+				updatedAt: 1
+			}
+		},
+		{
+			$group: {
+				_id: "$date",
+				events: {
+					$push: {
+						_id: "$_id",
+						jobId: "$jobId",
+						note: "$note",
+						isAllDay: "$isAllDay",
+						eventType: "$eventType",
+						priority: "$priority",
+						isRecurring: "$isRecurring",
+						recurrenceFrequency: "$recurrenceFrequency",
+						reminder: "$reminder",
+						status: "$status",
+						createdAt: "$createdAt",
+						updatedAt: "$updatedAt"
+					}
+				}
+			}
+		},
+		{ $sort: { _id: 1 } } // Sort by date
+	]);
+
+	// Attach grouped events to the user object
+	const userWithEvents = {
+		...user.toObject(),
+		events: eventsGrouped
+	};
+
+	return eventExecutedSuccessfully(res, { user: userWithEvents, jwt: authToken }, "Login Successful");
 });
+
 
 // Verify User With JWT
 export const verifyUserWithJWT = async (req, res) => {

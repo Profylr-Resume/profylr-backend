@@ -1,81 +1,149 @@
 import calendarEventModel from "../../models/CalendarEventsModel.js";
 import { internalServerError, missingFieldsError, notFoundError } from "../../utils/errors.utils.js";
 import { eventExecutedSuccessfully } from "../../utils/success.utils.js";
+import USER from "../../models/User.js";
+import jobApplicationModel from "../../models/JobApplicationModel.js";
 import calendarEventValidationSchema from "../../validations/calendarEvents.validate.js";
-import jobModel from "../../models/JobModel.js";
-
 
 // requires id-->userId, days--> no of days  0->> to get all calendar events
 export const getAllCalendarEventsController = async (req, res) => {
 	try {
-		const { id, days } = req.params;
-  
+		const { days } = req.params;
+		const id = req.user._id;
+
 		if (!id) {
 			return missingFieldsError(res, "User ID is required");
 		}
-  
+
 		const currentDate = new Date();
-  
-		if (days==="0") {
-			const events = await calendarEventModel.find({
-				userId: id
-				// date: { $gt: currentDate }  //uncomment this to get all the events after the current date
-			}).populate({path:"jobId",model:"jobs"});
-			if (!events || events.length === 0) {
-				return notFoundError(res, "No upcoming events found for this user");
+
+		// Calculate target date based on the 'days' parameter
+		const targetDate = days === "0" ? null : new Date(currentDate.getTime() + days * 24 * 60 * 60 * 1000);
+
+		// Build the pipeline
+		const pipeline = [
+			{
+				$match: {
+					userId: id,
+					...(days === "0" ? {} : { date: { $lte: targetDate } }) // Match all dates if days === "0"
+				}
+			},
+			// {
+			// 	$lookup: {
+			// 		from: "jobApplications",
+			// 		localField: "jobId",
+			// 		foreignField: "_id",
+			// 		as: "jobs"
+			// 	}
+			// },
+			// {
+			// 	$unwind: "$jobs"
+			// },
+			// {
+			// 	$project: {
+			// 		userId: 1,
+			// 		jobId: 1,
+			// 		note_id: 1,
+			// 		note: 1,
+			// 		jobs: 1,
+			// 		date: { $dateToString: { format: "%Y-%m-%d", date: "$date" } } // Normalize date
+			// 	}
+			// },
+			{
+				$group: {
+					_id: "$date",
+					events: {
+						$push: {
+							userId: "$userId",
+							jobId: "$jobId",
+							eventId: "$_id",
+							note: "$note"
+							// jobDetails: "$jobs"
+						}
+					}
+				}
 			}
-			return eventExecutedSuccessfully(res, events);
-		}
-  
-		const targetDate = new Date(currentDate.getTime() + days * 24 * 60 * 60 * 1000);
-  
-		const events = await calendarEventModel.find({
-			userId: id,
-			date: { $gt: currentDate, $lte: targetDate }
-		}).populate({path:"jobId",model:"jobs"});
-  
+		];
+
+		// Execute the aggregation pipeline
+		const events = await calendarEventModel.aggregate(pipeline);
+
 		if (!events || events.length === 0) {
-			return notFoundError(res, `No events found between now and the next ${days} days`);
+			const message = days === "0" 
+				? "No upcoming events found for this user"
+				: `No events found between now and the next ${days} days`;
+			return notFoundError(res, message);
 		}
-  
+
 		return eventExecutedSuccessfully(res, events);
 	} catch (error) {
 		return internalServerError(res, error.message);
 	}
 };
 
+
 export const getAllUpComingCalendarEventsController = async (req, res) => {
 	try {
-		const { id, days } = req.params;
-  
+		const { days } = req.params;
+		const id = req.user._id;
+
 		if (!id) {
 			return missingFieldsError(res, "User ID is required");
 		}
-  
+
 		const currentDate = new Date();
-  
-		if (days==="0") {
-			const events = await calendarEventModel.find({
-				userId: id,
-				date: { $gt: currentDate } //uncomment this to get all the events after the current date
-			}).populate({path:"jobId",model:"jobs"});
-			if (!events || events.length === 0) {
-				return notFoundError(res, "No upcoming events found for this user");
+
+		// Calculate target date based on the 'days' parameter
+		const targetDate = days === "0" ? null : new Date(currentDate.getTime() + days * 24 * 60 * 60 * 1000);
+
+		// Build the pipeline
+		const pipeline = [
+			{
+				$match: {
+					userId: id,
+					date: targetDate
+						? { $gt: currentDate, $lte: targetDate }
+						: { $gt: currentDate } // For 'days' === "0"
+				}
+			},
+			// {
+			// 	$lookup: {
+			// 		from: "jobApplications",
+			// 		localField: "jobId",
+			// 		foreignField: "_id",
+			// 		as: "jobs"
+			// 	}
+			// },
+			// {
+			// 	$unwind: "$jobs"
+			// },
+			{
+				$group: {
+					_id: "$date",
+					events: {
+						$push: {
+							userId: "$userId",
+							jobId: "$jobId",
+							eventId: "$note_id",
+							note: "$note"
+							// jobDetails: "$jobs"
+						}
+					}
+				}
 			}
-			return eventExecutedSuccessfully(res, events);
-		}
-  
-		const targetDate = new Date(currentDate.getTime() + days * 24 * 60 * 60 * 1000);
-  
-		const events = await calendarEventModel.find({
-			userId: id,
-			date: { $gt: currentDate, $lte: targetDate }
-		}).populate({path:"jobId",model:"jobs"});
-  
+		];
+
+		// Execute the aggregation pipeline
+		const events = await calendarEventModel.aggregate(pipeline);
+		console.log(events);
+
 		if (!events || events.length === 0) {
-			return notFoundError(res, `No events found between now and the next ${days} days`);
+			const message = days === "0" 
+				? "No upcoming events found for this user"
+				: `No events found between now and the next ${days} days`;
+			return notFoundError(res, message);
 		}
-  
+
 		return eventExecutedSuccessfully(res, events);
 	} catch (error) {
 		return internalServerError(res, error.message);
@@ -92,7 +160,7 @@ export const getCalendarEventsController = async (req, res) => {
 			return missingFieldsError(res, "User ID is required");
 		}
   
-		const events = await calendarEventModel.findOne({_id: id}).populate({path:"jobId",model:"jobs"});
+		const events = await calendarEventModel.findOne({_id: id}).populate({path:"jobId",model:"jobApplications"});
   
 		if (!events ) {
 			return notFoundError(res, "No event found");
@@ -105,20 +173,46 @@ export const getCalendarEventsController = async (req, res) => {
 };
   
 //  require userId,date and note    JobId (optional)
-export const createCalendarEventController=async(req,res)=>{
-	try{
-		const {error,value}=calendarEventValidationSchema.validate(req.body,{abortEarly:false});
 
-		if(error){
-			return missingFieldsError(res,"Missing fields");
-		}
-		const newEvent=new calendarEventModel(value);
-		await newEvent.save();
-
-		return eventExecutedSuccessfully(res,newEvent,"Event created successfully");
-
+export const createCalendarEvent = async (req, res) => {
+	try {
+	  // Validate the request body using Joi
+	  const { error, value } = calendarEventValidationSchema.validate(req.body, { abortEarly: false });
+  
+	  // If validation fails, send error response
+	  if (error) {
+			return res.status(400).json({
+		  message: "Validation error.",
+		  errors: error.details.map((detail) => detail.message)
+			});
+	  }
+  
+	  // Add the userId from the authenticated user
+	  const userId = req.user._id;
+	  const eventData = { ...value, userId };
+  
+	  // Check if the user exists
+	  const user = await USER.findById(userId);
+	  if (!user) {
+			return notFoundError(res, "User not found");
+	  }
+  
+	  // Create a new calendar event
+	  const newEvent = new calendarEventModel(eventData);
+	  await newEvent.save();
+  
+	  // Add the event to the user's events array
+	  user.events.push(newEvent._id);
+	  await user.save();
+  
+	  // Send the response
+	 return res.status(201).json({
+			message: "Calendar event created successfully.",
+			event: newEvent
+	  });
 	} catch (error) {
-		return internalServerError(res, error.message);
+	  console.error("Error creating calendar event:", error);
+	  return res.status(500).json({ message: "Internal server error." });
 	}
 };
 
@@ -161,14 +255,15 @@ export const deleteCalendarEventController=async(req,res)=>{
 
 // require userId
 export const deleteAllCalendarEventController = async (req, res) => {
+	 console.log(req);
 	try {
-		const { id } = req.params;
+		const id = req.user._id;
   
-      
+		console.log(id);
 		if (!id) {
 			return missingFieldsError(res, "User ID is required");
 		}
-  
+		
 		// Delete all events associated with the given userId
 		const result = await calendarEventModel.deleteMany({ userId: id });
   

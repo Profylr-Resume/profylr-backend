@@ -1,15 +1,17 @@
 import calendarEventModel from "../../models/CalendarEventsModel.js";
 import jobHistoryModel from "../../models/JobHistoryModel.js";
-import jobModel from "../../models/JobModel.js";
+import jobApplicationModel from "../../models/JobApplicationModel.js";
 import { internalServerError, missingFieldsError, notFoundError } from "../../utils/errors.utils.js";
 import { eventExecutedSuccessfully } from "../../utils/success.utils.js";
 import jobValidationSchema from "../../validations/jobs.validate.js";
+import USER from "../../models/User.js";
 
 // Job Creation
 
 export const createJobController = async (req, res) => {
+	console.log(req.user._id);
 	try {
-	 
+		const id=req.user._id;
 	  const { error, value } = jobValidationSchema.validate(req.body, {abortEarly: false});
   
 	  if (error) {
@@ -19,16 +21,20 @@ export const createJobController = async (req, res) => {
 	  const { userId, events } = value;
 	  
 	  delete value.events;
+
+	  const jobData={...value,userId:id};
   
 	  
-	  const newJob = new jobModel(value);
+	  const newJob = new jobApplicationModel(jobData);
 	  await newJob.save();
+	  console.log(newJob);
+
   
 	  // Handle the events if provided
 	  if (events && Array.isArray(events)) {
 			const eventPromises = events.map(async (event) => {
 		  const calendarEvent = new calendarEventModel({
-					userId,
+					userId:id,
 					jobId: newJob._id, // Link to the created job
 					date: event.date,
 					note: event.note
@@ -41,7 +47,16 @@ export const createJobController = async (req, res) => {
 			const savedEventIds = await Promise.all(eventPromises);
 			newJob.events = savedEventIds;
 			await newJob.save();
+			const user=await USER.findOne({_id:id});
+			console.log(user);
+			if(!user){
+				return notFoundError(res,"User not found");
+			}
+			user.jobs.push(newJob._id);
+			user.events.push(...savedEventIds);
+			await user.save();
 	  }
+	  
   
 	  return eventExecutedSuccessfully(res, newJob, "Job and associated events added successfully");
 	} catch (error) {
@@ -51,10 +66,11 @@ export const createJobController = async (req, res) => {
 
 // Update Job
 
-
+// id-->jobid
 export const updateJobController = async (req, res) => {
 	try {
 		const { id } = req.params;
+		const userId=req.user._id;
 
 		// Validate the request body
 		const { error, value } = jobValidationSchema.validate(req.body, { abortEarly: false });
@@ -73,10 +89,13 @@ export const updateJobController = async (req, res) => {
 		delete value.events;
 
 		// Fetch the job by ID
-		const job = await jobModel.findById(id).populate("events").exec();
+		console.log("id "+id+"  userId "+userId);
+		const job = await jobApplicationModel.findById(id).populate({path:"events",model:"calendarEvent"}).exec();
 		if (!job) {
 			return notFoundError(res, "Job not found");
 		}
+
+		console.log(job);
 
 		// Track changes for jobHistory
 		const oldData = {
@@ -106,7 +125,7 @@ export const updateJobController = async (req, res) => {
 
 		// Create jobHistory entry
 		const newHistory = new jobHistoryModel({
-			userId: job.userId,
+			userId: userId,
 			newData,
 			oldData,
 			changedFields
@@ -126,7 +145,7 @@ export const updateJobController = async (req, res) => {
 		if (events && Array.isArray(events)) {
 			const newEventPromises = events.map(async event => {
 				const newEvent = new calendarEventModel({
-					userId: job.userId,
+					userId: userId,
 					jobId: job._id,
 					date: event.date,
 					note: event.note
@@ -137,6 +156,13 @@ export const updateJobController = async (req, res) => {
 
 			const newEventIds = await Promise.all(newEventPromises);
 			job.events.push(...newEventIds);
+			const user=await USER.findOne({_id:req.user._id});
+			if(!user){
+				return notFoundError(res,"User not found");
+			}
+			
+			user.events.push(...newEventIds);
+			await user.save();
 		}
 
 		// Save the updated job
@@ -152,12 +178,14 @@ export const updateJobController = async (req, res) => {
 // Get All Jobs for a User
 export const getAllJobsController = async (req, res) => {
 	try {
-		const { id } = req.params;
+		const id = req.user._id;
+		console.log(id);
 		if (!id) {
 			return res.status(400).send({ success: false, message: "User ID is required" });
 		}
-
-		const jobs = await jobModel.find({ userId: id }).populate("resume").populate({path:"events",model:"calendarEvents"}).populate({path:"history",model:"JobHistory"}).sort({ createdAt: -1 });
+		console.log("init");
+		const jobs = await jobApplicationModel.find({ userId: id }).populate("resume").populate({path:"events",model:"calendarEvent"}).populate({path:"history",model:"JobHistory"}).sort({ createdAt: -1 });
+		console.log(jobs);
 		if (!jobs.length) {
 			return notFoundError(res, "No jobs found for this user");
 		}
@@ -168,7 +196,7 @@ export const getAllJobsController = async (req, res) => {
 	}
 };
 
-// Get Job by ID
+// Get Job by job id
 export const getJobController = async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -176,7 +204,7 @@ export const getJobController = async (req, res) => {
 			return res.status(400).send({ success: false, message: "Job ID is required" });
 		}
 
-		const job = await jobModel.findById(id).populate("resume").populate({path:"events",model:"calendarEvents"}).populate({path:"history",model:"JobHistory"});
+		const job = await jobApplicationModel.findById(id).populate("resume").populate({path:"events",model:"calendarEvent"}).populate({path:"history",model:"JobHistory"});
 		if (!job) {
 			return notFoundError(res, "Job not found");
 		}
@@ -190,12 +218,12 @@ export const getJobController = async (req, res) => {
 // Delete All Jobs for a User
 export const deleteAllJobsController = async (req, res) => {
 	try {
-		const { id } = req.params;
+		const id = req.user._id;
 		if (!id) {
 			return res.status(400).send({ success: false, message: "User ID is required" });
 		}
 
-		const result = await jobModel.deleteMany({ userId: id });
+		const result = await jobApplicationModel.deleteMany({ userId: id });
 		if (result.deletedCount === 0) {
 			return notFoundError(res, "No jobs found for this user");
 		}
@@ -206,7 +234,7 @@ export const deleteAllJobsController = async (req, res) => {
 	}
 };
 
-// Delete Job by ID
+// Delete Job by job ID
 export const deleteJobController = async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -214,7 +242,7 @@ export const deleteJobController = async (req, res) => {
 			return res.status(400).send({ success: false, message: "Job ID is required" });
 		}
 
-		const job = await jobModel.findByIdAndDelete(id);
+		const job = await jobApplicationModel.findByIdAndDelete(id);
 		if (!job) {
 			return notFoundError(res, "Job not found");
 		}
