@@ -1,4 +1,4 @@
-import calendarEventModel from "../../models/CalendarEventsModel.js";
+import CALENDAR_EVENT from "../../models/CalendarEventsModel.js";
 import jobHistoryModel from "../../models/JobHistoryModel.js";
 import jobApplicationModel from "../../models/JobApplicationModel.js";
 import { internalServerError, missingFieldsError, notFoundError } from "../../utils/errors.utils.js";
@@ -28,14 +28,12 @@ export const createJobController = async (req, res) => {
 	  const newJob = new jobApplicationModel(jobData);
 	  await newJob.save();
 	  console.log(newJob);
-	  
-	
 
   
 	  // Handle the events if provided
 	  if (events && Array.isArray(events)) {
 			const eventPromises = events.map(async (event) => {
-		  const calendarEvent = new calendarEventModel({
+		  const calendarEvent = new CALENDAR_EVENT({
 					userId:id,
 					jobId: newJob._id, // Link to the created job
 					date: event.date,
@@ -58,7 +56,6 @@ export const createJobController = async (req, res) => {
 			user.events.push(...savedEventIds);
 			await user.save();
 	  }
-
 	  
   
 	  return eventExecutedSuccessfully(res, newJob, "Job and associated events added successfully");
@@ -147,7 +144,7 @@ export const updateJobController = async (req, res) => {
 		// Handle new events if provided
 		if (events && Array.isArray(events)) {
 			const newEventPromises = events.map(async event => {
-				const newEvent = new calendarEventModel({
+				const newEvent = new CALENDAR_EVENT({
 					userId: userId,
 					jobId: job._id,
 					date: event.date,
@@ -176,9 +173,6 @@ export const updateJobController = async (req, res) => {
 		return internalServerError(res, error.message);
 	}
 };
-
-  
-  
   
 
 // Get All Jobs for a User

@@ -1,9 +1,57 @@
-import calendarEventModel from "../../models/CalendarEventsModel.js";
+import CALENDAR_EVENT from "../../models/CalendarEventsModel.js";
 import { internalServerError, missingFieldsError, notFoundError } from "../../utils/errors.utils.js";
 import { eventExecutedSuccessfully } from "../../utils/success.utils.js";
 import USER from "../../models/User.js";
 import jobApplicationModel from "../../models/JobApplicationModel.js";
 import calendarEventValidationSchema from "../../validations/calendarEvents.validate.js";
+
+
+export const createCalendarEvent = async (req, res) => {
+	
+	try {
+	  // Validate the request body using Joi
+	  const result = calendarEventValidationSchema.safeParse(req.body);
+  
+	  // If validation fails, send error response
+		if (!result.success) {
+			return res.status(400).json({
+		  message: "Validation error.",
+				errors: result.error.errors
+			});
+	    }
+
+		// If validation passes, process the valid data
+		const validData = result.data;
+    
+	  // Add the userId from the authenticated user
+	  const userId = req.user._id;
+	  const eventData = { ...validData, userId };
+  
+	  // Check if the user exists
+		//   const user = await USER.findById(userId);
+		//   if (!user) {
+		// 		return notFoundError(res, "User not found");
+		//   }
+  
+	  // Create a new calendar event
+	  const newEvent = new CALENDAR_EVENT(eventData);
+	  await newEvent.save();
+  
+	  // Add the event to the user's events array
+		//   user.events.push(newEvent._id);
+		//   await user.save();
+  
+	  // Send the response
+	  return res.status(201).json({
+			message: "Calendar event created successfully.",
+			event: newEvent
+	  });
+	} catch (error) {
+	  console.error("Error creating calendar event:", error);
+	  return res.status(500).json({ message: "Internal server error." });
+	}
+};
+
 
 // requires id-->userId, days--> no of days  0->> to get all calendar events
 export const getAllCalendarEventsController = async (req, res) => {
@@ -66,7 +114,7 @@ export const getAllCalendarEventsController = async (req, res) => {
 		];
 
 		// Execute the aggregation pipeline
-		const events = await calendarEventModel.aggregate(pipeline);
+		const events = await CALENDAR_EVENT.aggregate(pipeline);
 
 		if (!events || events.length === 0) {
 			const message = days === "0" 
@@ -134,7 +182,7 @@ export const getAllUpComingCalendarEventsController = async (req, res) => {
 		];
 
 		// Execute the aggregation pipeline
-		const events = await calendarEventModel.aggregate(pipeline);
+		const events = await CALENDAR_EVENT.aggregate(pipeline);
 		console.log(events);
 
 		if (!events || events.length === 0) {
@@ -151,7 +199,6 @@ export const getAllUpComingCalendarEventsController = async (req, res) => {
 };
 
 
-
 // id--> calendar Id
 export const getCalendarEventsController = async (req, res) => {
 	try {
@@ -161,7 +208,7 @@ export const getCalendarEventsController = async (req, res) => {
 			return missingFieldsError(res, "User ID is required");
 		}
   
-		const events = await calendarEventModel.findOne({_id: id}).populate({path:"jobId",model:"jobApplications"});
+		const events = await CALENDAR_EVENT.findOne({_id: id}).populate({path:"jobId",model:"jobApplications"});
   
 		if (!events ) {
 			return notFoundError(res, "No event found");
@@ -175,49 +222,6 @@ export const getCalendarEventsController = async (req, res) => {
   
 //  require userId,date and note    JobId (optional)
 
-// eslint-disable-next-line consistent-return
-export const createCalendarEvent = async (req, res) => {
-	try {
-	  // Validate the request body using Joi
-	  const { error, value } = calendarEventValidationSchema.validate(req.body, { abortEarly: false });
-  
-	  // If validation fails, send error response
-	  if (error) {
-			return res.status(400).json({
-		  message: "Validation error.",
-		  errors: error.details.map((detail) => detail.message)
-			});
-	  }
-  
-	  // Add the userId from the authenticated user
-	  const userId = req.user._id;
-	  const eventData = { ...value, userId };
-  
-	  // Check if the user exists
-	  const user = await USER.findById(userId);
-	  if (!user) {
-			return notFoundError(res, "User not found");
-	  }
-  
-	  // Create a new calendar event
-	  const newEvent = new calendarEventModel(eventData);
-	  await newEvent.save();
-  
-	  // Add the event to the user's events array
-	  user.events.push(newEvent._id);
-	  await user.save();
-  
-	  // Send the response
-	  res.status(201).json({
-			message: "Calendar event created successfully.",
-			event: newEvent
-	  });
-	} catch (error) {
-	  console.error("Error creating calendar event:", error);
-	  res.status(500).json({ message: "Internal server error." });
-	}
-};
-
 
 //  require userId,date and note    JobId (optional if given then required)  id-->eventId
 export const updateCalendarEventController=async(req,res)=>{
@@ -228,7 +232,7 @@ export const updateCalendarEventController=async(req,res)=>{
 		if(error){
 			return missingFieldsError(res,"Missing fields");
 		}
-		const event=await calendarEventModel.findByIdAndUpdate(id,{$set:value},{new:true});
+		const event=await CALENDAR_EVENT.findByIdAndUpdate(id,{$set:value},{new:true});
 		await event.save();
 
 		return eventExecutedSuccessfully(res,event,"Event updated successfully");
@@ -245,7 +249,7 @@ export const deleteCalendarEventController=async(req,res)=>{
 		if (!id) {
 			return missingFieldsError(res, "Event ID is required");
 		}
-		const event=await calendarEventModel.findByIdAndDelete(id);
+		const event=await CALENDAR_EVENT.findByIdAndDelete(id);
 		if(!event){
 			return notFoundError(res,"No event found");
 		}
@@ -267,7 +271,7 @@ export const deleteAllCalendarEventController = async (req, res) => {
 		}
 		
 		// Delete all events associated with the given userId
-		const result = await calendarEventModel.deleteMany({ userId: id });
+		const result = await CALENDAR_EVENT.deleteMany({ userId: id });
   
      
 		if (result.deletedCount === 0) {

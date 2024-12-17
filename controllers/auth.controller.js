@@ -5,7 +5,7 @@ import { eventExecutedSuccessfully } from "../utils/success.utils.js";
 import { generateToken } from "../utils/token.utils.js";
 import { registerValidation } from "../validations/auth.validate.js";
 import bcrypt from "bcryptjs";
-import calendarEventModel from "../models/CalendarEventsModel.js";
+import CALENDAR_EVENT from "../models/CalendarEventsModel.js";
 
 
 // Register User
@@ -60,7 +60,7 @@ export const loginUser = expressAsyncHandler(async (req, res) => {
 	const authToken = generateToken({ id: user._id, email: user.email });
 
 	// Aggregate and group events by date
-	const eventsGrouped = await calendarEventModel.aggregate([
+	const eventsGrouped = await CALENDAR_EVENT.aggregate([
 		{ $match: { userId: user._id } },
 		{
 			$project: {

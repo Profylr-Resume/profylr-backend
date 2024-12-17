@@ -19,27 +19,24 @@ const calendarEventSchema = new mongoose.Schema(
 			trim: true,
 			maxlength: 100
 		},
+		description :{
+			type:String,
+			maxlength:500
+		},
 		date: {
 			type: Date,
 			required: true
 		},
-		startTime: Date,
-		endTime: Date,
-		location: {
-			type: String,
-			trim: true,
-			maxlength: 255
-		},
-		note: {
-			type: String,
-			trim: true,
-			maxlength: 500,
-			default: ""
-		},
+
+		// ---
 		isAllDay: {
 			type: Boolean,
 			default: false
 		},
+		startTime: Date,
+		endTime: Date,
+		
+	
 		eventType: {
 			type: String,
 			enum: ["Meeting", "Task", "Reminder", "Other"],
@@ -50,6 +47,8 @@ const calendarEventSchema = new mongoose.Schema(
 			enum: ["High", "Medium", "Low"],
 			default: "Medium"
 		},
+
+		// ---
 		isRecurring: {
 			type: Boolean,
 			default: false
@@ -62,18 +61,14 @@ const calendarEventSchema = new mongoose.Schema(
 		reminder: {
 			type: Number,
 			default: 15 // Default to 15 minutes before the event
-		},
-		status: {
-			type: String,
-			enum: ["Pending", "Completed", "Canceled"],
-			default: "Pending"
 		}
+	
 	},
 	{
 		timestamps: true // Adds createdAt and updatedAt fields
 	}
 );
 
-const calendarEventModel = mongoose.model("calendarEvent", calendarEventSchema);
+const CALENDAR_EVENT = mongoose.model("calendarEvent", calendarEventSchema);
 
-export default calendarEventModel;
+export default CALENDAR_EVENT;
