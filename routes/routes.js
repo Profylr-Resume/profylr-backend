@@ -13,6 +13,6 @@ router.use("/auth" , authRoutes);
 
 router.use("/jobs",authMiddleware,jobRoutes);
 
-router.use("/events",authMiddleware,eventRoutes);
+router.use("/events",eventRoutes);
 
 export default router;
