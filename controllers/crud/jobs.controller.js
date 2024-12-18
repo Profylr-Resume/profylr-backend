@@ -9,9 +9,10 @@ import USER from "../../models/User.js";
 // Job Creation
 
 export const createJobController = async (req, res) => {
-	console.log(req.user._id);
+
 	try {
 		const id=req.user._id;
+        
 	  const { error, value } = jobValidationSchema.validate(req.body, {abortEarly: false});
   
 	  if (error) {

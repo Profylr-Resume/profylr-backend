@@ -1,0 +1,3477 @@
+{
+	"info": {
+		"_postman_id": "94fa94b0-940b-4ce5-acb5-4f539d901bfe",
+		"name": "Taskmanji API Collection",
+		"description": "This is the Postman collection for Taskmanji. It contains all the API routes organized into modules like user, tasks, and projects.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31222986",
+		"_collection_link": "https://lunar-crescent-306592.postman.co/workspace/TM-%26-RM~077aea90-287a-482c-964e-d3cb0ac1cbd5/collection/72198-94fa94b0-940b-4ce5-acb5-4f539d901bfe?action=share&source=collection_link&creator=31222986"
+	},
+	"item": [
+		{
+			"name": "User Module",
+			"item": [
+				{
+					"name": "User Registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n    // \"inviteToken\": \"{{inviteToken}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();",
+									"if (jsonData.data.token) {",
+									"    pm.collectionVariables.set('token', jsonData.data.token);",
+									"    pm.environment.set('token', jsonData.data.token);",
+									"}",
+									"if (jsonData.data.activeProject) {",
+									"    pm.collectionVariables.set('active_project_id', jsonData.data.activeProject._id);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/forgot_password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"forgot_password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Password Reset Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();",
+									"if (jsonData.data.token) {",
+									"    pm.collectionVariables.set('token', jsonData.data.token);",
+									"    pm.environment.set('token', jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"code\": \"{{reset_code}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/verify_code",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"verify_code"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change User Password",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();",
+									"if (jsonData.data.token) {",
+									"    pm.collectionVariables.set('token', jsonData.data.token);",
+									"    pm.environment.set('token', jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"{{new_password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/change_password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"change_password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();",
+									"if (jsonData.data.token) {",
+									"    pm.collectionVariables.set('token', jsonData.data.token);",
+									"    pm.environment.set('token', jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Name\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/update_profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"update_profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset('token');",
+									"pm.environment.unset('token');",
+									"pm.cookies.clear();"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"code\": \"{{verification_code}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/verify_email",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"verify_email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resend Verification Code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/resend",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"resend"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role Module",
+			"item": [
+				{
+					"name": "Create Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Manager1234\",\n    \"permissions\": {\n        \"full_access\": true,\n        \"clients_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"create\": true,\n                \"update\": true,\n                \"delete\": true\n            }\n        },\n        \"manage_staff_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"invites\": {\n                    \"global\": true,\n                    \"segments\": {\n                        \"creation\": true,\n                        \"update\": true,\n                        \"delete\": true\n                    }\n                },\n                \"delete\": true,\n                \"update\": true\n            }\n        },\n        \"designations_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"create\": true,\n                \"update\": true,\n                \"delete\": true\n            }\n        },\n        \"jobs_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"create\": true,\n                \"update\": true,\n                \"delete\": true\n            }\n        },\n        \"jobs_bundle_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"read\": {\n                    \"global\": true,\n                    \"segments\": {\n                        \"jobs\": true\n                    }\n                },\n                \"create\": true,\n                \"update\": true,\n                \"delete\": true\n            }\n        },\n        \"tasks_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"create\": true,\n                \"delete\": true,\n                \"update\": true,\n                \"read\": {\n                    \"global\": true,\n                    \"segments\": {\n                        \"all_jobs\": true,\n                        \"only_assigned_jobs\": false,\n                        \"history\": true,\n                        \"assets\": true,\n                        \"notes\": true\n                    }\n                },\n                \"filters\": true\n            }\n        },\n        \"dashboard\": {\n            \"global\": true,\n            \"segments\": {\n                \"stats\": true,\n                \"tasks\": true,\n                \"staff\": true,\n                \"clients\": true,\n                \"search\": true,\n                \"profile_update\": true\n            }\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/roles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Roles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/roles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Role By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/roles/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "670511da84fcab9f3e2c0127"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Role",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Manager\",\n    \"permissions\": {\n        \"full_access\": true,\n        \"clients_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"create\": true,\n                \"update\": true,\n                \"delete\": true\n            }\n        },\n        \"manage_staff_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"invites\": {\n                    \"global\": true,\n                    \"segments\": {\n                        \"creation\": true,\n                        \"update\": true,\n                        \"delete\": true\n                    }\n                },\n                \"delete\": true,\n                \"update\": true\n            }\n        },\n        \"designations_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"create\": true,\n                \"update\": true,\n                \"delete\": true\n            }\n        },\n        \"jobs_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"create\": true,\n                \"update\": true,\n                \"delete\": true\n            }\n        },\n        \"jobs_bundle_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"read\": {\n                    \"global\": true,\n                    \"segments\": {\n                        \"jobs\": true\n                    }\n                },\n                \"create\": true,\n                \"update\": true,\n                \"delete\": true\n            }\n        },\n        \"tasks_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"create\": true,\n                \"delete\": true,\n                \"update\": true,\n                \"read\": {\n                    \"global\": true,\n                    \"segments\": {\n                        \"all_jobs\": true,\n                        \"only_assigned_jobs\": false,\n                        \"history\": true,\n                        \"assets\": true,\n                        \"notes\": true\n                    }\n                },\n                \"filters\": true\n            }\n        },\n        \"dashboard\": {\n            \"global\": true,\n            \"segments\": {\n                \"stats\": true,\n                \"tasks\": true,\n                \"staff\": true,\n                \"clients\": true,\n                \"search\": true,\n                \"profile_update\": true\n            }\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/roles/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-role-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Role",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/roles/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-role-id"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Project Module",
+			"item": [
+				{
+					"name": "Create Project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();",
+									"if (jsonData.data.token) {",
+									"    pm.collectionVariables.set('token', jsonData.data.token);",
+									"    pm.environment.set('token', jsonData.data.token);",
+									"}",
+									"if (jsonData.data.activeProject) {",
+									"    pm.collectionVariables.set('active_project_id', jsonData.data.activeProject._id);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Project xyz \",\n    \"description\": \"Project description xyz\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/projects/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Projects",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/projects",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Active Project",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/projects/active",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"active"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Members with Pagination",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/projects/members?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"members"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Invite Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"inviteToken\": \"replace-with-invite-token\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/projects/verify",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Join Project Using Invitation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();",
+									"if (jsonData.data.token) {",
+									"    pm.collectionVariables.set('token', jsonData.data.token);",
+									"    pm.environment.set('token', jsonData.data.token);",
+									"}",
+									"if (jsonData.data.activeProject) {",
+									"    pm.collectionVariables.set('active_project_id', jsonData.data.activeProject._id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"inviteToken\": \"replace-with-invite-token\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/projects/join",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"join"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transfer Ownership",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"newOwnerId\": \"replace-with-new-owner-id\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/projects/transfer",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Project Details",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Project Name\",\n    \"description\": \"Updated project description\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/projects",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Member from Project",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"memberId\": \"replace-with-member-id\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/projects/remove-member",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"remove-member"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Member Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"memberId\": \"replace-with-member-id\",\n    \"newRoleId\": \"replace-with-role-id\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/projects/change-role",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"change-role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Switch Project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();",
+									"if (jsonData.data.token) {",
+									"    pm.collectionVariables.set('token', jsonData.data.token);",
+									"    pm.environment.set('token', jsonData.data.token);",
+									"}",
+									"if (jsonData.data.activeProject) {",
+									"    pm.collectionVariables.set('active_project_id', jsonData.data.activeProject._id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"newProjectId\": \"replace-with-project-id\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/projects/switch",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"switch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deactivate Project",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/projects/deactivate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"deactivate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Project Invitations Module",
+			"item": [
+				{
+					"name": "Invite User to Project",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"invitee@example.com\",\n    \"roleId\": \"replace-with-role-id\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/projects/invitations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"invitations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Invitation",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"inviteToken\": \"replace-with-invite-token\",\n    \"newEmail\": \"new-email@example.com\",\n    \"newRole\": \"replace-with-role-id\",\n    \"newExpiryDate\": \"replace-with-expiry-date\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/projects/invitations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"invitations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Revoke Invitation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"inviteToken\": \"replace-with-invite-token\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/projects/invitations/revoke",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"invitations",
+								"revoke"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Invitations with Pagination",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/projects/invitations?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"invitations"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Join Requests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/projects/invitations/join-requests",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"invitations",
+								"join-requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Join Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"memberId\": \"replace-with-member-id\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/projects/invitations/reject-join-request",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"invitations",
+								"reject-join-request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Join Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"memberId\": \"replace-with-member-id\",\n    \"roleId\": \"replace-with-role-id\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/projects/invitations/approve",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"projects",
+								"invitations",
+								"approve"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Client Module",
+			"item": [
+				{
+					"name": "Create Client",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Client\",\n    \"email\": \"client@example.com\",\n    \"mobileNumbers\": [\"+91-1234567890\"],\n    \"businessName\": \"Client Business\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/clients",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Clients",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/clients",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Client By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/clients/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"clients",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-client-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Client",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Client Name\",\n    \"email\": \"updated@example.com\",\n    \"mobileNumbers\": [\"+91-9876543210\"],\n    \"businessName\": \"Updated Business Name\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/clients/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"clients",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-client-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Client",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/clients/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"clients",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-client-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore Client",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/clients/:id/restore",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"clients",
+								":id",
+								"restore"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-client-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Client Note",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"This is a new note for the client.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/clients/:id/notes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"clients",
+								":id",
+								"notes"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-client-id"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Status Pipeline Module",
+			"item": [
+				{
+					"name": "Create Status Pipeline",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Default Pipeline\",\n  \"startStatus\": \"Pending\",\n  \"statuses\": [\n\t\t{ \"name\": \"Pending\", \"type\": \"Pending\" },\n\t\t{ \"name\": \"In Progress\", \"type\": \"In Progress\" },\n\t\t{ \"name\": \"Completed\", \"type\": \"Completed\" },\n\t\t{ \"name\": \"Cancelled\", \"type\": \"Cancelled\" },\n\t\t{ \"name\": \"On Hold\", \"type\": \"On Hold\" },\n\t\t{ \"name\": \"Awaiting Approval\", \"type\": \"Awaiting Approval\" },\n\t\t{ \"name\": \"Reopened\", \"type\": \"Reopened\" },\n\t\t{ \"name\": \"Closed\", \"type\": \"Closed\" },\n\t\t{ \"name\": \"Reassigned\", \"type\": \"Reassigned\" }\n\t],\n  \"transitions\": [\n\t\t{ \"from\": \"Pending\", \"to\": [\"In Progress\", \"Cancelled\", \"On Hold\", \"Awaiting Approval\", \"Reassigned\"] },\n\t\t{ \"from\": \"In Progress\", \"to\": [\"Completed\", \"Cancelled\", \"On Hold\", \"Awaiting Approval\", \"Reassigned\"] },\n\t\t{ \"from\": \"On Hold\", \"to\": [\"In Progress\", \"Cancelled\", \"Awaiting Approval\", \"Reassigned\"] },\n\t\t{ \"from\": \"Awaiting Approval\", \"to\": [\"In Progress\", \"Cancelled\", \"On Hold\", \"Reassigned\"] },\n\t\t{ \"from\": \"Reassigned\", \"to\": [\"In Progress\", \"Cancelled\", \"On Hold\", \"Awaiting Approval\"] },\n\t\t{ \"from\": \"Completed\", \"to\": [\"Reopened\"] },\n\t\t{ \"from\": \"Reopened\", \"to\": [\"In Progress\", \"Cancelled\", \"Completed\", \"Reassigned\"] }\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/status-pipelines",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"status-pipelines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Status Pipelines",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/status-pipelines?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"status-pipelines"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Status Pipeline",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/status-pipelines/{{pipeline_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"status-pipelines",
+								"{{pipeline_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Status Pipeline",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Pipeline Name\",\n  \"startStatus\": \"Pending\",\n  \"statuses\": [\n    { \"name\": \"Pending\", \"type\": \"Pending\" },\n    { \"name\": \"In Progress\", \"type\": \"In Progress\" },\n    { \"name\": \"Completed\", \"type\": \"Completed\" }\n  ],\n  \"transitions\": [\n    { \"from\": \"Pending\", \"to\": [\"In Progress\"] },\n    { \"from\": \"In Progress\", \"to\": [\"Completed\"] }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/status-pipelines/{{pipeline_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"status-pipelines",
+								"{{pipeline_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Status Pipeline",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/status-pipelines/{{pipeline_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"status-pipelines",
+								"{{pipeline_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Job Module",
+			"item": [
+				{
+					"name": "Create Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"New Job\",\n    \"description\": \"Job description\",\n    \"defaultAssignee\": \"assignee_id\",\n    \"defaultStatusPipeline\": \"pipeline_id\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/jobs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Jobs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/jobs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"jobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Job By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/jobs/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"jobs",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-job-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Job",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Job Title\",\n  \"description\": \"Updated job description\",\n  \"defaultAssignee\": \"new_assignee_id\",\n  \"defaultStatusPipeline\": \"new_pipeline_id\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/jobs/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"jobs",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-job-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Job",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/jobs/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"jobs",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-job-id"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Jobs Bundle Module",
+			"item": [
+				{
+					"name": "Create Jobs Bundle",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"New Jobs Bundle\",\n  \"description\": \"Description of the jobs bundle\",\n  \"jobs\": [\n    { \"job\": \"job_id_1\", \"overrides\": { \"title\": \"Custom Title for Job 1\" } },\n    { \"job\": \"job_id_2\" }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/jobs-bundles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"jobs-bundles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Jobs Bundles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/jobs-bundles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"jobs-bundles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Jobs Bundle By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/jobs-bundles/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"jobs-bundles",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-bundle-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Jobs Bundle",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Jobs Bundle\",\n  \"description\": \"Updated description\",\n  \"jobs\": [\n    { \"job\": \"updated_job_id_1\", \"overrides\": { \"title\": \"Updated Title for Job 1\" } },\n    { \"job\": \"updated_job_id_2\" }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/jobs-bundles/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"jobs-bundles",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-bundle-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Jobs Bundle",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/jobs-bundles/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"jobs-bundles",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-bundle-id"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Task Module",
+			"item": [
+				{
+					"name": "Create Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"New Task\",\n    \"description\": \"Task description\",\n    \"statusPipelineId\": \"status-pipeline-id\",\n    \"priority\": \"high\", //\"high\", \"medium\", \"normal\", \"low\"\n    \"jobs\": [\n        {\n            \"jobId\": \"job-id\",\n            \"title\": \"Job Title\",\n            \"description\": \"Job Description\",\n            \"assignee\": \"user-id\",\n            \"startTime\": \"2023-10-01T10:00:00Z\",\n            \"endTime\": \"2023-10-01T12:00:00Z\",\n            \"statusPipelineId\": \"status-pipeline-id\",\n            \"note\": \"Hello\", // Job Level\n            \"billable\": false\n        }\n    ],\n    \"assets\": [],\n    \"client\": \"client-id\",\n    \"note\": \"Hello\" //Task Level\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Task",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Task Title\",\n    \"description\": \"Updated description\",\n    \"priority\": \"medium\", //\"high\", \"medium\", \"normal\", \"low\"\n    \"assets\": [\n        \"asset-id-1\",\n        \"asset-id-2\"\n    ],\n    \"statusPipelineId\": \"status-pipeline-id\",\n    \"client\": \"new-client-id\",\n    \"note\": \"Hello\" //Task Level\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-task-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Tasks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks?page=1&limit=10&sortBy=updatedAt&sortOrder=desc&assignees=12345,67890&statuses=Active,Completed&startDate=2023-01-01&endDate=2023-12-31&billable=true&invoiceRaised=false&client=clientId&owner=ownerId&priority=high",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number for pagination"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of tasks per page"
+								},
+								{
+									"key": "sortBy",
+									"value": "updatedAt",
+									"description": "Field to sort by (e.g., createdAt, updatedAt)"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc",
+									"description": "Sort order (asc or desc)"
+								},
+								{
+									"key": "assignees",
+									"value": "12345,67890",
+									"description": "Comma-separated list of assignee IDs"
+								},
+								{
+									"key": "statuses",
+									"value": "Active,Completed",
+									"description": "Comma-separated list of task statuses"
+								},
+								{
+									"key": "startDate",
+									"value": "2023-01-01",
+									"description": "Start date for filtering tasks (YYYY-MM-DD)"
+								},
+								{
+									"key": "endDate",
+									"value": "2023-12-31",
+									"description": "End date for filtering tasks (YYYY-MM-DD)"
+								},
+								{
+									"key": "billable",
+									"value": "true",
+									"description": "Filter for billable tasks (true or false)"
+								},
+								{
+									"key": "invoiceRaised",
+									"value": "false",
+									"description": "Filter for tasks with invoices raised (true or false)"
+								},
+								{
+									"key": "client",
+									"value": "clientId",
+									"description": "Filter by client ID"
+								},
+								{
+									"key": "owner",
+									"value": "ownerId",
+									"description": "Filter by owner ID"
+								},
+								{
+									"key": "priority",
+									"value": "high",
+									"description": "Filter by priority (high, medium, normal, low)"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Task by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-task-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Note to Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"note\": \"This is a note for the task.\" //Required\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks/:id/note",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								":id",
+								"note"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-task-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Job to Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jobId\": \"job-id\",\n    \"title\": \"Job title\",\n    \"description\": \"Job description\",\n    \"assignee\": \"user-id\",\n    \"startTime\": \"2023-10-01T10:00:00Z\",\n    \"endTime\": \"2023-10-01T12:00:00Z\",\n    \"billable\": false,\n    \"note\": \"Hello\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks/:id/job",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								":id",
+								"job"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-task-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Job in Task",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Job Title\",\n    \"description\": \"Updated Job Description\",\n    \"assignee\": \"user-id\",\n    \"startTime\": \"2023-10-01T08:00:00Z\",\n    \"endTime\": \"2023-10-01T12:00:00Z\",\n    \"status\": \"Completed\",\n    \"statusPipelineId\": \"status-pipeline-id\",\n    \"note\": \"Hello\", //Job Level\n    \"billable\": true,\n    \"invoiceRaised\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks/:taskId/job/:jobId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								":taskId",
+								"job",
+								":jobId"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "replace-with-task-id"
+								},
+								{
+									"key": "jobId",
+									"value": "replace-with-job-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Note to Job in Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"note\": \"This is a note for the job.\" //Required\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks/:taskId/job/:jobId/note",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								":taskId",
+								"job",
+								":jobId",
+								"note"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "replace-with-task-id"
+								},
+								{
+									"key": "jobId",
+									"value": "replace-with-job-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel All Jobs in Task",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks/:id/cancel-jobs",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								":id",
+								"cancel-jobs"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-task-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Task History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks/:id/history",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								":id",
+								"history"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-task-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Job History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks/:taskId/job/:jobId/history",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								":taskId",
+								"job",
+								":jobId",
+								"history"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "replace-with-task-id"
+								},
+								{
+									"key": "jobId",
+									"value": "replace-with-job-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Assets to Task",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"assetIds\": [\n        \"asset-id-1\",\n        \"asset-id-2\"\n    ],\n    \"note\": \"Hello\" //Task Level\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks/:id/assets",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								":id",
+								"assets"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-task-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "postman-cloud:///1ef4ea88-9876-49c0-a9fb-d83a95a90f68"
+								},
+								{
+									"key": "documentName",
+									"value": "Tax certificate",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks/assets/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"assets",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Job from Task",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"note\": \"Hello\" //Task Level\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/tasks/{{taskId}}/job/{{jobId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{taskId}}",
+								"job",
+								"{{jobId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Asset from Task",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks/:taskId/asset/:assetId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								":taskId",
+								"asset",
+								":assetId"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "replace-with-task-id"
+								},
+								{
+									"key": "assetId",
+									"value": "replace-with-asset-id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Jobs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tasks/jobs/all?/page=1&limit=10&sortBy=updatedAt&sortOrder=desc&assignees=12345,67890&statuses=Active,Completed&startDate=2023-01-01&endDate=2023-12-31&billable=true&invoiceRaised=false&client=clientId&owner=ownerId&priority=high&taskIds=task1,task2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks",
+								"jobs",
+								"all"
+							],
+							"query": [
+								{
+									"key": "/page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of jobs per page"
+								},
+								{
+									"key": "sortBy",
+									"value": "updatedAt",
+									"description": "Field to sort by (e.g., createdAt, updatedAt)"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc",
+									"description": "Sort order (asc or desc)"
+								},
+								{
+									"key": "assignees",
+									"value": "12345,67890",
+									"description": "Comma-separated list of assignee IDs"
+								},
+								{
+									"key": "statuses",
+									"value": "Active,Completed",
+									"description": "Comma-separated list of job statuses"
+								},
+								{
+									"key": "startDate",
+									"value": "2023-01-01",
+									"description": "Start date for filtering jobs (YYYY-MM-DD)"
+								},
+								{
+									"key": "endDate",
+									"value": "2023-12-31",
+									"description": "End date for filtering jobs (YYYY-MM-DD)"
+								},
+								{
+									"key": "billable",
+									"value": "true",
+									"description": "Filter for billable jobs (true or false)"
+								},
+								{
+									"key": "invoiceRaised",
+									"value": "false",
+									"description": "Filter for jobs with invoices raised (true or false)"
+								},
+								{
+									"key": "client",
+									"value": "clientId",
+									"description": "Filter by client ID"
+								},
+								{
+									"key": "owner",
+									"value": "ownerId",
+									"description": "Filter by owner ID"
+								},
+								{
+									"key": "priority",
+									"value": "high",
+									"description": "Filter by job priority (high, medium, normal, low)"
+								},
+								{
+									"key": "taskIds",
+									"value": "task1,task2",
+									"description": "Comma-separated list of task IDs"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notification Module",
+			"item": [
+				{
+					"name": "List Notifications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/notifications?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "(Optional) The page number to retrieve. Defaults to 1."
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "(Optional) The number of notifications to return per page. Defaults to 10."
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Notification Details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/notifications/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "notification_id"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Notifications As Read",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"notificationIds\": [\"notification_id_1\", \"notification_id_2\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/notifications/mark-read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"mark-read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark All Notifications As Read",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/notifications/mark-all-read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"mark-all-read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Notifications",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"notificationIds\": [\"notification_id_1\", \"notification_id_2\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/notifications",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Unread Notification Count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/notifications/count/unread",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"count",
+								"unread"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search Module",
+			"item": [
+				{
+					"name": "Search",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"airnet\",\n    \"models\": {\n        \"clients\": {\n            \"returnKeys\": [\n                \"id\",\n                \"name\",\n                \"businessName\",\n                \"email\",\n                \"mobileNumbers\"\n            ],\n            \"searchKeys\": [\n                \"name\",\n                \"businessName\",\n                \"email\",\n                \"mobileNumbers\"\n            ]\n        },\n        \"tasks\": {\n            \"returnKeys\": [\n                \"id\",\n                \"title\",\n                \"description\",\n                \"notes\"\n            ],\n            \"searchKeys\": [\n                \"title\",\n                \"description\",\n                \"notes\"\n            ]\n        },\n        \"jobs\": {\n            \"returnKeys\": [\n                \"id\",\n                \"title\",\n                \"description\",\n                \"notes\",\n                \"taskId\",\n                \"status\"\n            ],\n            \"searchKeys\": [\n                \"title\",\n                \"description\",\n                \"notes\"\n            ]\n        },\n        \"users\": {\n            \"returnKeys\": [\n                \"id\",\n                \"name\",\n                \"email\"\n            ],\n            \"searchKeys\": [\n                \"name\",\n                \"email\"\n            ]\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/search",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Permissions Module",
+			"item": [
+				{
+					"name": "Get Global Permissions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Global Permissions",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"permissions\": {\n        \"full_access\": true,\n        \"clients_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"create\": true,\n                \"update\": true,\n                \"delete\": true\n            }\n        },\n        \"manage_staff_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"invites\": {\n                    \"global\": true,\n                    \"segments\": {\n                        \"creation\": true,\n                        \"update\": true,\n                        \"delete\": true\n                    }\n                },\n                \"delete\": true,\n                \"update\": true\n            }\n        },\n        \"designations_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"create\": true,\n                \"update\": true,\n                \"delete\": true\n            }\n        },\n        \"jobs_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"create\": true,\n                \"update\": true,\n                \"delete\": true\n            }\n        },\n        \"jobs_bundle_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"read\": {\n                    \"global\": true,\n                    \"segments\": {\n                        \"jobs\": true\n                    }\n                },\n                \"create\": true,\n                \"update\": true,\n                \"delete\": true\n            }\n        },\n        \"tasks_menu\": {\n            \"global\": true,\n            \"segments\": {\n                \"create\": true,\n                \"delete\": true,\n                \"update\": true,\n                \"read\": {\n                    \"global\": true,\n                    \"segments\": {\n                        \"all_jobs\": true,\n                        \"only_assigned_jobs\": false,\n                        \"history\": true,\n                        \"assets\": true,\n                        \"notes\": true\n                    }\n                },\n                \"filters\": true\n            }\n        },\n        \"dashboard\": {\n            \"global\": true,\n            \"segments\": {\n                \"stats\": true,\n                \"tasks\": true,\n                \"staff\": true,\n                \"clients\": true,\n                \"search\": true,\n                \"profile_update\": true\n            }\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Email Template Module",
+			"item": [
+				{
+					"name": "Update or Create Email Template",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Welcome Email",
+									"type": "text"
+								},
+								{
+									"key": "subject",
+									"value": "Welcome to Our Service",
+									"type": "text"
+								},
+								{
+									"key": "html",
+									"value": "<h1>Welcome</h1><p>We are glad to have you!</p>",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "htmlFile",
+									"type": "file",
+									"src": "welcome-email.html"
+								},
+								{
+									"key": "NOTE",
+									"value": "Either Send html or htmlfile",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/emails/email",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emails",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Email Templates",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/emails/email",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emails",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Email Template by Name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/emails/email?name=new-job-details",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emails",
+								"email"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "new-job-details"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Dummy Email",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"from\": \"Test\",\n    \"to\": \"developmentairnet@gmail.com\",\n    // \"subject\": \"Test Email\",\n    // \"html\": \"Staff Inactivity\", // Either send [subject and html] OR [templateName] \n    \"templateName\": \"security-alert\",\n    \"props\": { //Information you want to replace in email \n          \"staffName\": \"John Doe\",\n        \"staffEmail\": \"johndoe@example.com\",\n        \"staffPassword\": \"password123\",\n        \"updatedstaffName\":\"Michael\",\n        \"updatedEmail\": \"example@gmail.com\",\n        \"updatedPassword\": \"password456\"\n    }}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/emails/email/send-dummy",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emails",
+								"email",
+								"send-dummy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Email Asset",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"value": "",
+									"type": "file"
+								},
+								{
+									"key": "fileName",
+									"value": "custom-asset-name",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/emails/email-assets/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emails",
+								"email-assets",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Email Asset",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/emails/email-assets/:objectName",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emails",
+								"email-assets",
+								":objectName"
+							],
+							"variable": [
+								{
+									"key": "objectName",
+									"value": "example-asset-name.png"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Email Assets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/emails/email-assets",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emails",
+								"email-assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Exempted Emails",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer paSSpaSS@1234",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/emails/exempted-emails",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emails",
+								"exempted-emails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add in Exempted Emails",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer paSSpaSS@1234",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"emails\": [\"samrathdeep.airnetdevelopment@gmail.com\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/emails/add-exempted-emails",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"emails",
+								"add-exempted-emails"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dashboard Module",
+			"item": [
+				{
+					"name": "Jobs Count",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/dashboard/jobsCount?self=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"jobsCount"
+							],
+							"query": [
+								{
+									"key": "self",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tasks Count",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/dashboard/tasksCount?self=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"tasksCount"
+							],
+							"query": [
+								{
+									"key": "self",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recent Jobs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/dashboard/jobs?self=true&count=5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"jobs"
+							],
+							"query": [
+								{
+									"key": "self",
+									"value": "true"
+								},
+								{
+									"key": "count",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recent Tasks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/dashboard/tasks?self=true&count=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "self",
+									"value": "true"
+								},
+								{
+									"key": "count",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recent Clients",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/dashboard/clients?count=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"dashboard",
+								"clients"
+							],
+							"query": [
+								{
+									"key": "count",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:2552/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "email",
+			"value": "er.sukhpreet18@gmail.com",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "paSSpaSS",
+			"type": "string"
+		},
+		{
+			"key": "new_password",
+			"value": "newpassword123",
+			"type": "string"
+		},
+		{
+			"key": "verification_code",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "active_project_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}

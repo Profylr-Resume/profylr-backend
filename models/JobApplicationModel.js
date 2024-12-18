@@ -2,10 +2,12 @@ import mongoose from "mongoose";
 
 
 const jobSchema=new mongoose.Schema({
+
 	userId:{
 		type:mongoose.Schema.Types.ObjectId,
 		ref:"User"
 	},
+
 	companyName:{
 		type:String,
 		required:[true,"Company Name is required"]
@@ -20,7 +22,7 @@ const jobSchema=new mongoose.Schema({
 		enum: ["Applied", "Interview Scheduled", "Offer Received", "Rejected"]
 	},
 	resume:{
-		type:mongoose.Schema.Types.ObjectId,
+		type:mongoose.Schema.Types.Mixed,
 		ref:"Resume",
 		required:[true,"Resume is required"]
 	},
