@@ -114,7 +114,7 @@ export const getEventHandler = async (req) => {
 			}
 		},
 		{
-			$sort: { _id: 1 } // Sort by date in ascending order
+			$sort: { _id: -1 } // Sort by date in ascending order
 		}
 	];
 
