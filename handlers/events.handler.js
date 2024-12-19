@@ -101,8 +101,25 @@ export const getEventHandler = async (req) => {
 		matchConditions.recurrenceFrequency = { $regex: recurrenceFrequency, $options: "i" };
 	}
 
+	const pipeline = [
+		{
+			$match: matchConditions // Apply the dynamic match conditions
+		},
+		{
+			$group: {
+				_id: "$date", // Group by the date field
+				events: {
+					$push: "$$ROOT" // Push the entire document for each event
+				}
+			}
+		},
+		{
+			$sort: { _id: 1 } // Sort by date in ascending order
+		}
+	];
+
 	// Fetch events from the database
-	const events = await CALENDAR_EVENT.find(matchConditions);
+	const events = await CALENDAR_EVENT.aggregate(pipeline);
 
 	if (!events || events.length === 0) {
 		return { success: false, data: null };
