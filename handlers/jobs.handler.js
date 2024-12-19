@@ -71,6 +71,7 @@ export const updateJobHandler = async (req) => {
 	try {
 		const { id } = req.params;
 		const userId = req.user?._id;
+   
 
 		if (!id) {
 			return { success: false, error: "Job ID is required", data: null };
@@ -81,7 +82,7 @@ export const updateJobHandler = async (req) => {
 		}
 
 		// Validate request body
-		const { error, value } = jobValidationSchema.validate(req.body, { abortEarly: false });
+		const { error, value } = jobValidationSchema.validate({...req.body,userId}, { abortEarly: false });
 		if (error) {
 			return { success: false, error: error.details, data: null };
 		}
@@ -100,6 +101,7 @@ export const updateJobHandler = async (req) => {
 
 		// Track changes for jobHistory
 		const oldData = {
+    userId:job.userId,
 			companyName: job.companyName,
 			role: job.role,
 			status: job.status,
