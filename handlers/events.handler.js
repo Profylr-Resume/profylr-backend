@@ -76,7 +76,7 @@ export const getEventHandler = async (req) => {
 			matchConditions.startDate.$gte = new Date(startDate);
 		}
 		if (endDate) {
-			matchConditions.startDate.$lt = new Date(endDate); // Exclusive of endDate
+			matchConditions.endDate.$lt = new Date(endDate); // Exclusive of endDate
 		}
 	}
 
@@ -114,7 +114,7 @@ export const getEventHandler = async (req) => {
 			}
 		},
 		{
-			$sort: { _id: -1 } // Sort by date in ascending order
+			$sort: { _id: -1 } // Sort by date in descending order
 		}
 	];
 
