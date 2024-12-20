@@ -76,7 +76,7 @@ export const getEventHandler = async (req) => {
 			matchConditions.startDate.$gte = new Date(startDate);
 		}
 		if (endDate) {
-			matchConditions.endDate.$lt = new Date(endDate); // Exclusive of endDate
+			matchConditions.startDate.$lt = new Date(endDate); // Exclusive of endDate
 		}
 	}
 
