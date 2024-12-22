@@ -1,18 +1,22 @@
-import CALENDAR_EVENT from "../../models/CalendarEventsModel.js";
-import jobHistoryModel from "../../models/JobHistoryModel.js";
-import jobApplicationModel from "../../models/JobApplicationModel.js";
 import { internalServerError, missingFieldsError, notFoundError } from "../../utils/errors.utils.js";
 import { eventExecutedSuccessfully } from "../../utils/success.utils.js";
-import jobValidationSchema from "../../validations/jobs.validate.js";
-import USER from "../../models/User.js";
-import mongoose from "mongoose";
 import { createJobHandler, deleteAllJobsHandler, deleteJobHandler, getJobHandler, updateJobHandler } from "../../handlers/jobs.handler.js";
 
 // Job Creation
 
 export const createJobController = async (req, res) => {
+
+	const userId = req.user?._id;
+
+	if (!userId) {
+		return res.status(400).json({
+			message: "user not present.",
+			status: "error"
+		});
+	}
 	try {
-		const { success, error, data } = await createJobHandler(req);
+
+		const { success, error, data } = await createJobHandler(req.body,userId);
 
 		if (!success) {
 			return res.status(400).json({

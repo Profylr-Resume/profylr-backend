@@ -6,11 +6,20 @@ import jobApplicationModel from "../../models/JobApplicationModel.js";
 import calendarEventValidationSchema from "../../validations/calendarEvents.validate.js";
 import mongoose from "mongoose";
 import { createEventHandler, deleteAllEventHandler, deleteEventHandler, getEventHandler, updateEventHandler } from "../../handlers/events.handler.js";
+import { isUserIdPresent } from "../../utils/user.utils.js";
 
 
 export const createCalendarEvent = async (req, res) => {
+
+	// console.log(req);
+	const idPresent = isUserIdPresent(req);
+
+	if(!idPresent){
+		return missingFieldsError(res,"Did not recieved User Id");
+	}
+
 	try {
-		const { success, data, error } = await createEventHandler(req);
+		const { success, data, error } = await createEventHandler(req.body,idPresent);
 
 		if (!success) {
 			// Return the error message if any
@@ -46,7 +55,6 @@ export const createCalendarEvent = async (req, res) => {
  */
 
 
-
 /**
  * Filters are based on below parameter
  *  id--> eventId,
@@ -71,12 +79,16 @@ export const createCalendarEvent = async (req, res) => {
  * recurrenceFrequency=Daily
 
 
-
-
 */
 export const getCalendarEventsController = async (req, res) => {
+
+	const idPresent = isUserIdPresent(req);
+
+	if(!idPresent){
+		return missingFieldsError(res,"Did not recieved User Id");
+	}
 	try {
-		const { success, data } = await getEventHandler(req);
+		const { success, data } = await getEventHandler(req.query,idPresent);
 
 		if (!success) {
 			return notFoundError(res, "No events found");
@@ -87,7 +99,6 @@ export const getCalendarEventsController = async (req, res) => {
 		return internalServerError(res, error.message);
 	}
 };
-
 
 
 export const updateCalendarEventController = async (req, res) => {

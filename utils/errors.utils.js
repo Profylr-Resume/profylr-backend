@@ -5,7 +5,7 @@ export const missingFieldsError = (res,error)=>{
 	return res.status(400).json({
 		data: null,
 		message: "Missing or invalid fields",
-		error: error ? error.details.map((detail) => detail.message) : "error"
+		error: error ? error?.details?.map((detail) => detail.message) : "error"
 	});
 };
 

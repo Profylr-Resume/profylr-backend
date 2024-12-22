@@ -15,16 +15,22 @@ const calendarEventSchema = new mongoose.Schema(
 			index: true
 		},
 
+		// required
 		title: {
 			type: String,
 			required: true,
 			trim: true,
 			maxlength: 100
 		},
+
+		// required
 		description :{
 			type:String,
-			maxlength:500
+			maxlength:500,
+			required:true
 		},
+
+		// required
 		date: {
 			type: Date,
 			required: true

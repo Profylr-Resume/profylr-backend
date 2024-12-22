@@ -4,19 +4,10 @@ import jobApplicationModel from "../models/JobApplicationModel.js";
 import jobValidationSchema from "../validations/jobs.validate.js";
 import jobHistoryModel from "../models/JobHistoryModel.js";
 
-export const createJobHandler = async (req) => {
+export const createJobHandler = async (data,userId) => {
 	try {
-		const userId = req.user?._id;
 
-		if (!userId) {
-			return {
-				success: false,
-				error: "User ID is required.",
-				data: null
-			};
-		}
-
-		const { error, value } = jobValidationSchema.validate(req.body, { abortEarly: false });
+		const { error, value } = jobValidationSchema.validate(data, { abortEarly: false });
 
 		if (error) {
 			return {
@@ -101,7 +92,7 @@ export const updateJobHandler = async (req) => {
 
 		// Track changes for jobHistory
 		const oldData = {
-    userId:job.userId,
+			userId:job.userId,
 			companyName: job.companyName,
 			role: job.role,
 			status: job.status,

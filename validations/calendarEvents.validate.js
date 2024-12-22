@@ -2,6 +2,7 @@ import {z} from "zod";
 
 // z validation schema for calendar events
 const calendarEventValidationSchema = z.object({
+
 	jobId: z.string().optional(),
   
 	title: z.string()
@@ -23,11 +24,11 @@ const calendarEventValidationSchema = z.object({
   
 	endTime: z.string()
 		.datetime({ message: "End time must be a valid ISO date." })
-		.optional()
-		.refine((endTime, ctx) => {
-			const startTime = ctx.parent.startTime;
-			return startTime && Date.parse(endTime) > Date.parse(startTime);
-		}, { message: "End time must be after start time." }),
+		.optional(),
+	// .refine((endTime, ctx) => {
+	// 	const startTime = ctx.parent.startTime;
+	// 	return startTime && Date.parse(endTime) > Date.parse(startTime);
+	// }, { message: "End time must be after start time." }),
   
 	eventType: z.enum(["Meeting", "Task", "Reminder", "Other"],{message:"Selected event type is not registered."}).default("Other"),
   

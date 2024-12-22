@@ -14,6 +14,7 @@ const jobValidationSchema = Joi.object({
 		"any.required": "Role is required."
 	}),
     
+	
 	status: Joi.string()
 		.valid("Applied", "Interview Scheduled", "Offer Received", "Rejected")
 		.default("Applied")
@@ -52,7 +53,8 @@ const jobValidationSchema = Joi.object({
 	events: Joi.array().items(
 		Joi.object({
 			date: Joi.date().required(),
-			note: Joi.string().required()
+			title:Joi.string().required(),
+			description:Joi.string().required()
 		})
 	).optional()
 
