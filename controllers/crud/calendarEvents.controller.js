@@ -69,7 +69,7 @@ export const createCalendarEvent = async (req, res) => {
 /**
  * need to make only one GET endpoint.
  * Case 1 : add all the filters possible as of the schema provided 
- * CASE 2 : Start date and end date . it will more the less be covered in the above case . so if i porovide you some end date start 	  date you will provide me the events accordingly . 
+ * CASE 2 : Start date and end date . it will more the less be covered in the above case . so if i provide you some end date start 	  date you will provide me the events accordingly . 
  * if startDate given => then events after it
  * if end date given => then events after that
  * if both => events within that . 
