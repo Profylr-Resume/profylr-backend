@@ -11,7 +11,21 @@ const resumeFormSchema = new Schema({
 	education:educationSchema,
 	skills:[skillSchema],
 	projects: [projectSchema],
-	experiences:[experienceSchema]
+	experiences:[experienceSchema],
+	path:{
+		originalName:{
+			type:String,
+			required:true
+		},
+		mimeType:{
+			type:String,
+			required:true
+		},
+		base64:{
+			type:String,
+			required:true
+		}
+	}
 });
 
 
