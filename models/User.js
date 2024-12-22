@@ -43,15 +43,7 @@ const userSchema = new Schema({
 				ref: "Persona"
 			}
 		}
-	],
-	jobs:[{
-		type:mongoose.Schema.Types.ObjectId,
-		ref:"jobApplications"
-	}],
-	events:[{
-		type:mongoose.Schema.Types.ObjectId,
-		ref:"calendarEvents"
-	}]
+	]
 }); 
 
 /* The pre hook runs before the save event on the schema. 
