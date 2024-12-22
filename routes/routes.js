@@ -4,6 +4,7 @@ import authRoutes from "./auth.routes.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import jobRoutes from "./job.routes.js";
 import eventRoutes from "./calendarEvents.routes.js";
+import uploadRoutes from "./upload.routes.js";
 
 const router = Router();
 
@@ -14,5 +15,7 @@ router.use("/auth" , authRoutes);
 router.use("/jobs",authMiddleware,jobRoutes);
 
 router.use("/events",eventRoutes);
+
+router.use("/file",uploadRoutes);
 
 export default router;
