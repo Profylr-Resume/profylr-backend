@@ -1,4 +1,4 @@
-import TEMPLATE from "../models/Template.js";
+import TEMPLATE from "../models/admin/Template.js";
 import templateValidation from "../validations/template.validate.js";
 
 

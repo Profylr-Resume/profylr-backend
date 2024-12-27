@@ -47,11 +47,10 @@ export const createEventHandler = async (data,userId) => {
 	}
 };
 
-export const getEventHandler = async (req) => {
-	
-	const {id,startDate,endDate,jobId,eventType,priority,isRecurring,recurrenceFrequency} = req.query;
+export const getEventHandler = async (queries,userId) => {
 
-	const userId = req.user?._id;
+	const {id,startDate,endDate,jobId,eventType,priority,isRecurring,recurrenceFrequency} = queries;
+
 
 	// Validate userId
 	if (!userId) {

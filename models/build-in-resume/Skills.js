@@ -41,45 +41,23 @@ export const skillSchema = new Schema({
 	}
 });
 
-// Main skills section schema
-export const skillsSchema = new Schema({
-
-	skills: [skillSchema]
-	// Optional: For grouping skills by categories with custom ordering
-	// categoryOrder: {
-	// 	type: [String],
-	// 	default: [
-	// 		"Programming Languages",
-	// 		"Frameworks & Libraries",
-	// 		"Databases",
-	// 		"Tools & Platforms",
-	// 		"Soft Skills",
-	// 		"Languages",
-	// 		"Certifications",
-	// 		"Other"
-	// 	]
-	// }
-
-}, {
-	timestamps: true
-});
 
 // Indexes for better query performance
 // skillsSchema.index({ userId: 1, version: 1 });
 // skillsSchema.index({ "skills.category": 1 });
 
 // Optional: Virtual for calculating total skills count
-skillsSchema.virtual("totalSkills").get(function() {
-	return this.skills.length; 
-});
+// skillsSchema.virtual("totalSkills").get(function() {
+// 	return this.skills.length; 
+// });
 
-// Optional: Method to get skills by category
-skillsSchema.methods.getSkillsByCategory = function(category) {
-	return this.skills.filter(skill => skill.category === category);
-};
+// // Optional: Method to get skills by category
+// skillsSchema.methods.getSkillsByCategory = function(category) {
+// 	return this.skills.filter(skill => skill.category === category);
+// };
 
-// Optional: Method to get featured skills
-skillsSchema.methods.getFeaturedSkills = function() {
-	return this.skills.filter(skill => skill.featured);
-};
+// // Optional: Method to get featured skills
+// skillsSchema.methods.getFeaturedSkills = function() {
+// 	return this.skills.filter(skill => skill.featured);
+// };
 

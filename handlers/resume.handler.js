@@ -1,5 +1,5 @@
 import expressAsyncHandler from "express-async-handler";
-import RESUME from "../models/ResumeForm.js";
+import BUILD_IN_RESUME from "../models/BuildInResume.js";
 import { resumeFormValidation } from "../validations/resume.validate.js";
 
 
@@ -9,7 +9,7 @@ export const createResumeHandler = expressAsyncHandler(async (data) => {
 	if (error) {
 		return { success: false, error }; // Return validation error message
 	}
-	const savedResume = await RESUME.create(value);
+	const savedResume = await BUILD_IN_RESUME.create(value);
 	return { success: true, savedResume };
 });
   
@@ -20,7 +20,7 @@ export const updateResumeHandler = expressAsyncHandler(async (id, data) => {
 		return { success: false, error}; // Return validation error message
 	}
   
-	const updatedResume = await RESUME.findByIdAndUpdate(id, value, {
+	const updatedResume = await BUILD_IN_RESUME.findByIdAndUpdate(id, value, {
 		new: true, // Return the updated document
 		runValidators: true // Run Mongoose validators
 	});
@@ -34,7 +34,7 @@ export const updateResumeHandler = expressAsyncHandler(async (id, data) => {
   
 // Delete Resume by ID
 export const deleteResumeHandler = expressAsyncHandler(async (id) => {
-	const deletedResume = await RESUME.findByIdAndDelete(id);
+	const deletedResume = await BUILD_IN_RESUME.findByIdAndDelete(id);
 	if (!deletedResume) {
 		return { success: false, error: "Resume not found" };
 	}
@@ -44,13 +44,13 @@ export const deleteResumeHandler = expressAsyncHandler(async (id) => {
   
 // Get All Resumes
 export const getAllResumesHandler = expressAsyncHandler(async () => {
-	const resumes = await RESUME.find();
+	const resumes = await BUILD_IN_RESUME.find();
 	return { success: true, resumes };
 });
   
 // Get One Resume by ID
 export const getResumeByIdHandler = expressAsyncHandler(async (id) => {
-	const resume = await RESUME.findById(id);
+	const resume = await BUILD_IN_RESUME.findById(id);
 	if (!resume) {
 		return { success: false, error: "Resume not found" };
 	}
