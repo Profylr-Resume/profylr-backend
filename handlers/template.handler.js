@@ -1,4 +1,4 @@
-import TEMPLATE from "../models/Template.js";
+import TEMPLATE from "../models/admin/Template.js";
 import templateValidation from "../validations/template.validate.js";
 
 
@@ -87,8 +87,3 @@ export const deleteTemplateHandler = async (templateId) => {
 	return { success: true, deletedTemplate };
 };
 
-
-// export const addTemplteToUserResumeHandler =async ({templateId,userResumeId,userId})=>{
-
-//     const {success,user ,error} = await 
-// };

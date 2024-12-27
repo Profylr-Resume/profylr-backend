@@ -2,48 +2,46 @@ import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 
 const userSchema = new Schema({
-	name:{
-		type:String,
-		required:true
+	profile: {
+		firstName: {
+			type: String, 
+			required: true 
+		},
+		lastName: { 
+			type: String, 
+			required: true
+		},
+		phone: String
 	},
-	email:{
-		type:String,
-		required:true,
-		unique:true
+	email: {
+		type: String,
+		required: true,
+		unique: true,
+		trim: true,
+		immutable : true
 	},
-	password:{
-		type:String,
-		required:true
+	password: {
+		type: String,
+		required: true
 	},
-	resumes:[
-		{
-			resume:{
-				type:Schema.Types.ObjectId, 
-				ref:"Resume"
-			},
-			template:{
-				type:Schema.Types.ObjectId, 
-				ref:"Template"
-			},
-			meta: [
-				{
-				  field: {
-						type: String
-				  },
-				  oldValue: {
-						type: String
-				  },
-				  newValue: {
-						type: String
-				  }
-				}
-			],
-			persona:{
-				type: Schema.Types.ObjectId,
-				ref: "Persona"
-			}
-		}
-	]
+
+	meta: { // only for backend purposes 
+		lastLogin: Date,
+		registrationDate: { 
+			type: Date, 
+			default: Date.now
+		},
+		isVerified: { 
+			type: Boolean,
+			default: false 
+		},
+		verificationToken: String,
+		resetPasswordToken: String,
+		resetPasswordExpires: Date
+	}
+	
+},{
+	timestamps:true
 }); 
 
 /* The pre hook runs before the save event on the schema. 

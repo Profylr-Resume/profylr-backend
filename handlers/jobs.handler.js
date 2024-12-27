@@ -2,21 +2,12 @@ import mongoose from "mongoose";
 import CALENDAR_EVENT from "../models/CalendarEventsModel.js";
 import jobApplicationModel from "../models/JobApplicationModel.js";
 import jobValidationSchema from "../validations/jobs.validate.js";
-import jobHistoryModel from "../models/JobHistoryModel.js";
+import jobHistoryModel from "../models/AuditLog.js";
 
-export const createJobHandler = async (req) => {
+export const createJobHandler = async (data,userId) => {
 	try {
-		const userId = req.user?._id;
 
-		if (!userId) {
-			return {
-				success: false,
-				error: "User ID is required.",
-				data: null
-			};
-		}
-
-		const { error, value } = jobValidationSchema.validate(req.body, { abortEarly: false });
+		const { error, value } = jobValidationSchema.validate(data, { abortEarly: false });
 
 		if (error) {
 			return {
@@ -65,7 +56,6 @@ export const createJobHandler = async (req) => {
 		};
 	}
 };
-
 
 export const updateJobHandler = async (req) => {
 	try {
@@ -234,7 +224,6 @@ export const deleteAllJobsHandler = async (req) => {
 		return { success: false, error: "Internal server error", data: null };
 	}
 };
-
 
 export const deleteJobHandler = async (req) => {
 	const { id } = req.params;

@@ -54,25 +54,27 @@ const personaSchema = new Schema({
 		enum: [
 			"Technical Skills", "Project Experience", "Academic Excellence",
 			"Leadership", "Research Publications", "Industry Knowledge"
-		]
+		],
+		required: true
 	},
 	goals: {
 		type: [String],
 		enum: [
 			"Career Transition", "Industry Switch", "Senior Position",
 			"Research Opportunity", "First Job", "Leadership Role"
-		]
+		],
+		required: true
 	},
-	careerReadiness: {
-		type: String,
-		enum: ["Job-Ready", "Skill Enhancement", "Higher Education", "Entrepreneurial"]
-	},
-	technicalAmbition: {
-		hasInternshipExperience: Boolean,
-		openToRemoteWork: Boolean,
-		interestedInStartupEcosystem: Boolean,
-		willingToRelocate: Boolean
-	},
+	// careerReadiness: {
+	// 	type: String,
+	// 	enum: ["Job-Ready", "Skill Enhancement", "Higher Education", "Entrepreneurial"]
+	// },
+	// technicalAmbition: {
+	// 	hasInternshipExperience: Boolean,
+	// 	openToRemoteWork: Boolean,
+	// 	interestedInStartupEcosystem: Boolean,
+	// 	willingToRelocate: Boolean
+	// },
 	templateStructure:{
 		sections:[{
 			serial_number: Number,

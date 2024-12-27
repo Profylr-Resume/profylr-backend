@@ -3,10 +3,11 @@ import calendarEventValidationSchema from "../validations/calendarEvents.validat
 import CALENDAR_EVENT from "../models/CalendarEventsModel.js";
 
 
-export const createEventHandler = async (req) => {
+export const createEventHandler = async (data,userId) => {
 	try {
+
 		// Validate the request body using Zod
-		const result = calendarEventValidationSchema.safeParse(req.body);
+		const result = calendarEventValidationSchema.safeParse(data);
 
 		// If validation fails, return error details
 		if (!result.success) {
@@ -18,7 +19,6 @@ export const createEventHandler = async (req) => {
 		}
 
 		const validData = result.data;
-		const userId = req.user?._id;
 
 		// Check if userId is available
 		if (!userId) {
@@ -47,11 +47,10 @@ export const createEventHandler = async (req) => {
 	}
 };
 
-export const getEventHandler = async (req) => {
-    
-	const {id,startDate,endDate,jobId,eventType,priority,isRecurring,recurrenceFrequency} = req.query;
+export const getEventHandler = async (queries,userId) => {
 
-	const userId = req.user?._id;
+	const {id,startDate,endDate,jobId,eventType,priority,isRecurring,recurrenceFrequency} = queries;
+
 
 	// Validate userId
 	if (!userId) {

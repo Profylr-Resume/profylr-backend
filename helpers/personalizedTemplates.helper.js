@@ -1,7 +1,7 @@
 import { getAllSectionsHandler } from "../handlers/sections.handler.js";
 import { getAllTemplatesHandler } from "../handlers/template.handler.js";
 import ResumeRecommendationEngine from "../logic/engine.js";
-import TEMPLATE from "../models/Template.js";
+import TEMPLATE from "../models/admin/Template.js";
 
 
 export const handleGenerateRecommendations = async (persona) => {

@@ -14,7 +14,7 @@ router.use("/auth" , authRoutes);
 
 router.use("/jobs",authMiddleware,jobRoutes);
 
-router.use("/events",eventRoutes);
+router.use("/events",authMiddleware,eventRoutes);
 
 router.use("/file",uploadRoutes);
 
