@@ -101,7 +101,7 @@ export const updateJobHandler = async (req) => {
 
 		// Track changes for jobHistory
 		const oldData = {
-    userId:job.userId,
+			userId:job.userId,
 			companyName: job.companyName,
 			role: job.role,
 			status: job.status,

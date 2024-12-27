@@ -12,6 +12,7 @@ const personaSchema = new Schema({
 		required: true,
 		enum: ["fresher", "intermediate", "experienced"]
 	},
+    
 	targetRole: {
 		type: String,
 		required: true,

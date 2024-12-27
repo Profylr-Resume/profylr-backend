@@ -1,10 +1,5 @@
-import CALENDAR_EVENT from "../../models/CalendarEventsModel.js";
 import { internalServerError, missingFieldsError, notFoundError } from "../../utils/errors.utils.js";
 import { eventExecutedSuccessfully } from "../../utils/success.utils.js";
-import USER from "../../models/User.js";
-import jobApplicationModel from "../../models/JobApplicationModel.js";
-import calendarEventValidationSchema from "../../validations/calendarEvents.validate.js";
-import mongoose from "mongoose";
 import { createEventHandler, deleteAllEventHandler, deleteEventHandler, getEventHandler, updateEventHandler } from "../../handlers/events.handler.js";
 
 
@@ -36,7 +31,7 @@ export const createCalendarEvent = async (req, res) => {
 /**
  * need to make only one GET endpoint.
  * Case 1 : add all the filters possible as of the schema provided 
- * CASE 2 : Start date and end date . it will more the less be covered in the above case . so if i porovide you some end date start 	  date you will provide me the events accordingly . 
+ * CASE 2 : Start date and end date .  it will more the less be covered in the abovecase . so if i porovide you some end date and start date you will provide me the events accordingly . 
  * if startDate given => then events after it
  * if end date given => then events after that
  * if both => events within that . 
@@ -44,7 +39,6 @@ export const createCalendarEvent = async (req, res) => {
  *  
  * CASE 3: Event Id => only that event.
  */
-
 
 
 /**
@@ -70,9 +64,6 @@ export const createCalendarEvent = async (req, res) => {
  * isRecurring=true&
  * recurrenceFrequency=Daily
 
-
-
-
 */
 export const getCalendarEventsController = async (req, res) => {
 	try {
@@ -87,7 +78,6 @@ export const getCalendarEventsController = async (req, res) => {
 		return internalServerError(res, error.message);
 	}
 };
-
 
 
 export const updateCalendarEventController = async (req, res) => {

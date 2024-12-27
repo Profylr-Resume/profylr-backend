@@ -1,13 +1,12 @@
 import mongoose from "mongoose";
 
 
-const jobSchema=new mongoose.Schema({
+const jobSchema= new mongoose.Schema({
 
 	userId:{
 		type:mongoose.Schema.Types.ObjectId,
 		ref:"User"
 	},
-
 	companyName:{
 		type:String,
 		required:[true,"Company Name is required"]
@@ -55,6 +54,6 @@ const jobSchema=new mongoose.Schema({
 
 },{	timestamps:true});
 
-const jobApplicationModel=mongoose.model("jobApplications",jobSchema);
+const jobApplicationModel = mongoose.model("jobApplications",jobSchema);
 
 export default jobApplicationModel;

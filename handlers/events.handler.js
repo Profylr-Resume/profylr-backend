@@ -48,6 +48,7 @@ export const createEventHandler = async (req) => {
 };
 
 export const getEventHandler = async (req) => {
+    
 	const {id,startDate,endDate,jobId,eventType,priority,isRecurring,recurrenceFrequency} = req.query;
 
 	const userId = req.user?._id;
