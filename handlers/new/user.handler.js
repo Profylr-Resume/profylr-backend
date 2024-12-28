@@ -25,7 +25,7 @@ export const updateUserHandler = expressAsyncHandler(async (userId, updatedData)
 	if (email !== null && email !== undefined) {updates.email = email;}
 
 	  // Find the user by ID
-	const user = await USER.findByIdAndUpdate(userId, updates, { new : true } );
+	const user = await USER.findByIdAndUpdate(userId, {$set : updates}, { new : true } );
   
 	if (!user) { // this will happen if document with that id is not found
 		return { success: false, error: "User not found" };

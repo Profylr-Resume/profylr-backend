@@ -17,7 +17,7 @@ const auditSchema = new Schema({
 	},
 	updatedBy: String // optional: user making the change
 });
-  
+
 const AUDIT_LOG = mongoose.model("AuditLog", auditSchema);
 
 export default AUDIT_LOG;

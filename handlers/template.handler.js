@@ -1,9 +1,9 @@
 import TEMPLATE from "../models/admin/Template.js";
 import templateValidation from "../validations/template.validate.js";
 
+// Basic CRUD
 
 export const createTemplateHandler = async (data) => {
-	// Sanitize the input data
 
 	// Validate the sanitized data
 	const { value, error } = templateValidation.validate(data);
@@ -19,14 +19,11 @@ export const createTemplateHandler = async (data) => {
 };
 
 export const updateTemplateHandler = async (templateId, data) => {
+
 	if (!templateId) {
-		return { success: false, error: "Missing template ID" };
+		return { success: false, error: "Missing template Id" };
 	}
 
-	// Sanitize the input data
-
-
-	// Validate the sanitized data
 	const { error, value } = templateValidation.validate(data);
 
 	if (error) {
@@ -47,6 +44,7 @@ export const updateTemplateHandler = async (templateId, data) => {
 };
 
 export const getTemplateByIdHandler = async (templateId) => {
+
 	if (!templateId) {
 		return { success: false, error: "Missing template ID" };
 	}

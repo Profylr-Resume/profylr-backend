@@ -1,18 +1,18 @@
 import Joi from "joi";
 
 const templateValidation = Joi.object({
-	name: Joi.string().optional(), // Optional, as in the provided Joi schema
-	description: Joi.string().optional(), // Optional
-	html: Joi.string().optional(), // Optional
+	name: Joi.string().required("Every template should have a name.") , 
+	description: Joi.string().optional(), 
+	html: Joi.string().optional(), 
 	sections: Joi.array()
 	  .items(
 			Joi.object({
-		  section: Joi.string().required(), // Aligns with `Schema.Types.ObjectId` (reference)
-		  html: Joi.string().required() // Matches the Mongoose schema
+		        section: Joi.string().required(), // Section ObjectId for reference
+		        html: Joi.string().required() 
 			})
 	  )
 	  .required(), // Ensure sections array is always provided
-	thumbnail: Joi.string().optional() // Add this since it exists in the Mongoose schema
+	thumbnail: Joi.string().optional() 
 });
   
 export default templateValidation;

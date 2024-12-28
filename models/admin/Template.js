@@ -2,7 +2,12 @@ import mongoose, { Schema } from "mongoose";
 
 
 const templateSchema = new Schema({
-	name:String,
+	name:{
+		type:String,
+		required:true,
+		unique:true,
+		trim:true
+	},
 	description:String,
 	html:String,
 	sections:[{
