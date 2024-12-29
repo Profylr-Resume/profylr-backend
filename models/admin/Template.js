@@ -20,7 +20,10 @@ const templateSchema = new Schema({
 			required:true
 		}
 	}],
-	thumbnail:String
+	thumbnail:String,
+	categories:[String],
+	departments:[String],
+	isActive: { type: Boolean, default: true }
 });
 
 const TEMPLATE = mongoose.model("Template",templateSchema);
