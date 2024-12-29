@@ -2,7 +2,7 @@ import expressAsyncHandler from "express-async-handler";
 import RESUME_SECTION from "../../models/admin/ResumeSection.js";
 import { validateIncomingData } from "../../utils/validations.js";
 import ApiError from "../../utils/errorHandlers.js";
-import { validateResumeSectionForCreation } from "../../validations/resumeSections.validate.js";
+import { validateResumeSectionForCreation, validateResumeSectionForUpdate } from "../../validations/resumeSections.validate.js";
 
 
 // creating a new section with one-one tag for category and department
@@ -27,7 +27,7 @@ export const createResumeSectionHandler = expressAsyncHandler(async (data) => {
   
 //  get section on the basis of filters
 // Filters : category tag , department tag , name  (GET THESE IN PARAMS)
-export const getResumeSectionsHandler = expressAsyncHandler(async ({ categories, departments, name } ) => {l;
+export const getResumeSectionsHandler = expressAsyncHandler(async ({ categories, departments, name } ) => {
 	// assuming if multiple are sent => then intersection will be the result
 
 	const query = {};
@@ -75,42 +75,38 @@ export const getResumeSectionByIdHandler = expressAsyncHandler( async (sectionId
 	return { success: true, data:section };
 });
 
+// need to give complete categories or departments array (whichever to  be changed) in order to update the document 
 export const updateSectionHandler = expressAsyncHandler( async (sectionId, updatedData) => {
 
 	if (!sectionId) {
-		return { success: false, error: "Missing section ID" };
+		throw new ApiError(400,"Section Id not given.");
 	}
 
-	
-	const { error, value } = resumeSectionValidation.validate(updatedData);
-
-	if (error) {
-		return { success: false, error };
-	}
+	const values = validateIncomingData(validateResumeSectionForUpdate,updatedData);
 
 	// Update the Section document by ID
-	const updatedSection = await RESUME_SECTION.findByIdAndUpdate(sectionId, value, { new: true });
+	const updatedSection = await RESUME_SECTION.findByIdAndUpdate(sectionId, {$set : values}, { new: true });
 
 	if (!updatedSection) {
-		return { success: false, error: "Section not found" };
+		throw new ApiError(404,"No section found with given section id.");
 	}
 
-	return { success: true, updatedSection };
+	return { success: true, data: updatedSection };
 });
 
 export const deleteSectionHandler = expressAsyncHandler( async (sectionId) => {
 
 	if (!sectionId) {
-		return { success: false, error: "Missing section ID" };
+		throw new ApiError(400,"Need section id for deletion of the section.");
 	}
 
 	// Find and delete the Section document by ID
 	const deletedSection = await RESUME_SECTION.findByIdAndDelete(sectionId);
 
 	if (!deletedSection) {
-		return { success: false, error: "Section not found" };
+		throw new ApiError(404,"No section found with that section id , or unable to delete section with given section id.");
 	}
 
-	return { success: true, deletedSection };
+	return { success: true, data : deletedSection };
 });
 
