@@ -1,14 +1,18 @@
+import ApiResponse from "../utils/responseHandlers";
+
 const errorHandler = (err, req, res, next) => {
-	console.error(err.stack);
+
+	const statusCode = err.statusCode || 500;
   
-	// Determine the appropriate HTTP status code based on the error
-	const statusCode = err.statusCode ? err.statusCode : 500;
-  
-	return res.status(statusCode).json({
-		message: err.message,
-		stack: process.env.NODE_ENV === "production" ? "🥞" : err.stack,
-		data:null
-	});
+	return ApiResponse.error(
+		res,
+		err.message || "Internal Server Error",
+		statusCode,
+		process.env.NODE_ENV === "development" ? {
+		  stack: err.stack,
+		  errors: err.errors
+		} : undefined
+	  );
 };
   
 export default errorHandler;

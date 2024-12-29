@@ -20,7 +20,7 @@ export const createResumeHandler = expressAsyncHandler(async (data) => {
 // Update Resume by ID
 export const updateResumeHandler = expressAsyncHandler(async (id, data) => {
 
-	const { error, value } = BuildInResumeValidation.validate(data);
+	const { error, value } = buildInResumeValidation.validate(data);
 
 	if (error) {
 		return { success: false, error}; // Return validation error message

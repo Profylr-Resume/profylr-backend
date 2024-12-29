@@ -1,50 +1,78 @@
 import expressAsyncHandler from "express-async-handler";
 import RESUME_SECTION from "../../models/admin/ResumeSection.js";
-import resumeSectionValidation from "../../validations/resumeSections.validate.js";
+import { validateIncomingData } from "../../utils/validations.js";
+import ApiError from "../../utils/errorHandlers.js";
+import { validateResumeSectionForCreation } from "../../validations/resumeSections.validate.js";
 
-// basic CRUD
 
-export const createSectionHandler = expressAsyncHandler( async (data) => {
+// creating a new section with one-one tag for category and department
+export const createResumeSectionHandler = expressAsyncHandler(async (data) => {
+	try {
+	  // Validate the incoming data
+	  const values = validateIncomingData(validateResumeSectionForCreation, data);
+  
+	  // Create the new section
+	  const newSection = await RESUME_SECTION.create(values);
+  
+	  return { success: true, data: newSection };
+	} catch (err) {
+	  // Database error handling
+	  if (err.name === "SequelizeUniqueConstraintError") {
+			throw new ApiError(400, "Duplicate section name is not allowed.");
+	  }
+	  // Re-throw the error to let expressAsyncHandler pass it to middleware
+	  throw err;
+	}
+});
+  
+//  get section on the basis of filters
+// Filters : category tag , department tag , name  (GET THESE IN PARAMS)
+export const getResumeSectionsHandler = expressAsyncHandler(async ({ categories, departments, name } ) => {l;
+	// assuming if multiple are sent => then intersection will be the result
 
-	// Validate the sanitized data
-	const { error, value } = resumeSectionValidation.validate(data);
+	const query = {};
 
-	if (error) {
-		return { success: false, error ,message:"Error in validation" };
+	if(categories){ // will give only those which contain all the categories asked in combine. ||ly for departments
+		const categoryArray = Array.isArray(categories) ? categories : [categories];
+		query.categories = { $all : categoryArray };
 	}
 
-	// Create the new section
-	const newSection = await RESUME_SECTION.create(value);
+	if(departments){
+		const departmentArray = Array.isArray(departments) ? departments : [departments];
+		query.departments = { $all : departmentArray };
+	}
 
-	return { success: true, newSection };
-});
-
-export const getAllSectionsHandler = expressAsyncHandler(async () => {
+	if(name){
+		query.name = { $regex: name, $options: "i" }; // 'i' makes it case-insensitive
+	}
 	
+	// query = {categories:{$all:["Finance"]}}
+
 	// Fetch all sections
-	const sections = await RESUME_SECTION.find();
+	const sections = await RESUME_SECTION.find(query);
 
 	if (!sections || sections.length === 0) {
-		return { success: true, error: "No sections found.", message:"No sections found." };
+		return ApiError(404,"No section found after filters.");
 	}
 
-	return { success: true, sections };
+	return { success: true, data :sections };
 }) ;
 
-export const getSectionByIdHandler = expressAsyncHandler( async (sectionId) => {
+//  section by id Get this in path
+export const getResumeSectionByIdHandler = expressAsyncHandler( async (sectionId) => {
 	
 	if (!sectionId) {
-		return { success: false, error: "Missing section ID" , message: "Missing Section id." };
+		throw new ApiError(400,"Section ID not given");
 	}
 
 	// Find the Section document by ID
 	const section = await RESUME_SECTION.findById(sectionId);
 
 	if (!section) {
-		return { success: false, error: "Section not found", message:"Section not found" };
+		throw new ApiError(404,"Section not found with provided section Id.");
 	}
 
-	return { success: true, section };
+	return { success: true, data:section };
 });
 
 export const updateSectionHandler = expressAsyncHandler( async (sectionId, updatedData) => {
