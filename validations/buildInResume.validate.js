@@ -1,49 +1,52 @@
 import Joi from "joi";
+import { makeFieldsRequired } from "../utils/mongoDb";
 
-// Basic Info Schema
-const basicInfoValidation = Joi.object({
-	name: Joi.string().required().min(2),
+// 1
+const personalInfoValidation = Joi.object({
+	firstName: Joi.string().min(2),
+	lastName: Joi.string().min(2),
 	github: Joi.string().uri(),
+	portfolio: Joi.string().uri(),
 	linkedIn: Joi.string().uri(),
-	email: Joi.string().email().required(),
-	phoneNumber: Joi.string().pattern(/^\+?[\d\s-]+$/).required()
+	email: Joi.string().email(),
+	contactNumber: Joi.string().pattern(/^\+?[\d\s-]+$/)
 });
 
-// Education Schema
+// 2
 const educationValidation = Joi.object({
 	underGraduate: Joi.object({
-		instituteName: Joi.string().required(),
-		field: Joi.string().required(),
-		yearOfPassing: Joi.string().pattern(/^\d{4}$/).required(),
-		result: Joi.string().required()
-	}).required(),
+		instituteName: Joi.string(),
+		field: Joi.string(),
+		yearOfPassing: Joi.string().pattern(/^\d{4}$/),
+		result: Joi.string()
+	}),
 	twelfthGrade: Joi.object({
-		instituteName: Joi.string().required(),
-		field: Joi.string().required(),
-		yearOfPassing: Joi.string().pattern(/^\d{4}$/).required(),
-		result: Joi.string().required()
-	}).required(),
+		instituteName: Joi.string(),
+		field: Joi.string(),
+		yearOfPassing: Joi.string().pattern(/^\d{4}$/),
+		result: Joi.string()
+	}),
 	tenthGrade: Joi.object({
-		instituteName: Joi.string().required(),
-		yearOfPassing: Joi.string().pattern(/^\d{4}$/).required(),
-		result: Joi.string().required()
-	}).required()
+		instituteName: Joi.string(),
+		yearOfPassing: Joi.string().pattern(/^\d{4}$/),
+		result: Joi.string()
+	})
 });
 
-// Experience Schema
+// 3
 const experienceValidation = Joi.object({
-	organisationName: Joi.string().required(),
-	position: Joi.string().required(),
-	from: Joi.string().required().pattern(/^\d{4}-\d{2}$/),
+	organisationName: Joi.string(),
+	position: Joi.string(),
+	from: Joi.string().pattern(/^\d{4}-\d{2}$/),
 	to: Joi.string().pattern(/^\d{4}-\d{2}$/),
-	description: Joi.array().items(Joi.string()).min(1).required()
+	description: Joi.array().items(Joi.string()).min(1)
 });
 
-// Project Schema
+// 4
 const projectValidation = Joi.object({
-	name: Joi.string().required().min(3).trim(),
-	technologiesUsed: Joi.array().items(Joi.string()).min(1).required(),
-	from: Joi.string().required().pattern(/^\d{4}-\d{2}$/),
+	name: Joi.string().min(3).trim(),
+	technologiesUsed: Joi.array().items(Joi.string()).min(1),
+	from: Joi.string().pattern(/^\d{4}-\d{2}$/),
 	to: Joi.string().pattern(/^\d{4}-\d{2}$/).custom((value, helpers) => {
 		const from = helpers.state.ancestors[0].from;
 		if (new Date(value) < new Date(from)) {
@@ -53,17 +56,17 @@ const projectValidation = Joi.object({
 	}, "End date validation"),
 	sourceCodeRepository: Joi.string().uri(),
 	liveLink: Joi.string().uri(),
-	description: Joi.array().items(Joi.string()).min(1).required()
+	description: Joi.array().items(Joi.string()).min(1)
 });
 
-// Skill Schema
+// 5
 const skillValidation = Joi.object({
-	name: Joi.string().required().trim(),
+	name: Joi.string().trim(),
 	proficiencyLevel: Joi.string()
 		.valid("Beginner", "Intermediate", "Advanced", "Expert")
 		.default("Intermediate"),
 	yearsOfExperience: Joi.number().min(0).max(50),
-	category: Joi.string().required().valid(
+	category: Joi.string().valid(
 		"Programming Languages",
 		"Frameworks & Libraries",
 		"Databases",
@@ -81,26 +84,57 @@ const skillValidation = Joi.object({
 	})
 });
 
-// Complete validatin for a build In resume
-const buildInResumeValidation = Joi.object({
-	basicInfo: basicInfoValidation.required(),
-	education: educationValidation.required(),
-	skills: Joi.array().items(experienceValidation).required(),
-	projects: Joi.array().items(projectValidation).required(),
-	experiences: Joi.array().items(skillValidation).required(),
-	persona: Joi.string().required("Need to attach persona with the resume."),
-	template: Joi.string().required("Need to attach a template id with the resume.")
+// 6
+const certificateValidation = Joi.object({
+	title:Joi.string(),
+	startDate: Joi.string(),
+	endDate: Joi.string()
 });
+
+// 7
+const achievementsAndAwardsValidation = Joi.object({
+    
+});
+
+// 8
+const extraCurricularValidation = Joi.object({
+    
+});
+
+// 9
+const publicationsAndResearchValidation = Joi.object({
+    
+});
+
+// Complete validatin for a build In resume
+const baseSchemaValidation = Joi.object({
+	personalInfo: personalInfoValidation,
+	summary: Joi.string().min(10).max(500), 
+	education: educationValidation,
+	technicalSkills: Joi.array().items(skillValidation),
+	workExperiences: Joi.array().items(experienceValidation),
+	projects: Joi.array().items(projectValidation),
+	certifications: Joi.array().items(certificateValidation),
+	achievementsAndAwards: Joi.array().items(achievementsAndAwardsValidation),
+	extraCurricular: Joi.array().items(extraCurricularValidation),
+	publicationsAndResearch : Joi.array().items(publicationsAndResearchValidation),
+	languagesKnown : Joi.array().items(Joi.string()),
+
+	persona: Joi.string(),
+	template: Joi.string()
+});
+
+// If you omit a main key (like mainKey1), its required fields won't matter.
+// If you include a main key, you must satisfy all its .required() fields.
 
 const requiredFields = [
 	// Basic Info
-	"basicInfo",
-	"basicInfo.name",
-	"basicInfo.email",
-	"basicInfo.phoneNumber",
+	"personalInfo",
+	"personalInfo.name",
+	"personalInfo.email",
+	"personalInfo.phoneNumber",
 
 	// Education
-	"education",
 	"education.underGraduate",
 	"education.underGraduate.instituteName",
 	"education.underGraduate.field",
@@ -117,21 +151,18 @@ const requiredFields = [
 	"education.tenthGrade.result",
 
 	// Experience
-	"experiences",
 	"experiences.organisationName",
 	"experiences.position",
 	"experiences.from",
 	"experiences.description",
 
 	// Projects
-	"projects",
 	"projects.name",
 	"projects.technologiesUsed",
 	"projects.from",
 	"projects.description",
 
 	// Skills
-	"skills",
 	"skills.name",
 	"skills.category",
 
@@ -140,12 +171,23 @@ const requiredFields = [
 	"template"
 ];
 
-const getBuildInSchemaValidation = (isUpdate=false)=>{
+const schemaValidation = (isUpdate=false)=>{
     
+	let schema = baseSchemaValidation;
+
+	if(!isUpdate){
+		schema = makeFieldsRequired(schema,requiredFields);
+	}
+	else{
+		schema = schema.fork(Object.keys(schema.describe().keys),(field)=>{
+			field.optional();
+		});
+	}
+	return schema;
 };
 
-
-export default buildInResumeValidation;
+export const validateBuildInResumeForCreation = schemaValidation(false); 
+export const validateBuildInResumeForUpdate = schemaValidation(true); 
 
 // const validResume = {
 // 	basicInfo: {

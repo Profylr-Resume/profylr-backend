@@ -2,10 +2,10 @@ import Joi from "joi";
 import { makeFieldsRequired } from "../utils/mongoDb";
 
 const baseSchemaValidation = Joi.object({
-	name: Joi.string().required("Need to provide a name to the section."),
+	name: Joi.string(),
 	description: Joi.string(),
-	categories: Joi.array().items(Joi.string()).required("Need to provide category tag for the section."),
-	departments : Joi.array().items(Joi.string()).required("Need to assign department tag for the section.")
+	categories: Joi.array().items(Joi.string()).min(1),
+	departments : Joi.array().items(Joi.string()).min(1)
 });
 
 

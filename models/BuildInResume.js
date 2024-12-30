@@ -9,11 +9,15 @@ import AUDIT_LOG from "./AuditLog.js";
 
 const BuildInResumeSchema = new Schema({
 
-	basicInfo:basicInfoSchema,
+	personalInfo:basicInfoSchema,
+	summary : {type:String},
 	education:educationSchema,
-	skills:[skillSchema],
+	technicalSkills:[skillSchema],
 	projects: [projectSchema],
-	experiences:[experienceSchema],
+	workExperiences:[experienceSchema],
+	certifications : String,
+	achievementsAndAwards : String,
+
 	persona : {
 		type:mongoose.Schema.Types.ObjectId,
 		ref:"Persona"
