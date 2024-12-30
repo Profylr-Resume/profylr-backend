@@ -1,6 +1,7 @@
 import PERSONA from "../../models/Persona.js";
 import expressAsyncHandler from "express-async-handler";
 import { validatePersonaForCreation } from "../../validations/persona.validate.js";
+import { validateIncomingData } from "../../utils/validations.js";
 
 
 // create persona - add tempalte structure
@@ -10,12 +11,7 @@ import { validatePersonaForCreation } from "../../validations/persona.validate.j
 
 export const createPersonaHandler = expressAsyncHandler( async (data) => {
 
-	// Validate the sanitized data
-	const { error, value } = validatePersonaForCreation.validate(data);
-
-	if (error) {
-		return { success: false, error };
-	}
+	const values = validateIncomingData(validatePersonaForCreation,data);
 
 	// need to add template structure here.
 	// ----------------LOGIC------------------

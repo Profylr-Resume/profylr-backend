@@ -4,7 +4,6 @@ import mongoose, { Schema } from "mongoose";
 // coz every unique persona will have that same ideal structure everytime.
 // we will just dont show it to the user
 
-
 const personaSchema = new Schema({
 	
 	experienceLevel: {
@@ -22,6 +21,7 @@ const personaSchema = new Schema({
 			"Product Manager", "Business Analyst", "Project Manager"
 		]
 	},
+
 	background: {
 		yearsOfExperience: {
 			type: Number,
@@ -49,6 +49,7 @@ const personaSchema = new Schema({
 			enum: ["Technology", "Finance", "Healthcare", "Education", "Retail", "Manufacturing", "Energy"]
 		}
 	},
+
 	strengths: {
 		type: [String],
 		enum: [
@@ -57,6 +58,7 @@ const personaSchema = new Schema({
 		],
 		required: true
 	},
+
 	goals: {
 		type: [String],
 		enum: [
@@ -65,16 +67,7 @@ const personaSchema = new Schema({
 		],
 		required: true
 	},
-	// careerReadiness: {
-	// 	type: String,
-	// 	enum: ["Job-Ready", "Skill Enhancement", "Higher Education", "Entrepreneurial"]
-	// },
-	// technicalAmbition: {
-	// 	hasInternshipExperience: Boolean,
-	// 	openToRemoteWork: Boolean,
-	// 	interestedInStartupEcosystem: Boolean,
-	// 	willingToRelocate: Boolean
-	// },
+	
 	templateStructure:{
 		sections:[{
 			serial_number: Number,

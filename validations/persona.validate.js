@@ -14,8 +14,8 @@ const personaBaseSchema = Joi.object({
 		hasCertifications: Joi.boolean(),
 		industries: Joi.array().items(Joi.string())
 	}),
-	strengths: Joi.array().items(Joi.string()),
-	goals: Joi.array().items(Joi.string())
+	strengths: Joi.array().items(Joi.string()).min(1) ,
+	goals: Joi.array().items(Joi.string()).min(1)
 });
 
 // Define additional fields that should be required on creation

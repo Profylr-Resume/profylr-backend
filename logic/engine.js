@@ -20,11 +20,13 @@ const roleCategories = {
 };
   
 class ResumeRecommendationEngine {
+
 	constructor() {
 		this.totalPageSpace = 1.0; // Represents one A4 page
 	}
   
 	generateRecommendations(persona) {
+		
 		const recommendations = {
 			sections: [],
 			sectionOrder: [],
