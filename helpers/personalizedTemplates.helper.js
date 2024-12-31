@@ -5,6 +5,7 @@ import TEMPLATE from "../models/admin/Template.js";
 
 
 export const handleGenerateRecommendations = async (persona) => {
+	
 	// Initialize the recommendation engine
 	const engine = new ResumeRecommendationEngine();
 

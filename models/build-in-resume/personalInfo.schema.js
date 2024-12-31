@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
 
-export const basicInfoSchema = new Schema({
+export const personaInfoSchema = new Schema({
 	name:String,
 	github:String,
 	linkedIn:String,

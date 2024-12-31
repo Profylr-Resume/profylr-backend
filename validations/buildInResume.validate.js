@@ -85,10 +85,31 @@ const skillValidation = Joi.object({
 });
 
 // 6
-const certificateValidation = Joi.object({
-	title:Joi.string(),
-	startDate: Joi.string(),
-	endDate: Joi.string()
+const certificationValidationSchema = Joi.object({
+	name: Joi.string().required().messages({
+	  "string.empty": "Name is required.",
+	  "any.required": "Name is a required field."
+	}),
+	issuingOrganization: Joi.string().required().messages({
+	  "string.empty": "Issuing organization is required.",
+	  "any.required": "Issuing organization is a required field."
+	}),
+	issueDate: Joi.date().iso().required().messages({
+	  "date.base": "Issue date must be a valid date.",
+	  "date.format": "Issue date must be in ISO format.",
+	  "any.required": "Issue date is a required field."
+	}),
+	expiryDate: Joi.date().iso().allow(null, "").messages({
+	  "date.base": "Expiry date must be a valid date.",
+	  "date.format": "Expiry date must be in ISO format."
+	}),
+	credentialId: Joi.string().allow(null, "").messages({
+	  "string.base": "Credential ID must be a string."
+	}),
+	url: Joi.string().uri().allow(null, "").messages({
+	  "string.uri": "URL must be a valid URI.",
+	  "string.base": "URL must be a string."
+	})
 });
 
 // 7

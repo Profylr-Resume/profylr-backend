@@ -1,22 +1,30 @@
 import mongoose, { Schema } from "mongoose";
-import {basicInfoSchema} from "./build-in-resume/BasicInfo.js";
-import { educationSchema } from "./build-in-resume/Education.js";
-import { experienceSchema } from "./build-in-resume/Experience.js";
-import { skillSchema } from "./build-in-resume/Skills.js";
-import { projectSchema } from "./build-in-resume/Projects.js";
 import AUDIT_LOG from "./AuditLog.js";
+import { certificationSchema } from "./build-in-resume/certification.schema.js";
+import { achievementSchema } from "./build-in-resume/achievementsAndAwards.schema.js";
+import { extraCurricularSchema } from "./build-in-resume/extraCurricular.schema.js";
+import { publicationSchema } from "./build-in-resume/publicationsAndResearch.schema.js";
+import { languageSchema } from "./build-in-resume/languagesKnown.schema.js";
+import { personaInfoSchema } from "./build-in-resume/personalInfo.schema.js";
+import { educationSchema } from "./build-in-resume/education.schema.js";
+import { skillSchema } from "./build-in-resume/technicalSkills.schema.js";
+import { projectSchema } from "./build-in-resume/projects.schema.js";
+import { experienceSchema } from "./build-in-resume/experience.schema.js";
 
-
+// need to add schema , Everytime a new section is created
 const BuildInResumeSchema = new Schema({
 
-	personalInfo:basicInfoSchema,
+	personalInfo:personaInfoSchema,
 	summary : {type:String},
-	education:educationSchema,
-	technicalSkills:[skillSchema],
-	projects: [projectSchema],
-	workExperiences:[experienceSchema],
-	certifications : String,
-	achievementsAndAwards : String,
+	education: educationSchema ,
+	technicalSkills:[ skillSchema ],
+	projects: [ projectSchema ],
+	workExperiences:[ experienceSchema],
+	certifications : [certificationSchema] ,
+	achievementsAndAwards : [achievementSchema] ,
+	extraCurricularActivities: [extraCurricularSchema] ,
+	publicationsAndResearch: [publicationSchema] ,
+	languagesKnown:[languageSchema],
 
 	persona : {
 		type:mongoose.Schema.Types.ObjectId,
