@@ -85,46 +85,51 @@ const skillValidation = Joi.object({
 });
 
 // 6
-const certificationValidationSchema = Joi.object({
-	name: Joi.string().required().messages({
-	  "string.empty": "Name is required.",
-	  "any.required": "Name is a required field."
-	}),
-	issuingOrganization: Joi.string().required().messages({
-	  "string.empty": "Issuing organization is required.",
-	  "any.required": "Issuing organization is a required field."
-	}),
-	issueDate: Joi.date().iso().required().messages({
-	  "date.base": "Issue date must be a valid date.",
-	  "date.format": "Issue date must be in ISO format.",
-	  "any.required": "Issue date is a required field."
-	}),
-	expiryDate: Joi.date().iso().allow(null, "").messages({
-	  "date.base": "Expiry date must be a valid date.",
-	  "date.format": "Expiry date must be in ISO format."
-	}),
-	credentialId: Joi.string().allow(null, "").messages({
-	  "string.base": "Credential ID must be a string."
-	}),
-	url: Joi.string().uri().allow(null, "").messages({
-	  "string.uri": "URL must be a valid URI.",
-	  "string.base": "URL must be a string."
-	})
+const certificationValidation= Joi.object({
+	name: Joi.string(),
+	issuingOrganization: Joi.string(),
+	issueDate: Joi.date().iso(),
+	expiryDate: Joi.date().iso().allow(null, ""),
+	credentialId: Joi.string().allow(null, ""),
+	url: Joi.string().uri().allow(null, "")
 });
 
 // 7
 const achievementsAndAwardsValidation = Joi.object({
-    
+	title: Joi.string(),
+	issuer: Joi.string(),
+	date: Joi.string(),
+	description: Joi.string()
 });
 
 // 8
 const extraCurricularValidation = Joi.object({
-    
+	activityName: Joi.string(),
+	role: Joi.string(),
+	organization: Joi.string(),
+	from: Joi.string(),
+	to: Joi.string(),
+	description: Joi.string()
 });
 
 // 9
 const publicationsAndResearchValidation = Joi.object({
-    
+	title: Joi.string(),
+	authors: Joi.array().items(Joi.string()),
+	publishedIn: Joi.string(),
+	publicationDate: Joi.string(),
+	doi: Joi.string(),
+	url: Joi.string(),
+	abstract: Joi.string()
+});
+
+// 10
+const languagesKnownValidation = Joi.object({
+	language: Joi.string(),
+	proficiencyLevel: Joi.string().valid("Basic", "Intermediate", "Professional", "Native/Bilingual"),
+	canRead: Joi.boolean(),
+	canWrite: Joi.boolean(),
+	canSpeak: Joi.boolean()
 });
 
 // Complete validatin for a build In resume
@@ -135,11 +140,11 @@ const baseSchemaValidation = Joi.object({
 	technicalSkills: Joi.array().items(skillValidation),
 	workExperiences: Joi.array().items(experienceValidation),
 	projects: Joi.array().items(projectValidation),
-	certifications: Joi.array().items(certificateValidation),
+	certifications: Joi.array().items(certificationValidation),
 	achievementsAndAwards: Joi.array().items(achievementsAndAwardsValidation),
 	extraCurricular: Joi.array().items(extraCurricularValidation),
 	publicationsAndResearch : Joi.array().items(publicationsAndResearchValidation),
-	languagesKnown : Joi.array().items(Joi.string()),
+	languagesKnown : Joi.array().items(languagesKnownValidation),
 
 	persona: Joi.string(),
 	template: Joi.string()
