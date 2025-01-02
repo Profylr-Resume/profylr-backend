@@ -199,8 +199,9 @@ Explaination:
 // .iso(): Validates the date is in ISO 8601 format
 // .raw(): Returns the original string instead of converting to a Date object
 // .format(): Specifies acceptable date format patterns
-// .min() and .max(): Set date range boundaries
+// .min() and .max(): Set date range boundaries . inclusive of the given date
 // .timestamp(): Validates Unix timestamps
+// .greater() and .lesser() : set date range boundary.  non-exclusive of the given date
 
 
 // Frontend Date Handling

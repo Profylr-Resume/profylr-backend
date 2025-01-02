@@ -154,7 +154,8 @@ const baseSchemaValidation = Joi.object({
 // If you include a main key, you must satisfy all its .required() fields.
 
 const requiredFields = [
-	// Basic Info
+
+	// personal Info
 	"personalInfo",
 	"personalInfo.name",
 	"personalInfo.email",
@@ -175,22 +176,44 @@ const requiredFields = [
 	"education.tenthGrade.instituteName",
 	"education.tenthGrade.yearOfPassing",
 	"education.tenthGrade.result",
+    
+	// Skills
+	"technicalSkills.name",
+	"technicalSkills.category",
 
 	// Experience
-	"experiences.organisationName",
-	"experiences.position",
-	"experiences.from",
-	"experiences.description",
+	"workExperiences.organisationName",
+	"workExperiences.position",
+	"workExperiences.from",
+	"workExperiences.description",
 
 	// Projects
 	"projects.name",
 	"projects.technologiesUsed",
 	"projects.from",
 	"projects.description",
+	
 
-	// Skills
-	"skills.name",
-	"skills.category",
+	// certifications
+	"certifications.name",
+	"certifications.issuingOrganization",
+	"certifications.issueDate",
+	
+	// achievementsAndAwards
+	"achievementsAndAwards.title",
+	"achievementsAndAwards.issuer",
+	
+	// extraCurricular
+	"extraCurricular.activityName",
+	"extraCurricular.from",
+
+	// publicationsAndResearch
+	"publicationsAndResearch.title",
+	"publicationsAndResearch.publicationDate",
+     
+	// languagesKnown
+	"languagesKnown.language",
+	"languagesKnown.proficiencyLevel",
 
 	// Persona & Template
 	"persona",
@@ -215,68 +238,127 @@ const schemaValidation = (isUpdate=false)=>{
 export const validateBuildInResumeForCreation = schemaValidation(false); 
 export const validateBuildInResumeForUpdate = schemaValidation(true); 
 
-// const validResume = {
-// 	basicInfo: {
-// 		name: "John Doe",
+// =======================================================================
+// const dummyResume = {
+// 	personalInfo: {
+// 		firstName: "John",
+// 		lastName: "Doe",
 // 		github: "https://github.com/johndoe",
-// 		linkedIn: "https://www.linkedin.com/in/johndoe/",
-// 		email: "john.doe@example.com",
-// 		phoneNumber: "+1234567890"
+// 		portfolio: "https://johndoe.dev",
+// 		linkedIn: "https://www.linkedin.com/in/johndoe",
+// 		email: "johndoe@example.com",
+// 		contactNumber: "+1234567890"
 // 	},
+// 	summary: "A passionate software engineer with expertise in full-stack development, eager to contribute to innovative projects.",
 // 	education: {
 // 		underGraduate: {
-// 			instituteName: "ABC University",
+// 			instituteName: "XYZ University",
 // 			field: "Computer Science",
-// 			yearOfPassing: "2020",
-// 			result: "First Class"
+// 			yearOfPassing: "2022",
+// 			result: "8.5 CGPA"
 // 		},
 // 		twelfthGrade: {
-// 			instituteName: "XYZ High School",
+// 			instituteName: "ABC High School",
 // 			field: "Science",
-// 			yearOfPassing: "2016",
-// 			result: "Distinction"
+// 			yearOfPassing: "2018",
+// 			result: "85%"
 // 		},
 // 		tenthGrade: {
-// 			instituteName: "LMN School",
-// 			yearOfPassing: "2014",
-// 			result: "A+"
+// 			instituteName: "LMN Secondary School",
+// 			yearOfPassing: "2016",
+// 			result: "90%"
 // 		}
 // 	},
-// 	skills: [
+// 	technicalSkills: [
 // 		{
 // 			name: "JavaScript",
 // 			proficiencyLevel: "Advanced",
-// 			yearsOfExperience: 5,
-// 			category: "Programming Languages",
-// 			credentials: {
-// 				certificateUrl: "https://example.com/certificate",
-// 				issuingOrganization: "CertOrg",
-// 				dateObtained: "2018-06-15",
-// 				expiryDate: "2023-06-15"
-// 			}
+// 			yearsOfExperience: 3,
+// 			category: "Programming Languages"
+// 		},
+// 		{
+// 			name: "React.js",
+// 			proficiencyLevel: "Advanced",
+// 			yearsOfExperience: 2,
+// 			category: "Frameworks & Libraries"
+// 		}
+// 	],
+// 	workExperiences: [
+// 		{
+// 			organisationName: "TechCorp",
+// 			position: "Software Developer",
+// 			from: "2022-05",
+// 			to: "2024-01",
+// 			description: ["Developed scalable web applications", "Improved system performance by 20%"]
 // 		}
 // 	],
 // 	projects: [
 // 		{
 // 			name: "Portfolio Website",
-// 			technologiesUsed: ["React", "Node.js", "CSS"],
-// 			from: "2021-01",
-// 			to: "2021-06",
+// 			technologiesUsed: ["React.js", "Node.js"],
+// 			from: "2023-01",
+// 			to: "2023-04",
 // 			sourceCodeRepository: "https://github.com/johndoe/portfolio",
-// 			liveLink: "https://johndoeportfolio.com",
-// 			description: ["Developed a personal portfolio website to showcase projects and skills."]
+// 			liveLink: "https://johndoe.dev",
+// 			description: ["Designed and developed a responsive portfolio website", "Integrated GitHub projects and blogs"]
 // 		}
 // 	],
-// 	experiences: [
+// 	certifications: [
 // 		{
-// 			organisationName: "Tech Corp",
-// 			position: "Software Engineer",
-// 			from: "2019-06",
-// 			to: "2023-06",
-// 			description: ["Developed and maintained web applications.", "Collaborated with cross-functional teams."]
+// 			name: "AWS Certified Solutions Architect",
+// 			issuingOrganization: "Amazon Web Services",
+// 			issueDate: "2023-02-15",
+// 			expiryDate: "2026-02-15",
+// 			credentialId: "ABC123XYZ",
+// 			url: "https://aws.amazon.com/certification"
 // 		}
 // 	],
-// 	persona: "persona-6574-001", (objectId)
-// 	template: "template-001"(object Id)
+// 	achievementsAndAwards: [
+// 		{
+// 			title: "Hackathon Winner",
+// 			issuer: "TechFest",
+// 			date: "2021-12-10",
+// 			description: "Won 1st place for developing an AI-powered chatbot"
+// 		}
+// 	],
+// 	extraCurricular: [
+// 		{
+// 			activityName: "Basketball",
+// 			role: "Captain",
+// 			organisationName: "XYZ University",
+// 			from: "2018",
+// 			to: "2022",
+// 			description: "Led the university team to regional championships"
+// 		}
+// 	],
+// 	publicationsAndResearch: [
+// 		{
+// 			title: "Optimizing Machine Learning Algorithms",
+// 			authors: ["John Doe", "Jane Smith"],
+// 			publishedIn: "International Journal of AI Research",
+// 			publicationDate: "2022-06-15",
+// 			doi: "10.1234/ijair.2022.001",
+// 			url: "https://ijair.com/paper/optimizing-ml",
+// 			abstract: "This paper discusses methods to optimize training in machine learning models."
+// 		}
+// 	],
+// 	languagesKnown: [
+// 		{
+// 			language: "English",
+// 			proficiencyLevel: "Native/Bilingual",
+// 			canRead: true,
+// 			canWrite: true,
+// 			canSpeak: true
+// 		},
+// 		{
+// 			language: "Spanish",
+// 			proficiencyLevel: "Intermediate",
+// 			canRead: true,
+// 			canWrite: false,
+// 			canSpeak: true
+// 		}
+// 	],
+// 	persona: "Tech Enthusiast",
+// 	template: "Modern"
 // };
   
