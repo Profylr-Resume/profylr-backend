@@ -4,7 +4,7 @@ import buildInResumeValidation from "../../validations/buildInResume.validate.js
 
 
 // Create Resume
-export const createResumeHandler = expressAsyncHandler(async (data) => {
+export const createBuildInResumeHandler = expressAsyncHandler(async (data) => {
 
 	const { error, value } = buildInResumeValidation.validate(data, {abortEarly:false});
 
@@ -18,9 +18,9 @@ export const createResumeHandler = expressAsyncHandler(async (data) => {
 });
   
 // Update Resume by ID
-export const updateResumeHandler = expressAsyncHandler(async (id, data) => {
+export const updateBuildInResumeHandler = expressAsyncHandler(async (id, updatedData) => {
 
-	const { error, value } = buildInResumeValidation.validate(data);
+	const { error, value } = buildInResumeValidation.validate(updatedData);
 
 	if (error) {
 		return { success: false, error}; // Return validation error message

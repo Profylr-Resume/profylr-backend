@@ -8,6 +8,7 @@ import { validateResumeSectionForCreation, validateResumeSectionForUpdate } from
 // creating a new section with one-one tag for category and department
 export const createResumeSectionHandler = expressAsyncHandler(async (data) => {
 	try {
+        
 	  // Validate the incoming data
 	  const values = validateIncomingData(validateResumeSectionForCreation, data);
   
