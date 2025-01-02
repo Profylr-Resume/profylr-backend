@@ -1,6 +1,6 @@
 import PERSONA from "../../models/Persona.js";
 import expressAsyncHandler from "express-async-handler";
-import { validatePersonaForCreation } from "../../validations/persona.validate.js";
+import { validatePersonaForCreation } from "../../validations/new/persona.validate.js";
 import { validateIncomingData } from "../../utils/validations.js";
 
 
