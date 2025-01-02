@@ -26,6 +26,7 @@ const templateSchema = new Schema({
 	isActive: { type: Boolean, default: true }
 });
 
+
 const TEMPLATE = mongoose.model("Template",templateSchema);
 
 export default TEMPLATE;

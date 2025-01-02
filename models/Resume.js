@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import AUDIT_LOG from "./AuditLog";
 
 const ResumeSchema = new Schema({
 	user: {
@@ -55,6 +56,38 @@ const ResumeSchema = new Schema({
 ResumeSchema.index({ user: 1, status: 1 });
 ResumeSchema.index({ tags: 1 });
 ResumeSchema.index({ isImported: 1 });
+
+ResumeSchema.pre("findOneAndUpdate" , async function(next){
+
+	const originalDoc = await this.model(this.getQuery());
+	this.set("__originalDoc",originalDoc);
+
+	next();
+});
+
+ResumeSchema.post("findOneAndUpdate",async function(updatedDocAfterQuery){
+
+	const originalDoc = this.get("__originalDoc");
+
+	if(originalDoc){
+		const changes = [];
+		for (const key in originalDoc.toObject()){
+			if(originalDoc[key] !== updatedDocAfterQuery[key]){
+				changes.push({
+					field:key,
+					oldValue : originalDoc[key],
+					newValue : updatedDocAfterQuery[key]
+				});
+			}
+		}
+
+		await AUDIT_LOG.create({
+			changes,
+			documentId: updatedDocAfterQuery._id,
+			collectionName:"Resume"
+		});
+	}
+});
 
 const RESUME = mongoose.model("Resume",ResumeSchema);
 

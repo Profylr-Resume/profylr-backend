@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { makeFieldsRequired } from "../utils/mongoDb";
+import { makeFieldsRequired } from "../../utils/mongoDb";
 
 // Base schema (common for both create and update)
 const personaBaseSchema = Joi.object({

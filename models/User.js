@@ -1,44 +1,33 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
+import AUDIT_LOG from "./AuditLog";
 
 const userSchema = new Schema({
+	
 	profile: {
-		firstName: {
-			type: String, 
-			required: true 
-		},
-		lastName: { 
-			type: String, 
-			required: true
-		},
+		firstName: { type: String, required: true },
+		lastName: { type: String, required: true },
 		phone: String
-	},
+	  },
 	email: {
 		type: String,
 		required: true,
 		unique: true,
-		trim: true,
-		immutable : true
+		trim: true
 	},
 	password: {
 		type: String,
 		required: true
-	},
+	  },
 
-	meta: { // only for backend purposes 
+	meta: {
 		lastLogin: Date,
-		registrationDate: { 
-			type: Date, 
-			default: Date.now
-		},
-		isVerified: { 
-			type: Boolean,
-			default: false 
-		},
+		registrationDate: { type: Date, default: Date.now },
+		isVerified: { type: Boolean, default: false },
 		verificationToken: String,
 		resetPasswordToken: String,
 		resetPasswordExpires: Date
-	}
+	  }
 	
 },{
 	timestamps:true
@@ -64,6 +53,38 @@ userSchema.pre("save",async function(next){
 		return next();
 	}catch(err){
 		return next(err);
+	}
+});
+
+userSchema.pre("findOneAndUpdate" , async function(next){
+
+	const originalDoc = await this.model(this.getQuery());
+	this.set("__originalDoc",originalDoc);
+
+	next();
+});
+
+userSchema.post("findOneAndUpdate",async function(updatedDocAfterQuery){
+
+	const originalDoc = this.get("__originalDoc");
+
+	if(originalDoc){
+		const changes = [];
+		for (const key in originalDoc.toObject()){
+			if(originalDoc[key] !== updatedDocAfterQuery[key]){
+				changes.push({
+					field:key,
+					oldValue : originalDoc[key],
+					newValue : updatedDocAfterQuery[key]
+				});
+			}
+		}
+
+		await AUDIT_LOG.create({
+			changes,
+			documentId: updatedDocAfterQuery._id,
+			collectionName:"User"
+		});
 	}
 });
 
