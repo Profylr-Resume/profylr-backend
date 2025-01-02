@@ -1,5 +1,6 @@
 import Joi from "joi";
 import { makeFieldsRequired } from "../utils/mongoDb";
+import { validationSchema } from "../../utils/mongoDb";
 
 // 1
 const personalInfoValidation = Joi.object({
@@ -220,23 +221,9 @@ const requiredFields = [
 	"template"
 ];
 
-const schemaValidation = (isUpdate=false)=>{
-    
-	let schema = baseSchemaValidation;
 
-	if(!isUpdate){
-		schema = makeFieldsRequired(schema,requiredFields);
-	}
-	else{
-		schema = schema.fork(Object.keys(schema.describe().keys),(field)=>{
-			field.optional();
-		});
-	}
-	return schema;
-};
-
-export const validateBuildInResumeForCreation = schemaValidation(false); 
-export const validateBuildInResumeForUpdate = schemaValidation(true); 
+export const validateBuildInResumeForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidation });
+export const validateBuildInResumeForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidation });
 
 // =======================================================================
 // const dummyResume = {

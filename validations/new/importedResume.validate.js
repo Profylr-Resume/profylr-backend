@@ -1,12 +1,12 @@
 import Joi from "joi";
-import { makeFieldsRequired } from "../../utils/mongoDb";
+import { validationSchema } from "../../utils/mongoDb";
 
 
-const baseSchemaValdiation = Joi.object({
+const baseSchemaValidation = Joi.object({
 	fileUrl: Joi.string().uri().trim(),
 	fileType: Joi.string().valid("pdf", "doc", "docx"),
 	originalfileName: Joi.string().min(3).max(50).trim(),
-	fielSize : Joi.number()
+	fileSize : Joi.number()
 });
 
 const requiredFields = [
@@ -16,22 +16,5 @@ const requiredFields = [
 	"fileSize"
 ];
 
-const validationSchema = (isUpdate=false)=>{
-    
-	const schema = baseSchemaValdiation;
-
-	if(isUpdate){
-        
-		schema = schema.fork(Object.keys(schema.describe().keys()), (field)=>{
-			field.optional();
-		}); 
-
-	}else{
-		schema = makeFieldsRequired(schema,requiredFields);
-	}
-	return schema;
-};
-
-
-export const validateImportedResumeForCreation = validationSchema(false);
-export const validateImportedResumeForupdate = validationSchema(true);
+export const validateImportedResumeForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidation });
+export const validateImportedResumeForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidation });

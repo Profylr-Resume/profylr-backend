@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { makeFieldsRequired } from "../utils/mongoDb";
+import { validationSchema } from "../../utils/mongoDb";
 
 const baseSchemaValidation = Joi.object({
 	name: Joi.string(),
@@ -8,30 +8,11 @@ const baseSchemaValidation = Joi.object({
 	departments : Joi.array().items(Joi.string()).min(1)
 });
 
-
-const requiredFieldsForCreation = [
+const requiredFields = [
 	"name",
 	"categories",
 	"departments"
 ];
 
-const validationSchema = (isUpdate=false)=>{
-
-	const schema = baseSchemaValidation;
-
-	if(isUpdate){
-		// Object.keys(schema.describe().keys) => ["name,description,categories,departments"]
-		// schema.fork()  this needs an array of strings , and fn to modify each field
-
-		schema = schema.fork( Object.keys(schema.describe().keys) , (field)=>{
-			field.optional();
-		});
-	}else{
-		schema = makeFieldsRequired(schema,requiredFieldsForCreation);
-	}
-
-	return schema;
-};
-
-export const validateResumeSectionForCreation = validationSchema(false);
-export const validateResumeSectionForUpdate = validationSchema(true);
+export const validateResumeSectionForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidation });
+export const validateResumeSectionForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidation });

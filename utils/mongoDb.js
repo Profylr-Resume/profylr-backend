@@ -1,4 +1,4 @@
-export const makeFieldsRequired = (schema, requiredFields) => {
+const makeFieldsRequired = (schema, requiredFields) => {
     
 	requiredFields.forEach((fieldPath) => {
 		const fieldParts = fieldPath.split(".");
@@ -22,4 +22,23 @@ export const makeFieldsRequired = (schema, requiredFields) => {
   
 	return schema;
 };
-  
+
+// Object.keys(schema.describe().keys) => ["name,description,categories,departments"]
+// schema.fork()  this needs an array of strings , and fn to modify each field
+
+export const validationSchema = ({isUpdate=false,baseSchemaValdiation,requiredFields})=>{
+    
+	const schema = baseSchemaValdiation;
+
+	if(isUpdate){
+		// making everything optiona lwhile updating a doc
+		schema = schema.fork(Object.keys(schema.describe().keys()), (field)=>{
+			field.optional();
+		}); 
+
+	}else{
+		// making the necessary things required whle creation
+		schema = makeFieldsRequired(schema,requiredFields);
+	}
+	return schema;
+};

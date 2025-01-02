@@ -1,7 +1,7 @@
 import Joi from "joi";
-import { makeFieldsRequired } from "../utils/mongoDb";
+import { validationSchema } from "../../utils/mongoDb";
 
-const baseValidationSchema = Joi.object({
+const baseSchemaValidation = Joi.object({
 	name: Joi.string(), 
 	description: Joi.string().optional(), 
 	html: Joi.string().optional(), 
@@ -15,28 +15,12 @@ const baseValidationSchema = Joi.object({
 });
 
 
-const requiredFieldsForCreation = [
+const requiredFields = [
 	"name",
 	"sections"
 ];
 
 
-const validationSchema = (isUpdate=false)=>{
-	
-	const schema = baseValidationSchema;
-
-	if(isUpdate){
-
-		schema = schema.fork( Object.keys(schema.describe().keys) ,(field)=>{
-			field.optional();
-		});
-	}
-	else{
-		schema = makeFieldsRequired(schema,requiredFieldsForCreation);
-	}
-	return schema;
-};
-
-export const validateTemplateForCreation = validationSchema(false);
-export const validateTemplateForUpdate = validationSchema(true);
+export const validateTemplateForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidation });
+export const validateTemplateForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidation });
   

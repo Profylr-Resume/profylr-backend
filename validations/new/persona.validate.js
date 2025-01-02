@@ -1,8 +1,8 @@
 import Joi from "joi";
-import { makeFieldsRequired } from "../../utils/mongoDb";
+import { validationSchema } from "../../utils/mongoDb";
 
 // Base schema (common for both create and update)
-const personaBaseSchema = Joi.object({
+const baseSchemaValidation = Joi.object({
 	experienceLevel: Joi.string().valid("fresher", "intermediate", "experienced"),
 	targetRole: Joi.string(),
 	background: Joi.object({
@@ -19,7 +19,7 @@ const personaBaseSchema = Joi.object({
 });
 
 // Define additional fields that should be required on creation
-const requiredFieldsForCreation = [
+const requiredFields = [
 	"experienceLevel",
 	"targetRole",
 	"background.yearsOfExperience",
@@ -30,27 +30,10 @@ const requiredFieldsForCreation = [
 	"goals"
 ];
 
-// Function to dynamically validate based on operation (create or update)
-const getPersonaValidationSchema = (isUpdate = false) => {
-	let schema = personaBaseSchema;
-  
-	// Add specific required fields for creation
-	if (!isUpdate) {
-		schema = makeFieldsRequired(schema, requiredFieldsForCreation);
-	}
-	else{// For update, make all fields optional
-        
-		schema = schema.fork(Object.keys(schema.describe().keys), (field) => {
-			field.optional();
-		});
-	}
-	
-	return schema;
-};
 
 // Usage:
-const validatePersonaForCreation = getPersonaValidationSchema(false); // For creation (all required)
-const validatePersonaForUpdate = getPersonaValidationSchema(true); // For update (optional fields)
+const validatePersonaForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidation });
+const validatePersonaForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidation });
 
 
 export {validatePersonaForCreation,validatePersonaForUpdate};
