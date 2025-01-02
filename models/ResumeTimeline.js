@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import AUDIT_LOG from "./AuditLog";
 
 
 // This model will manage all resumes and their version relationships for a user
@@ -137,6 +138,38 @@ ResumeVersionManagerSchema.methods = {
 // Indexes for performance
 ResumeVersionManagerSchema.index({ user: 1 });
 ResumeVersionManagerSchema.index({ "resumeGroups.majorVersion": 1 });
+
+ResumeVersionManagerSchema.pre("findOneAndUpdate" , async function(next){
+
+	const originalDoc = await this.model(this.getQuery());
+	this.set("__originalDoc",originalDoc);
+
+	next();
+});
+
+ResumeVersionManagerSchema.post("findOneAndUpdate",async function(updatedDocAfterQuery){
+
+	const originalDoc = this.get("__originalDoc");
+
+	if(originalDoc){
+		const changes = [];
+		for (const key in originalDoc.toObject()){
+			if(originalDoc[key] !== updatedDocAfterQuery[key]){
+				changes.push({
+					field:key,
+					oldValue : originalDoc[key],
+					newValue : updatedDocAfterQuery[key]
+				});
+			}
+		}
+
+		await AUDIT_LOG.create({
+			changes,
+			documentId: updatedDocAfterQuery._id,
+			collectionName:"ResumeVersionManager"
+		});
+	}
+});
 
 const RESUME_VERSION_MANAGER = mongoose.model("ResumeVersionManager", ResumeVersionManagerSchema);
 

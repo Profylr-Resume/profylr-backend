@@ -16,8 +16,9 @@ export const createPersonaHandler = expressAsyncHandler( async (data) => {
 	// need to add template structure here.
 	// ----------------LOGIC------------------
 
+
 	// Create and save the new Persona document
-	const newPersona = await PERSONA.create(value);
+	const newPersona = await PERSONA.create(values);
 
 	return { success: true, newPersona };
 });
