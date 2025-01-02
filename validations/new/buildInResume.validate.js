@@ -221,7 +221,6 @@ const requiredFields = [
 	"template"
 ];
 
-
 export const validateBuildInResumeForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidation });
 export const validateBuildInResumeForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidation });
 
