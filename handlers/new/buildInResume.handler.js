@@ -1,65 +1,81 @@
 import expressAsyncHandler from "express-async-handler";
 import BUILD_IN_RESUME from "../../models/BuildInResume.js";
-import buildInResumeValidation from "../../validations/buildInResume.validate.js";
+import { validateBuildInResumeForCreation, validateBuildInResumeForUpdate } from "../../validations/buildInResume.validate.js";
+import { validateIncomingData } from "../../utils/validations.js";
+import ApiError from "../../utils/errorHandlers.js";
 
 
 // Create Resume
 export const createBuildInResumeHandler = expressAsyncHandler(async (data) => {
 
-	const { error, value } = buildInResumeValidation.validate(data, {abortEarly:false});
+	const values = validateIncomingData(validateBuildInResumeForCreation,data);
 
-	if (error) {
-		return { success: false, error }; // Return validation error message
-	}
+	const savedResume = await BUILD_IN_RESUME.create(values);
 
-	const savedResume = await BUILD_IN_RESUME.create(value);
-
-	return { success: true, savedResume };
+	return { success: true, data : savedResume };
 });
   
 // Update Resume by ID
 export const updateBuildInResumeHandler = expressAsyncHandler(async (id, updatedData) => {
 
-	const { error, value } = buildInResumeValidation.validate(updatedData);
-
-	if (error) {
-		return { success: false, error}; // Return validation error message
+	if(!id){
+		throw new ApiError(400,"No resume id provided for updation.");
 	}
-  
-	const updatedResume = await BUILD_IN_RESUME.findByIdAndUpdate(id, value, {
-		new: true, // Return the updated document
-		runValidators: true // Run Mongoose validators
+
+	const values = validateIncomingData( validateBuildInResumeForUpdate, updatedData );
+
+	const updatedResume = await BUILD_IN_RESUME.findByIdAndUpdate(id, { $set : values}, {
+		new: true // Return the updated document
 	});
   
 	if (!updatedResume) {
-		return { success: false, error: "Resume not found" };
+		throw new ApiError(404,"No section found with given resume id.");
 	}
   
-	return { success: true, updatedResume };
+	return { success: true, data : updatedResume };
 });
   
 // Delete Resume by ID
-export const deleteResumeHandler = expressAsyncHandler(async (id) => {
+export const deleteBuildInResumeHandler = expressAsyncHandler(async (id) => {
+	
+	if(!id){
+		throw new ApiError(400,"No resume id provided for deleteion.");
+	}
+
 	const deletedResume = await BUILD_IN_RESUME.findByIdAndDelete(id);
+
 	if (!deletedResume) {
-		return { success: false, error: "Resume not found" };
+		throw new ApiError(404,"No section found with given resume id.");
 	}
   
-	return { success: true, message: "Resume deleted successfully" };
-});
   
-// Get All Resumes
-export const getAllResumesHandler = expressAsyncHandler(async () => {
-	const resumes = await BUILD_IN_RESUME.find();
-	return { success: true, resumes };
+	return { success: true, data : deletedResume };
 });
   
 // Get One Resume by ID
-export const getResumeByIdHandler = expressAsyncHandler(async (id) => {
+export const getBuildInResumeByIdHandler = expressAsyncHandler(async (id) => {
+
+	if(!id){
+		throw new ApiError(400,"No resume id provided for get resume by id.");
+	}
+
 	const resume = await BUILD_IN_RESUME.findById(id);
-	if (!resume) {
-		return { success: false, error: "Resume not found" };
+
+	if(!resume){
+		throw new ApiError(404,"No resume found with given id.");
 	}
   
-	return { success: true, resume };
+	return { success: true, data : resume };
+});
+
+// GET based on filters (for now i am not able ot think about filters)
+export const getBuildInResumesHandler = expressAsyncHandler(async ({}) => {
+
+	const resumes = await BUILD_IN_RESUME.find();
+
+	if(!resumes){
+		throw new ApiError(404,"No resume found.");
+	}
+	return { success: true, data : resumes };
+
 });

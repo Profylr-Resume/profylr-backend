@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import CALENDAR_EVENT from "../models/CalendarEventsModel.js";
 import jobApplicationModel from "../models/JobApplicationModel.js";
-import jobValidationSchema from "../validations/jobs.validate.js";
+import jobValidationSchema from "../validations/jobTracking.validate.js";
 import jobHistoryModel from "../models/AuditLog.js";
 
 export const createJobHandler = async (data,userId) => {

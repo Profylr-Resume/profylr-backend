@@ -1,64 +1,50 @@
 import Joi from "joi";
+import { validationSchema } from "../utils/mongoDb";
 
-// things you need to set : applied on date , updated at date , history => these three come under the same umberella
-
-const jobValidationSchema = Joi.object({
-
-	companyName: Joi.string().required().messages({
-		"string.base": "Company Name must be a string.",
-		"any.required": "Company Name is required."
-	}),
-
-	role: Joi.string().required().messages({
-		"string.base": "Role must be a string.",
-		"any.required": "Role is required."
-	}),
-    
-	
-	status: Joi.string()
-		.valid("Applied", "Interview Scheduled", "Offer Received", "Rejected")
-		.default("Applied")
-		.messages({
-			"any.only": "Status must be one of 'Applied', 'Interview Scheduled', 'Offer Received', or 'Rejected'."
-		}),
-
-	resume: Joi.string().pattern(/^[0-9a-fA-F]{24}$/).required().messages({
-		"string.base": "Resume ID must be a string.",
-		"string.pattern.base": "Invalid Resume ID format.",
-		"any.required": "Resume is required."
-	}),
-
-	jobLink: Joi.string()
-		.uri()
-		.messages({
-			"string.uri": "Job Link must be a valid URI."
-		}),
-
-	note: Joi.string()
-		.max(500)
-		.messages({
-			"string.base": "Note must be a string.",
-			"string.max": "Note cannot exceed 500 characters."
-		}),
-
-	// you can club these two  , if not the nneed ot show something else when false , so i can keep a check if true then show follwupdate as show other node . coz this is going to be on dashboard card 
-	followUp: Joi.boolean().default(false).messages({
-		"boolean.base": "Follow Up must be a boolean."
-	}),
-	followUpDate: Joi.date().messages({
-		"date.base": "Follow Up Date must be a valid date."
-	}),
-
-	// this needs to be fulfilling for hte create calendar event schema
-	events: Joi.array().items(
-		Joi.object({
-			date: Joi.date().required(),
-			title:Joi.string().required(),
-			description:Joi.string().required()
-		})
-	).optional()
-
-	
+const interviewDetailsSchema = Joi.object({
+	round: Joi.number().integer().min(1),
+	date: Joi.date(),
+	type: Joi.string().valid("Phone", "Video", "On-site", "Technical", "HR"),
+	notes: Joi.string().allow(null, "").max(500) // Optional with max length
 });
 
-export default jobValidationSchema;
+const baseSchemaValidation = Joi.object({
+	user: Joi.string().pattern(/^[0-9a-fA-F]{24}$/), // MongoDB ObjectId pattern
+	companyName: Joi.string().trim(),
+	role: Joi.string().trim(),
+	status: Joi.string()
+		.valid("Applied", "Interview Scheduled", "Offer Received", "Rejected")
+		.default("Applied"),
+	resume: Joi.string().pattern(/^[0-9a-fA-F]{24}$/),
+	salary: Joi.object({
+		offered: Joi.number().min(0).allow(null), // Optional and non-negative
+		currency: Joi.string().default("INR")
+	}).default({}),
+	appliedOnDate: Joi.date().default(() => new Date(), "current date"),
+	jobLink: Joi.string().uri().trim().allow(null, ""), // Optional and must be a valid URL if provided
+	note: Joi.string().max(500).trim().allow(null, ""), // Optional with max length
+	followUp: Joi.boolean().default(false),
+	followUpDate: Joi.date().allow(null), // Optional
+	contactInfo: Joi.object({
+		name: Joi.string().trim().allow(null, ""), // Optional
+		email: Joi.string().email().allow(null, ""), // Optional and must be a valid email if provided
+		phone: Joi.string().pattern(/^\+?[1-9]\d{1,14}$/).allow(null, ""), // Optional and must follow E.164 format
+		role: Joi.string().trim().allow(null, "") // Optional
+	}).default({}),
+	interviewDetails: Joi.array().items(interviewDetailsSchema).default([])// Defaults to an empty array
+}).unknown(true); // Allow additional fields if necessary
+
+
+const requiredFields = [
+	"user",
+	"companyName",
+	"role",
+	"resume",
+	"interviewDetails.round",
+	"interviewDetails.date",
+	"interviewDetails.type"
+];
+
+
+export const validateJobTrackingForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidation });
+export const validateJobTrackingForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidation });

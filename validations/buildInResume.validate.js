@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { validationSchema } from "../../utils/mongoDb";
+import { validationSchema } from "../utils/mongoDb";
 
 // 1
 const personalInfoValidation = Joi.object({

@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { validationSchema } from "../../utils/mongoDb";
+import { validationSchema } from "../utils/mongoDb";
 
 // Validation schema for a single resume within a major version group
 const resumeSchema = Joi.object({

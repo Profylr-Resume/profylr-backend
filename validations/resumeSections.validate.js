@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { validationSchema } from "../../utils/mongoDb";
+import { validationSchema } from "../utils/mongoDb";
 
 const baseSchemaValidation = Joi.object({
 	name: Joi.string(),
