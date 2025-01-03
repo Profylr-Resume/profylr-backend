@@ -2,19 +2,20 @@ import { validateIncomingData } from "../../utils/validations";
 import JOB_TRACKING from "../../models/JobTracking.js";
 import ApiError from "../../utils/errorHandlers.js";
 import { validateJobTrackingForCreation, validateJobTrackingForUpdate } from "../../validations/jobTracking.validate";
+import expressAsyncHandler from "express-async-handler";
 
 // create
-export const createJobTracking = async(data)=>{
+export const createJobTracking = expressAsyncHandler(async(data)=>{
 
 	const values = validateIncomingData(validateJobTrackingForCreation,data);
 
 	const jobTracking = await JOB_TRACKING.create(values);
 
 	return {success : true , data : jobTracking};
-};
+});
 
 // update
-export const updateJobTracking = async(id , updatedData)=>{
+export const updateJobTracking = expressAsyncHandler(async(id , updatedData)=>{
 
 	if(!id){
 		throw new ApiError(400, "No job tracking id given for updation");
@@ -29,10 +30,10 @@ export const updateJobTracking = async(id , updatedData)=>{
 	}
 
 	return {success: true , data : jobTracking};
-};
+});
 
 // delete
-export const deleteJobTracking = async (id)=>{
+export const deleteJobTracking = expressAsyncHandler(async (id)=>{
 
 	if(!id){
 		throw new ApiError(400, "No job tracking id given for deletion");
@@ -45,10 +46,10 @@ export const deleteJobTracking = async (id)=>{
 	}
 
 	return {success: true, data : jobTracking};
-};
+});
 
 // GET by Id
-export const getJobTrackingById = async(id)=>{
+export const getJobTrackingById = expressAsyncHandler(async(id)=>{
 
 	if(!id){
 		throw new ApiError(400, "No job tracking id given.");
@@ -61,10 +62,10 @@ export const getJobTrackingById = async(id)=>{
 	}
 
 	return {success:true , data : jobTracking};
-};
+});
 
 // GET filters
-export const getJobTracking = async({})=>{
+export const getJobTracking = expressAsyncHandler(async({})=>{
     
 
-};
+});

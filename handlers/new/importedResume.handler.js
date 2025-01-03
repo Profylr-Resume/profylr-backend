@@ -2,9 +2,10 @@ import { validateIncomingData } from "../../utils/validations";
 import { validateImportedResumeForCreation, validateImportedResumeForUpdate } from "../../validations/importedResume.validate";
 import IMPORTED_RESUME from "../../models/ImportedResume.js";
 import ApiError from "../../utils/errorHandlers.js";
+import expressAsyncHandler from "express-async-handler";
 
 // create
-export const createImportedResume = async(data)=>{
+export const createImportedResume = expressAsyncHandler(async(data)=>{
     
 	const values = validateIncomingData(validateImportedResumeForCreation,data);
 
@@ -12,10 +13,10 @@ export const createImportedResume = async(data)=>{
 
 	return {success:true , data : resume};
 
-};
+});
 
 // update
-export const updateImportedResume = async (id,updatedData)=>{
+export const updateImportedResume = expressAsyncHandler(async (id,updatedData)=>{
 
 	if(!id){
 		throw new ApiError(400, "No imported Resume id given for updation");
@@ -30,10 +31,10 @@ export const updateImportedResume = async (id,updatedData)=>{
 	}
 
 	return {success: true , data : resume};
-};
+});
 
 // delete
-export const deleteImportedResume = async (id)=>{
+export const deleteImportedResume = expressAsyncHandler(async (id)=>{
 
 	if(!id){
 		throw new ApiError(400, "No imported Resume given for deletion");
@@ -46,10 +47,10 @@ export const deleteImportedResume = async (id)=>{
 	}
 
 	return {success: true, data : resume};
-};
+});
 
 // GET by Id
-export const getImportedResumeById = async(id)=>{
+export const getImportedResumeById = expressAsyncHandler(async(id)=>{
 
 	if(!id){
 		throw new ApiError(400, "No imported Resume given to get.");
@@ -62,10 +63,10 @@ export const getImportedResumeById = async(id)=>{
 	}
 
 	return {success:true , data : resume};
-};
+});
 
 // GET by filters (pending)
-export const getImportedResumeHandler = async({})=>{
+export const getImportedResumeHandler =expressAsyncHandler(async({})=>{
     
     
-};
+});

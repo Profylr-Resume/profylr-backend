@@ -1,20 +1,21 @@
+import expressAsyncHandler from "express-async-handler";
 import RESUME_VERSION_MANAGER from "../../models/ResumeTimeline";
 import ApiError from "../../utils/errorHandlers";
 import { validateIncomingData } from "../../utils/validations";
 import { validateResumeTimelineForCreation, validateResumeTimelineForUpdate } from "../../validations/resumeTimeline.validate";
 
 // create
-export const createResumeTimeline = async(data)=>{  
+export const createResumeTimeline = expressAsyncHandler(async(data)=>{  
 
 	const values =validateIncomingData(validateResumeTimelineForCreation,data);
 
 	const resumeTimeline = await RESUME_VERSION_MANAGER.create(values);
 
 	return {success: true , data : resumeTimeline};
-}; 
+}); 
 
 // update
-export const updateResumeTimeline = async(id , updatedData)=>{
+export const updateResumeTimeline = expressAsyncHandler(async(id , updatedData)=>{
 
 	if(!id){
 		throw new ApiError(400, "No resume timeline id given for updation");
@@ -29,10 +30,10 @@ export const updateResumeTimeline = async(id , updatedData)=>{
 	}
 
 	return {success: true , data : resumeTimeline};
-};
+});
 
 // delete
-export const deleteResumeTimeline = async (id)=>{
+export const deleteResumeTimeline = expressAsyncHandler(async (id)=>{
 
 	if(!id){
 		throw new ApiError(400, "No resume timeline id given for deletion");
@@ -45,10 +46,10 @@ export const deleteResumeTimeline = async (id)=>{
 	}
 
 	return {success: true, data : resumeTimeline};
-};
+});
 
 // GET by Id
-export const getResumeTimelineById = async(id)=>{
+export const getResumeTimelineById = expressAsyncHandler(async(id)=>{
 
 	if(!id){
 		throw new ApiError(400, "No resume timeline id given for deletion");
@@ -61,10 +62,10 @@ export const getResumeTimelineById = async(id)=>{
 	}
 
 	return {success:true , data : resumeTimeline};
-};
+});
 
 // GET filters
-export const getResumeTimeline = async({})=>{
+export const getResumeTimeline = expressAsyncHandler(async({})=>{
     
 
-};
+});

@@ -15,7 +15,6 @@ export const updateUserHandler = expressAsyncHandler(async (userId, updatedData)
 
 	const {firstName,lastName,email,phone } = updatedData;
     
-	
 	const updates = {};
 
 	// adding fields to the updates object only if they are not null or undefined

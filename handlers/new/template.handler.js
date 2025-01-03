@@ -63,7 +63,7 @@ export const getTemplateByIdHandler = expressAsyncHandler(async (templateId) => 
 	return { success: true, data:template };
 });
 
-export const getAllTemplatesHandler = expressAsyncHandler (async ({name,categories,departments}) => {
+export const getTemplatesHandler = expressAsyncHandler (async ({name,categories,departments}) => {
 	
 	const query = {};
 
