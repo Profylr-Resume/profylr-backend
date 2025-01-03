@@ -31,5 +31,5 @@ const requiredFields = [
 	"password"
 ];
 
-export const validateTemplateForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidation });
-export const validateTemplateForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidation });
+export const validateUserForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidation });
+export const validateUserForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidation });

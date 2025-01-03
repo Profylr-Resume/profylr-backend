@@ -1,5 +1,8 @@
 import USER from "../../models/User.js";
 import expressAsyncHandler from "express-async-handler";
+import { validateIncomingData } from "../../utils/validations.js";
+import { validateUserForCreation, validateUserForUpdate } from "../../validations/user.validate.js";
+import ApiError from "../../utils/errorHandlers.js";
 
 /*
     function this contains : 
@@ -10,51 +13,64 @@ import expressAsyncHandler from "express-async-handler";
     forget password (not implemented yet)
  */
 
-// Without try - catch
-export const updateUserHandler = expressAsyncHandler(async (userId, updatedData) => {
-
-	const {firstName,lastName,email,phone } = updatedData;
-    
-	const updates = {};
-
-	// adding fields to the updates object only if they are not null or undefined
-	if (firstName !== null && firstName !== undefined ) {updates["profile.firstName"] = firstName;}
-	if (lastName !== null && lastName !== undefined) {updates["profile.lastName"] = lastName;}
-	if (phone !== null && phone !== undefined) {updates["profile.phone"] = phone;}
-	if (email !== null && email !== undefined) {updates.email = email;}
-
-	  // Find the user by ID
-	const user = await USER.findByIdAndUpdate(userId, {$set : updates}, { new : true } );
-  
-	if (!user) { // this will happen if document with that id is not found
-		return { success: false, error: "User not found" };
-	}
-
-	return { success: true, error: null ,data:user };
-});
-
-export const deleteUserHandler = expressAsyncHandler( async (userId) => {
-
-	const user = await USER.findByIdAndDelete(userId);
-
-	if (!user) {
-		return { success: false, error: "User not found" };
-	}
-
-	return { success: true };
-});
-
-export const getUserProfileHandler = expressAsyncHandler( async (userId) => {
+export const createUser = expressAsyncHandler(async(data)=>{
 	
-	const user = await USER.findById(userId);
+	const values = validateIncomingData(validateUserForCreation,data);
+	
+	const user = await USER.create(values);
+	
+	return {success:true , data : user};
+});
 
-	if (user) {
+export const updateUserHandler = expressAsyncHandler(async (id, updatedData) => {
 
-		const userObj = user.toObject(); //for plain javascript keys , without hte mongoose internal jazz
-		const { profile : {firstName,lastName,phone} , email } = userObj;
-
-		return { success: true, user : {firstName,lastName,phone,email} };
+	if(!id){
+		throw new ApiError(400, "No user id given for updation");
 	}
 
-	return { success: false, error: "User not found" };
+	const values = validateIncomingData(validateUserForUpdate, updatedData);
+
+	const user = await USER.findByIdAndUpdate(id, {$set : values}, { new : true } );
+  
+	if(!user){
+		throw new ApiError(404,"User not found with the given id.");
+	}
+
+	return { success: true ,data:user };
+});
+
+export const deleteUserHandler = expressAsyncHandler( async (id) => {
+
+	if(!id){
+		throw new ApiError(400, "No user id given for updation");
+	}
+
+	const user = await USER.findByIdAndDelete(id);
+
+	if(!user){
+		throw new ApiError(404,"User not found with the given id and unable to delete the user.");
+	}
+
+	return { success: true , data : user };
+});
+
+export const getUserByIdHandler = expressAsyncHandler( async (id) => {
+	
+	if(!id){
+		throw new ApiError(400, "No user id given to get the user");
+	}
+
+	const user = await USER.findById(id);
+
+	if(!user){
+		throw new ApiError(404,"User not found with the given id.");
+	}
+
+	return { success: false, data  : user};
+});
+
+
+// GEt by filters
+export const getUserHandler = expressAsyncHandler( async({})=>{
+	
 });
