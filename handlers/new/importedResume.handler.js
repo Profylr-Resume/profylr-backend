@@ -3,6 +3,7 @@ import { validateImportedResumeForCreation, validateImportedResumeForUpdate } fr
 import IMPORTED_RESUME from "../../models/ImportedResume.js";
 import ApiError from "../../utils/errorHandlers.js";
 
+// create
 export const createImportedResume = async(data)=>{
     
 	const values = validateIncomingData(validateImportedResumeForCreation,data);
@@ -13,10 +14,11 @@ export const createImportedResume = async(data)=>{
 
 };
 
+// update
 export const updateImportedResume = async (id,updatedData)=>{
 
 	if(!id){
-		throw new ApiError(400, "No imported Resume given for updation");
+		throw new ApiError(400, "No imported Resume id given for updation");
 	}
 
 	const values = validateIncomingData(validateImportedResumeForUpdate,updatedData);
@@ -30,6 +32,7 @@ export const updateImportedResume = async (id,updatedData)=>{
 	return {success: true , data : resume};
 };
 
+// delete
 export const deleteImportedResume = async (id)=>{
 
 	if(!id){
@@ -45,6 +48,7 @@ export const deleteImportedResume = async (id)=>{
 	return {success: true, data : resume};
 };
 
+// GET by Id
 export const getImportedResumeById = async(id)=>{
 
 	if(!id){
@@ -60,6 +64,7 @@ export const getImportedResumeById = async(id)=>{
 	return {success:true , data : resume};
 };
 
+// GET by filters (pending)
 export const getImportedResumeHandler = async({})=>{
     
     

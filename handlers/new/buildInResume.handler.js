@@ -68,8 +68,8 @@ export const getBuildInResumeByIdHandler = expressAsyncHandler(async (id) => {
 	return { success: true, data : resume };
 });
 
-// GET based on filters (for now i am not able ot think about filters)
-export const getBuildInResumesHandler = expressAsyncHandler(async ({}) => {
+// GET based on filters (for now i am not able to think about filters)
+export const getBuildInResumeHandler = expressAsyncHandler(async ({}) => {
 
 	const resumes = await BUILD_IN_RESUME.find();
 
