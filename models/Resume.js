@@ -29,6 +29,14 @@ const ResumeSchema = new Schema({
 		required: true,
 		enum: ["BuiltResume", "ImportedResume"]
 	},
+
+	// this will be true only if the user has said to delete but there are still some job trackings using it.
+	// When the job tracking having soft deleted resume gets deleted the nthis resume will get deleted . 
+	// if no job trackng dependency then Resume will directly get deleted. 
+	isSoftDeleted : {
+		type: Boolean,
+		default: false
+	},
 	// Meta information
 	status: {
 		type: String,

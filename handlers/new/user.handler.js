@@ -9,6 +9,7 @@ import expressAsyncHandler from "express-async-handler";
     delete => delete user 
     forget password (not implemented yet)
  */
+    
 
 // Without try - catch
 export const updateUserHandler = expressAsyncHandler(async (userId, updatedData) => {
