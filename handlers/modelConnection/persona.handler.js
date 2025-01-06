@@ -1,7 +1,8 @@
 import PERSONA from "../../models/Persona.js";
 import expressAsyncHandler from "express-async-handler";
-import { validatePersonaForCreation } from "../../validations/new/persona.validate.js";
 import { validateIncomingData } from "../../utils/validations.js";
+import ResumeRecommendationEngine from "../../logic/engine.js";
+import { validatePersonaForCreation } from "../../validations/persona.validate.js";
 
 
 // create persona - add tempalte structure
@@ -11,11 +12,19 @@ import { validateIncomingData } from "../../utils/validations.js";
 
 export const createPersonaHandler = expressAsyncHandler( async (data) => {
 
-	const values = validateIncomingData(validatePersonaForCreation,data);
+	const values = validateIncomingData(validatePersonaForCreation() ,data);
 
 	// need to add template structure here.
 	// ----------------LOGIC------------------
+	// Initialize the recommendation engine
+	const engine = new ResumeRecommendationEngine();
 
+	// Generate recommendations
+	const templateStructureRes= engine.generateRecommendations(values);
+
+	// values.templateStructure = {
+	// 	sections
+	// }
 
 	// Create and save the new Persona document
 	const newPersona = await PERSONA.create(values);

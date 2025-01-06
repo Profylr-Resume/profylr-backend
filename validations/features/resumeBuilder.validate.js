@@ -1,13 +1,22 @@
 import Joi from "joi";
-import { validationSchema } from "../utils/mongoDb.js";
+import { baseSchemaValidationForBuildInResume } from "../buildInResume.validate.js";
+import { baseSchemaValidationForImportedResume } from "../importedResume.validate.js";
 
-// Joi validation schema
-const baseSchemaValidation = Joi.object({
-	user: Joi.string().pattern(/^[0-9a-fA-F]{24}$/), // MongoDB ObjectId pattern
+
+const baseSchema = Joi.object({
+
 	title: Joi.string().trim(),
 	description: Joi.string().allow(null, ""), // Allow null or empty string
 	isImported: Joi.boolean(),
-	resumeData: Joi.string().pattern(/^[0-9a-fA-F]{24}$/), // MongoDB ObjectId pattern
+
+	resumeData: Joi.when("resumeType", {
+		switch :[
+			{is: "BuildInResume", then : baseSchemaValidationForBuildInResume },
+			{is: "ImportedResume", then : baseSchemaValidationForImportedResume }
+		],
+		otherwise: Joi.forbidden()
+	}) ,
+
 	resumeType: Joi.string().valid("BuildInResume", "ImportedResume"),
 	status: Joi.string().valid("active", "archived", "deleted").default("active"),
 	tags: Joi.array().items(Joi.string()).default([]),
@@ -19,15 +28,4 @@ const baseSchemaValidation = Joi.object({
 		shares: Joi.number().integer().min(0).default(0),
 		lastViewed: Joi.date().allow(null)
 	}).default({}) // Default to an empty object
-}).unknown(true); // Allow additional fields if necessary
-
-const requiredFields = [
-	"user",
-	"title",
-	"isImported",
-	"resumeData",
-	"resumeType"
-];
-
-export const validateResumeForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidation });
-export const validateResumeForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidation }); 
+});

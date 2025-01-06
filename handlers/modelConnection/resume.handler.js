@@ -6,7 +6,7 @@ import { validateResumeForCreation, validateResumeForUpdate } from "../../valida
 
 
 // create
-export const createResume = expressAsyncHandler(async(data)=>{  
+export const createResumeHandler = expressAsyncHandler(async(data)=>{  
 
 	const values =validateIncomingData( validateResumeForCreation ,data);
 
@@ -16,7 +16,7 @@ export const createResume = expressAsyncHandler(async(data)=>{
 }); 
 
 // update
-export const updateResume = expressAsyncHandler(async(id , updatedData)=>{
+export const updateResumeHandler = expressAsyncHandler(async(id , updatedData)=>{
 
 	if(!id){
 		throw new ApiError(400, "No resume id given for updation");
@@ -34,7 +34,7 @@ export const updateResume = expressAsyncHandler(async(id , updatedData)=>{
 });
 
 // delete
-export const deleteResume = expressAsyncHandler(async (id)=>{
+export const deleteResumeHandler = expressAsyncHandler(async (id)=>{
 
 	if(!id){
 		throw new ApiError(400, "No resume id given for deletion");
@@ -50,7 +50,7 @@ export const deleteResume = expressAsyncHandler(async (id)=>{
 });
 
 // GET by Id
-export const getResumeById = expressAsyncHandler(async(id)=>{
+export const getResumeByIdHandler = expressAsyncHandler(async(id)=>{
 
 	if(!id){
 		throw new ApiError(400, "No resume id given for deletion");
@@ -66,7 +66,7 @@ export const getResumeById = expressAsyncHandler(async(id)=>{
 });
 
 // GET filters
-export const getResume = expressAsyncHandler(async({})=>{
+export const getResumeHandler = expressAsyncHandler(async({})=>{
     
 
 });

@@ -73,7 +73,7 @@ const ResumeVersionManagerSchema = new Schema({
 // Methods for version management
 ResumeVersionManagerSchema.methods = {
 
-	// Add a new resume as a minor version to existing major version
+	// POST Add a new resume as a minor version to existing major version
 	async addMinorVersion(resumeId, majorVersion, description) {
 		const group = this.resumeGroups.find(g => g.majorVersion === majorVersion);
 		if (!group) {throw new Error("Major version not found");}
@@ -92,7 +92,7 @@ ResumeVersionManagerSchema.methods = {
 		return this.save();
 	},
 
-	// Add a new resume as a new major version
+	// POST Add a new resume as a new major version
 	async addMajorVersion(resumeId, description) {
 		const newMajorVersion = this.metadata.latestMajorVersion + 1;
 
@@ -112,7 +112,7 @@ ResumeVersionManagerSchema.methods = {
 		return this.save();
 	},
 
-	// Get all resumes for a specific major version
+	// GET all resumes for a specific major version
 	async getVersionGroup(majorVersion) {
 		const group = this.resumeGroups.find(g => g.majorVersion === majorVersion);
 		if (!group) {return null;}
@@ -123,7 +123,7 @@ ResumeVersionManagerSchema.methods = {
 			.sort({ "createdAt": -1 });
 	},
 
-	// Get specific version
+	// GET specific version
 	async getSpecificVersion(majorVersion, minorVersion) {
 		const group = this.resumeGroups.find(g => g.majorVersion === majorVersion);
 		if (!group) {return null;}

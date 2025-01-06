@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { validationSchema } from "../utils/mongoDb";
+import { validationSchema } from "../utils/mongoDb.js";
 
 const interviewDetailsSchema = Joi.object({
 	round: Joi.number().integer().min(1),

@@ -3,8 +3,8 @@ import { filterTemplatesWithRecommendations, handleGenerateRecommendations, hand
 import personaValidation from "../validations/persona.validate.js";
 import PERSONA from "../models/Persona.js";
 import { checkPersonaExistsInUser } from "../helpers/persona.helper.js";
-import { updateUserHandler } from "./new/user.handler.js";
-import { createPersonaHandler, updatePersonaHandler } from "./new/persona.handler.js";
+import { updateUserHandler } from "./modelConnection/user.handler.js";
+import { createPersonaHandler, updatePersonaHandler } from "./modelConnection/persona.handler.js";
 import USER from "../models/User.js";
 
 // create and attach persona to the user

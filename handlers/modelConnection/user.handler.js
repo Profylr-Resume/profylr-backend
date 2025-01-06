@@ -13,9 +13,9 @@ import ApiError from "../../utils/errorHandlers.js";
     forget password (not implemented yet)
  */
 
-export const createUser = expressAsyncHandler(async(data)=>{
+export const createUserHandler = expressAsyncHandler(async(data)=>{
 	
-	const values = validateIncomingData(validateUserForCreation,data);
+	const values = validateIncomingData(validateUserForCreation() ,data);
 	
 	const user = await USER.create(values);
 	
@@ -70,7 +70,24 @@ export const getUserByIdHandler = expressAsyncHandler( async (id) => {
 });
 
 
-// GEt by filters
-export const getUserHandler = expressAsyncHandler( async({})=>{
+// GET by filters
+export const getUserByCredentialHandler = expressAsyncHandler( async({email,password})=>{
 	
+	if(!email){
+		throw new ApiError(400,"Email not found");
+	}
+	const user = await USER.findOne({"email":{$eq : email}});
+
+	if(!user){
+		throw new ApiError(404,"No user found with given email.");
+	}
+
+	const isPasswordMatched = await user.comparePassword(password);
+
+	if(!isPasswordMatched){
+		throw new ApiError(404, "Wrong password.");
+	}
+	else{
+		return {success :true , data :user};
+	}
 });

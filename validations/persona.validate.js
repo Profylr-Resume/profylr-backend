@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { validationSchema } from "../utils/mongoDb";
+import { validationSchema } from "../utils/mongoDb.js";
 
 // Base schema (common for both create and update)
 const baseSchemaValidation = Joi.object({
@@ -32,8 +32,8 @@ const requiredFields = [
 
 
 // Usage:
-const validatePersonaForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidation });
-const validatePersonaForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidation });
+const validatePersonaForCreation = ()=> validationSchema({isUpdate:false, requiredFields , baseSchemaValidation });
+const validatePersonaForUpdate = ()=> validationSchema({isUpdate:true, requiredFields , baseSchemaValidation });
 
 
 export {validatePersonaForCreation,validatePersonaForUpdate};

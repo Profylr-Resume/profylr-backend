@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { validationSchema } from "../utils/mongoDb";
+import { validationSchema } from "../utils/mongoDb.js";
 
 // Validation schema for a single resume within a major version group
 const resumeSchema = Joi.object({
@@ -34,7 +34,7 @@ const baseSchemaValidation = Joi.object({
 		totalResumes: Joi.number()
 			.integer()
 			.min(0)
-			.default(1), // Defaults to 1
+			.default(0), // Defaults to 1
 		lastUpdated: Joi.date()
 			.default(() => new Date(), "current date") // Defaults to the current date
 	}).default({}) // Defaults to an empty object
@@ -42,7 +42,7 @@ const baseSchemaValidation = Joi.object({
 
 const requiredFields = [
 	"user",
-	"resumeGroups.majorVersion",
+	// "resumeGroups.majorVersion", if major version not given then the resume will be added in the new major version created at that very moment
 	"resumeGroups.resumes.resumeRef",
 	"resumeGroups.resumes.minorVersion"
 ];

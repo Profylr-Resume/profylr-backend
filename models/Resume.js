@@ -27,7 +27,7 @@ const ResumeSchema = new Schema({
 	resumeType: { //this is the field giving the dynamic modle name above . that is why enum values are same as model name
 		type: String,
 		required: true,
-		enum: ["BuiltResume", "ImportedResume"]
+		enum: ["BuildInResume", "ImportedResume"]
 	},
 	// Meta information
 	status: {

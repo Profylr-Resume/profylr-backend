@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
-import AUDIT_LOG from "./AuditLog";
+import AUDIT_LOG from "./AuditLog.js";
 
 const userSchema = new Schema({
 	

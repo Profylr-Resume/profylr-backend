@@ -1,4 +1,4 @@
-import ApiError from "../utils/errorHandlers";
+import ApiError from "../utils/errorHandlers.js";
 
 
 // this is being used as a middleware here , but made same as a function also
