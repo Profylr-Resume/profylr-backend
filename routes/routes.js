@@ -1,21 +1,12 @@
 import { Router } from "express";
 import userRoutes from "./user.routes.js";
 import authRoutes from "./auth.routes.js";
-import { authMiddleware } from "../middlewares/authMiddleware.js";
-import jobRoutes from "./job.routes.js";
-import eventRoutes from "./calendarEvents.routes.js";
-import uploadRoutes from "./upload.routes.js";
+import adminRoutes from "./admin.routes.js";
 
 const router = Router();
 
-router.use("/user",authMiddleware , userRoutes );
-// router.use("/user" , userRoutes );
-router.use("/auth" , authRoutes);
-
-router.use("/jobs",authMiddleware,jobRoutes);
-
-router.use("/events",authMiddleware,eventRoutes);
-
-router.use("/file",uploadRoutes);
+router.use("/user" , userRoutes );
+router.use("/admin" , adminRoutes );
+router.use("/auth" , authRoutes );
 
 export default router;

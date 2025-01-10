@@ -1,7 +1,7 @@
 import expressAsyncHandler from "express-async-handler";
 import TEMPLATE from "../../models/admin/Template";
-import { validateTemplateForCreation, validateTemplateForUpdate } from "../../validations/template.validate";
-import { validateIncomingData } from "../../utils/validations";
+import { validateTemplateForCreation, validateTemplateForUpdate } from "../../validations/template.validate.js";
+import { validateIncomingData } from "../../utils/validations.js";
 import ApiError from "../../utils/errorHandlers";
 
 

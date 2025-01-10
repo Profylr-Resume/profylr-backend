@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { validationSchema } from "../utils/mongoDb";
+import { validationSchema } from "../utils/mongoDb.js";
 
 // 1
 const personalInfoValidation = Joi.object({
@@ -133,7 +133,7 @@ const languageKnownValidation = Joi.object({
 });
 
 // Complete validatin for a build In resume
-const baseSchemaValidation = Joi.object({
+export const baseSchemaValidationForBuildInResume = Joi.object({
 	personalInfo: personalInfoValidation,
 	summary: Joi.string().min(10).max(500), 
 	education: educationValidation,
@@ -220,8 +220,8 @@ const requiredFields = [
 	"template"
 ];
 
-export const validateBuildInResumeForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidation });
-export const validateBuildInResumeForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidation });
+export const validateBuildInResumeForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidationForBuildInResume });
+export const validateBuildInResumeForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidationForBuildInResume });
 
 // =======================================================================
 // const dummyResume = {

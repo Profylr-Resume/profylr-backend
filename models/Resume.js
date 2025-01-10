@@ -27,7 +27,7 @@ const ResumeSchema = new Schema({
 	resumeType: { //this is the field giving the dynamic modle name above . that is why enum values are same as model name
 		type: String,
 		required: true,
-		enum: ["BuiltResume", "ImportedResume"]
+		enum: ["BuildInResume", "ImportedResume"]
 	},
 
 	// this will be true only if the user has said to delete but there are still some job trackings using it.

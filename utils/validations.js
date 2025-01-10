@@ -1,4 +1,4 @@
-import ApiError from "./errorHandlers";
+import ApiError from "./errorHandlers.js";
 
 export const validateIncomingData = (schema,data)=>{
 

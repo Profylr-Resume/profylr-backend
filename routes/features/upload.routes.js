@@ -1,6 +1,6 @@
 import { Router } from "express";
 import multer from "multer";
-import {uploadController} from "../controllers/upload.controller.js";
+import {uploadController} from "../../controllers/upload.controller.js";
 const router = Router();
 
 // Use Multer with memory storage for a single file upload

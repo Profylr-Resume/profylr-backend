@@ -1,85 +1,62 @@
 import expressAsyncHandler from "express-async-handler";
-import { conflictError, missingFieldsError, notFoundError } from "../../utils/errors.utils.js";
-import RESUME_SECTION from "../../models/ResumeSection.js";
-import { eventExecutedSuccessfully } from "../../utils/success.utils.js";
-import { createSectionHandler, deleteSectionHandler, getAllSectionsHandler, getSectionByIdHandler, updateSectionHandler } from "../../handlers/sections.handler.js";
-import resumeSectionValidation from "../../validations/resumeSections.validate.js";
+import { createResumeSectionHandler, deleteResumeSectionHandler, getResumeSectionByIdHandler, getResumeSectionsHandler, updateResumeSectionHandler } from "../../handlers/modelConnection/resumeSection.handler.js";
+import ApiResponse from "../../utils/responseHandlers.js";
+import ApiError from "../../utils/errorHandlers.js";
 
 
 export const createSection = expressAsyncHandler(async(req,res)=>{
+    
+	const section = await createResumeSectionHandler(req.body);
 
-	const {error,value} = resumeSectionValidation.validate(req.body);
-	
-	if(error){
-		return missingFieldsError(res,error);
+	if(section.success){
+		ApiResponse.success(res,"Section created successfully.",section.data,201);
 	}
-
-	const {name,description} = value;
-
-	const trimmedName = name.trim();
-	const trimmedDescription= description.trim();
-
-	const alreadyExist = await RESUME_SECTION.find({name:trimmedName});
-
-	if(alreadyExist && alreadyExist.length>0){
-		return conflictError(res,"Section",["name"]);
-	}
-	const newSection = await RESUME_SECTION.create({name:trimmedName,description:trimmedDescription});
-
-	return eventExecutedSuccessfully(res,{name:newSection,description:newSection.description},"New section created successfully.");
 
 });
 
-export const getAllSections = expressAsyncHandler(async (req, res) => {
-	const { success, error, sections } = await getAllSectionsHandler();
+export const getSections = expressAsyncHandler(async(req,res)=>{
 
-	if (!success) {
-		return res.status(404).json({ message: error });
+	const sections = {};
+
+	if(req.query){
+		//req.query =>  categories, departments, name (possible filters))
+		 sections = await getResumeSectionsHandler(req.query);
+
+	}else if(req.params && req.params.id){
+		// req.params
+		 sections = await getResumeSectionByIdHandler(req.params.id);
+
+	}else {
+		 sections = await getResumeSectionsHandler();
 	}
 
-	return res.status(200).json(sections);
-});
-
-export const getSectionById = expressAsyncHandler(async (req, res) => {
-	const sectionId = req.params.id;
-	const { success, error, section } = await getSectionByIdHandler(sectionId);
-
-	if (!success) {
-		if (error === "Missing section ID") {
-			return missingFieldsError(res);
-		}
-		return notFoundError(res, "Section", ["Id"]);
+	if(sections){
+		ApiResponse.success(res,"Sections fetched successfully.",sections.data,200);
 	}
+}); 
 
-	return eventExecutedSuccessfully(res, section, "Fetched section by ID");
-});
-
-export const updateSection = expressAsyncHandler(async (req, res) => {
-	const sectionId = req.params.id;
-	const { success, error, updatedSection } = await updateSectionHandler(sectionId, req.body);
-
-	if (!success) {
-		if (error === "Missing section ID") {
-			return missingFieldsError(res);
-		}
-		return notFoundError(res, "Section", ["Id"]);
+export const updateSection = expressAsyncHandler(async(req,res)=>{
+    
+	if(!req.query?.id){
+		throw new ApiError(400,"Section is required to update the section.");
 	}
+	const {id} = req.query;
+	const section = await updateResumeSectionHandler(id,req.body);
 
-	return eventExecutedSuccessfully(res, updatedSection, "Section updated successfully.");
-});
-
-export const deleteSection = expressAsyncHandler(async (req, res) => {
-	const sectionId = req.params.id;
-	const { success, error, deletedSection } = await deleteSectionHandler(sectionId);
-
-	if (!success) {
-		if (error === "Missing section ID") {
-			return missingFieldsError(res);
-		}
-		return notFoundError(res, "Section", ["Id"]);
+	if(section.success){
+		ApiResponse.success(res,"Section id updated successfully.",section.data,200);
 	}
-
-	return eventExecutedSuccessfully(res, deletedSection, "Section deleted successfully.");
 });
 
-  
+export const deleteSection = expressAsyncHandler(async(req,res)=>{
+
+	if(!req.query?.id){
+		throw new ApiError(400,"Section id is required to delete the section.");
+	}
+	const {id} = req.query;
+	const section = await deleteResumeSectionHandler(id);
+
+	if(section.success){
+		ApiResponse.success(res,"Section deleted successfully.",section.data,200);
+	}
+});

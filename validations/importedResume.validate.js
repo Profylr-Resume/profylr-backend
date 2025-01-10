@@ -1,8 +1,8 @@
 import Joi from "joi";
-import { validationSchema } from "../utils/mongoDb";
+import { validationSchema } from "../utils/mongoDb.js";
 
 
-const baseSchemaValidation = Joi.object({
+export const baseSchemaValidationForImportedResume = Joi.object({
 	fileUrl: Joi.string().uri().trim(),
 	fileType: Joi.string().valid("pdf", "doc", "docx"),
 	originalfileName: Joi.string().min(3).max(50).trim(),
@@ -16,5 +16,5 @@ const requiredFields = [
 	"fileSize"
 ];
 
-export const validateImportedResumeForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidation });
-export const validateImportedResumeForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidation });
+export const validateImportedResumeForCreation = validationSchema({isUpdate:false, requiredFields , baseSchemaValidationForImportedResume });
+export const validateImportedResumeForUpdate = validationSchema({isUpdate:true, requiredFields , baseSchemaValidationForImportedResume });

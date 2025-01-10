@@ -77,7 +77,7 @@ export const getResumeSectionByIdHandler = expressAsyncHandler( async (sectionId
 });
 
 // need to give complete categories or departments array (whichever to  be changed) in order to update the document 
-export const updateSectionHandler = expressAsyncHandler( async (sectionId, updatedData) => {
+export const updateResumeSectionHandler = expressAsyncHandler( async (sectionId, updatedData) => {
 
 	if (!sectionId) {
 		throw new ApiError(400,"Section Id not given.");
@@ -95,7 +95,7 @@ export const updateSectionHandler = expressAsyncHandler( async (sectionId, updat
 	return { success: true, data: updatedSection };
 });
 
-export const deleteSectionHandler = expressAsyncHandler( async (sectionId) => {
+export const deleteResumeSectionHandler = expressAsyncHandler( async (sectionId) => {
 
 	if (!sectionId) {
 		throw new ApiError(400,"Need section id for deletion of the section.");

@@ -1,0 +1,136 @@
+{
+    "info": {
+        "_postman_id": "60b7aab8-6baf-4e22-ba3e-4a369aadae41",
+        "name": "Profylr",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "27050549",
+        "_collection_link": "https://routemaestrohemant.postman.co/workspace/routeMaestroHemant-Workspace~88404157-e730-4cb4-a5e4-6595946451b2/collection/27050549-60b7aab8-6baf-4e22-ba3e-4a369aadae41?action=share&source=collection_link&creator=27050549"
+    },
+    "item": [
+        {
+            "name": "auth",
+            "item": [
+                {
+                    "name": "New Request",
+                    "request": {
+                        "method": "GET",
+                        "header": []
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Register",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"firstName\": \"<firstName>\",\n    \"lastName\": \"<lastName>\",\n    \"email\": \"<email>\",\n    \"password\": \"<password>\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "register"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"<email>\",\n    \"password\": \"<password>\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "login"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "const responseJson = pm.response.json();",
+                                    "if (responseJson.token) {",
+                                    "    pm.environment.set('jwt', responseJson.token);",
+                                    "} else {",
+                                    "    console.warn('No token found in response');",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "response": []
+                }
+            ]
+        },
+		{
+			"name": "persona",
+			"item": [
+				{
+					"name": "Create Persona",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"experienceLevel\": \"fresher\",\n\t\"targetRole\": \"<targetRole>\",\n\t\"background\": {\n\t\t\"yearsOfExperience\": 0,\n\t\t\"education\": {\n\t\t\t\"level\": \"graduated\"\n\t\t},\n\t\t\"hasProjects\": true,\n\t\t\"hasCertifications\": true,\n\t\t\"industries\": [\"<industry>\"]\n\t},\n\t\"strengths\": [\"<strength1>\", \"<strength2>\"],\n\t\"goals\": [\"<goal1>\", \"<goal2>\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/persona",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"persona"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+		
+    ],
+	"variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000/api"
+        },
+        {
+            "key": "jwt",
+            "value": ""
+        }
+    ]
+}

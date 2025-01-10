@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import AUDIT_LOG from "./AuditLog";
+import AUDIT_LOG from "./AuditLog.js";
 
 // need to store the ideal resume struture with each persona.
 // coz every unique persona will have that same ideal structure everytime.

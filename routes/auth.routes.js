@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { authMiddleware } from "../middlewares/authMiddleware.js";
-import { registerUser,loginUser, verifyUserWithJWT } from "../controllers/auth.controller.js";
+import { loginUserController, registerUserController } from "../controllers/auth.controller.js";
+// import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router=Router();
 
-router.post("/register",registerUser );
-router.post("/login",loginUser );
-router.get("/verifyJwt",authMiddleware,verifyUserWithJWT );
+router.post("/register", registerUserController );
+router.post("/login", loginUserController );
+// router.get("/verifyJwt",authMiddleware,verifyUserWithJWT );
 
 
 export default router;
